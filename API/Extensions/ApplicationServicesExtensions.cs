@@ -12,25 +12,26 @@ namespace API.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IBasketRepository, BasketRepository>();
             services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
-                        services.Configure<ApiBehaviorOptions>(options =>
+            services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.InvalidModelStateResponseFactory = actionContext =>
             {
-                options.InvalidModelStateResponseFactory = actionContext =>
+                var errors = actionContext.ModelState
+                .Where(errors => errors.Value.Errors.Count > 0)
+                .SelectMany(x => x.Value.Errors)
+                .Select(x => x.ErrorMessage)
+                .ToArray();
+
+                var errorResponse = new ApiValidationErrorResponse
                 {
-                    var errors = actionContext.ModelState
-                    .Where(errors => errors.Value.Errors.Count > 0)
-                    .SelectMany(x => x.Value.Errors)
-                    .Select(x => x.ErrorMessage)
-                    .ToArray();
-
-                    var errorResponse = new ApiValidationErrorResponse
-                    {
-                        Errors = errors
-                    };
-
-                    return new BadRequestObjectResult(errorResponse);
+                    Errors = errors
                 };
-            });
+
+                return new BadRequestObjectResult(errorResponse);
+            };
+        });
 
             return services;
         }
