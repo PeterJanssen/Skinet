@@ -444,3 +444,4 @@ $RECYCLE.BIN/
 appsettings.json
 ssl
 *.db
+*.rdb
