@@ -47,7 +47,7 @@ namespace API.Controllers
         }
 
 
-        [HttpGet("emailexists")]
+        [HttpPost("emailexists")]
         public async Task<ActionResult<bool>> CheckEmailExistsAsync([FromQuery] string email)
         {
             return await _userManager.FindByEmailAsync(email) != null;
