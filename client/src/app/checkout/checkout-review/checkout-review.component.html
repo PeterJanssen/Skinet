@@ -1,5 +1,8 @@
 <div class="mt-4">
-  <app-basket-summary [isBasket]="false"></app-basket-summary>
+  <app-basket-summary
+    [isBasket]="false"
+    [items]="(basket$ | async).items"
+  ></app-basket-summary>
 </div>
 
 <div
