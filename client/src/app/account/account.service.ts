@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { of, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { IAddress } from '../shared/models/address';
 import { IUser } from '../shared/models/user';
 
 @Injectable({
@@ -22,9 +23,7 @@ export class AccountService {
       return of(null);
     }
 
-    let headers = new HttpHeaders();
-    headers = headers.set('Authorization', `Bearer ${token}`);
-    return this.http.get(this.baseURl + 'account', { headers }).pipe(
+    return this.http.get(this.baseURl + 'account').pipe(
       map((user: IUser) => {
         if (user) {
           localStorage.setItem('token', user.token);
@@ -64,5 +63,13 @@ export class AccountService {
 
   checkEmailExists(email: string) {
     return this.http.get(this.baseURl + 'account/emailexists?email=' + email);
+  }
+
+  getUserAddress() {
+    return this.http.get<IAddress>(this.baseURl + 'account/address');
+  }
+
+  updateUserAddress(address: IAddress) {
+    return this.http.put<IAddress>(this.baseURl + 'account/address', address);
   }
 }
