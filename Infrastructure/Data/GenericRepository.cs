@@ -19,7 +19,7 @@ namespace Infrastructure.Data
         {
             return await _storeContext.Set<T>().FindAsync(id);
         }
-        public async Task<IReadOnlyList<T>> ListAllasync()
+        public async Task<IReadOnlyList<T>> ListAllAsync()
         {
             return await _storeContext.Set<T>().ToListAsync();
         }
@@ -41,6 +41,22 @@ namespace Infrastructure.Data
                 _storeContext.Set<T>().AsQueryable(),
                  specification
                  );
+        }
+
+        public void Add(T entity)
+        {
+            _storeContext.Set<T>().Add(entity);
+        }
+
+        public void Update(T entity)
+        {
+            _storeContext.Set<T>().Attach(entity);
+            _storeContext.Entry(entity).State = EntityState.Modified;
+        }
+
+        public void Delete(T entity)
+        {
+            _storeContext.Set<T>().Remove(entity);
         }
     }
 }

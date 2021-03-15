@@ -10,7 +10,7 @@ namespace API.Extensions
     {
         public static async Task<AppUser> FindUserByClaimsPrincipleWithAddressAsync(this UserManager<AppUser> input, ClaimsPrincipal user)
         {
-            var email = user.FindFirstValue(ClaimTypes.Email);
+            var email = ClaimsPrincipleExtensions.RetrieveEmailFromPrincipal(user);
 
             return await input.Users
             .Include(x => x.Address)
@@ -19,7 +19,7 @@ namespace API.Extensions
 
         public static async Task<AppUser> FindUserByClaimsPrincipleAsync(this UserManager<AppUser> input, ClaimsPrincipal user)
         {
-            var email = user.FindFirstValue(ClaimTypes.Email);
+            var email = ClaimsPrincipleExtensions.RetrieveEmailFromPrincipal(user);
 
             return await input.Users
             .SingleOrDefaultAsync(x => x.Email == email);

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Core.Entities;
+using Core.Entities.OrderAggregate;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Data
@@ -56,11 +57,25 @@ namespace Infrastructure.Data
 
                     await storeContext.SaveChangesAsync();
                 }
+
+                if (!storeContext.DeliveryMethods.Any())
+                {
+                    var dmData = File.ReadAllText("../Infrastructure/Data/SeedData/delivery.json");
+
+                    var deliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(dmData);
+
+                    foreach (var deliveryMethod in deliveryMethods)
+                    {
+                        storeContext.DeliveryMethods.Add(deliveryMethod);
+                    }
+
+                    await storeContext.SaveChangesAsync();
+                }
             }
             catch (Exception exception)
             {
-                    var logger = loggerFactory.CreateLogger<StoreContextSeed>();
-                    logger.LogError(exception, "An error occured during seeding");
+                var logger = loggerFactory.CreateLogger<StoreContextSeed>();
+                logger.LogError(exception, "An error occured during seeding");
             }
         }
     }
