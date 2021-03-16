@@ -4,7 +4,6 @@
 **[Description](#Description)**<br>
 **[Features](#Features)**<br>
 **[Visuals](#Visuals)**<br>
-**[Compatibility](#compatibility)**<br>
 **[Usage](#Usage)**<br>
 **[Commands](#Commands)**<br>
 **[Roadmap](#Roadmap)**<br>
