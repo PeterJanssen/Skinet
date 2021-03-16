@@ -48,25 +48,25 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 
 ### HomePage
 
-![Homepage](ReadMeImages/Home.png "Homepage")
+![Homepage](ReadMeImages/Home.PNG "Homepage")
 
 ### Shop
-![Shop](ReadMeImages/Shop.png "Shop")
+![Shop](ReadMeImages/Shop.PNG "Shop")
 
 ### Basket
-![Basket](ReadMeImages/Basket.png "Basket")
+![Basket](ReadMeImages/Basket.PNG "Basket")
 
 ### Checkout
-![Checkout](ReadMeImages/Checkout.png "Checkout")
+![Checkout](ReadMeImages/Checkout.PNG "Checkout")
 
 ### Orders
-![Orders](ReadMeImages/Orders.png "Orders")
+![Orders](ReadMeImages/Orders.PNG "Orders")
 
 ### Login
-![Login](ReadMeImages/Login.png "Login")
+![Login](ReadMeImages/Login.PNG "Login")
 
 ### Register
-![Register](ReadMeImages/Register.png "Register")
+![Register](ReadMeImages/Register.PNG "Register")
 
 ### Usage
 
