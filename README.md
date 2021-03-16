@@ -165,11 +165,11 @@ In any terminal run the following command
 
 - Making the frontend responsive
 
-- Code refactoring
+- Moving inline style to stylesheets
 
 ### Backend
 
-- Code refactoring
+- SwaggerUI Documentation
 
 ### Front/Backend
 
@@ -188,6 +188,10 @@ In any terminal run the following command
 - Password resetting
 
 - Product Review system
+
+- Code refactoring
+
+- Testing 
 
 ## Contributions
 
