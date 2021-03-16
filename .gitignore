@@ -445,3 +445,4 @@ appsettings.json
 ssl
 *.db
 *.rdb
+wwwroot
