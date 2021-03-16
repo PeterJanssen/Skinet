@@ -5,10 +5,13 @@
         <h5 class="text-warning ml-3 mt-4 mb-3">Sort</h5>
         <select
           class="custom-select mb-4"
-          style="cursor: pointer"
           (change)="onSortSelected($event.target.value)"
         >
-          <option *ngFor="let sort of sortOptions" [value]="sort.value">
+          <option
+            *ngFor="let sort of sortOptions"
+            [selected]="shopParams.sort === sort.value"
+            [value]="sort.value"
+          >
             {{ sort.name }}
           </option>
         </select>
@@ -17,7 +20,6 @@
         <ul class="list-group my-3">
           <li
             class="list-group-item"
-            style="cursor: pointer"
             *ngFor="let brand of brands"
             [class.active]="brand.id === this.shopParams.brandId"
             [value]="brand.id"
@@ -31,7 +33,6 @@
         <ul class="list-group my-3">
           <li
             class="list-group-item"
-            style="cursor: pointer"
             *ngFor="let type of types"
             [class.active]="type.id === this.shopParams.typeId"
             [value]="type.id"
@@ -78,6 +79,7 @@
         <app-pager
           [pageSize]="shopParams.pageSize"
           [totalCount]="totalCount"
+          [pageNumber]="shopParams.pageNumber"
           (pageChanged)="onPageChanged($event)"
         ></app-pager>
       </div>
