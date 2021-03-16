@@ -1,10 +1,20 @@
 # Skinet
 
+## Table of Contents
+**[Description](#Description)**<br>
+**[Features](#Features)**<br>
+**[Visuals](#Visuals)**<br>
+**[Compatibility](#compatibility)**<br>
+**[Usage](#Usage)**<br>
+**[Commands](#Commands)**<br>
+**[Roadmap](#Roadmap)**<br>
+**[Contributions](#Contributions)**<br>
+
 ## Description
 
 A proof of concept e-commerce store using Angular, .Net Core and Stripe for payment processing
 
-### What was used in this app?
+### Features
 
 #### Backend
 - .Net Core 5
@@ -38,31 +48,25 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 
 ### HomePage
 
-<img src="ReadMeImages/Home.png?raw=true" width="350" alt="Homepage"/>
+![Homepage](ReadMeImages/Home.png "Homepage")
 
 ### Shop
-
-<img src="ReadMeImages/Shop.png?raw=true" width="350" alt="Shop"/>
+![Shop](ReadMeImages/Shop.png "Shop")
 
 ### Basket
-
-<img src="ReadMeImages/Basket.png?raw=true" width="350" alt="Basket"/>
+![Basket](ReadMeImages/Basket.png "Basket")
 
 ### Checkout
-
-<img src="ReadMeImages/Checkout.png?raw=true" width="350" alt="Checkout"/>
+![Checkout](ReadMeImages/Checkout.png "Checkout")
 
 ### Orders
-
-<img src="ReadMeImages/Orders.png?raw=true" width="350" alt="Orders"/>
+![Orders](ReadMeImages/Orders.png "Orders")
 
 ### Login
-
-<img src="ReadMeImages/Login.png?raw=true" width="350" alt="Login"/>
+![Login](ReadMeImages/Login.png "Login")
 
 ### Register
-
-<img src="ReadMeImages/Register.png?raw=true" width="350" alt="Register"/>
+![Register](ReadMeImages/Register.png "Register")
 
 ### Usage
 
@@ -92,7 +96,7 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 
 - Postman or any equivalant
 
-## What commands are used to run this app?
+## Commands
 
 ### Creating the docker containers
 
