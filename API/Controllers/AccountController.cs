@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Dtos;
 using API.Errors;
@@ -7,11 +6,13 @@ using AutoMapper;
 using Core.Entities.Identity;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Produces("application/json")]
     public class AccountController : BaseApiController
     {
         private readonly UserManager<AppUser> _userManager;
@@ -32,8 +33,15 @@ namespace API.Controllers
 
         }
 
+        /// <summary>
+        /// Gets the current logged in user
+        /// </summary>
+        /// <response code="200">Returns the current logged in user</response>
+        /// <response code="401">If the user is not logged in</response>      
         [Authorize]
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             var user = await _userManager.FindUserByClaimsPrincipleAsync(User);
@@ -47,14 +55,32 @@ namespace API.Controllers
         }
 
 
+        /// <summary>
+        /// Checks if the filled in email exists in database
+        /// </summary>
+        /// <remarks>
+        /// Sample existing email:
+        ///   
+        ///     bob@test.com
+        ///
+        /// </remarks>
+        /// <response code="200">Returns true if email exists in database false if not</response>
         [HttpGet("emailexists")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<bool>> CheckEmailExistsAsync([FromQuery] string email)
         {
             return await _userManager.FindByEmailAsync(email) != null;
         }
 
+        /// <summary>
+        /// Gets the current logged in user's address
+        /// </summary>
+        /// <response code="200">Returns the current logged in user's address</response>
+        /// <response code="401">Returns if the User is not logged in</response>
         [Authorize]
         [HttpGet("address")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<AddressDto>> getUserAddress()
         {
             var user = await _userManager.FindUserByClaimsPrincipleWithAddressAsync(User);
@@ -62,8 +88,29 @@ namespace API.Controllers
             return _mapper.Map<Address, AddressDto>(user.Address);
         }
 
+        /// <summary>
+        /// Updates the current logged in user's address
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///   
+        ///     {
+        ///         "firstName": "Bob",
+        ///         "lastName": "Bobbity",
+        ///         "street": "10 The Updated Street",
+        ///         "city": "New York",
+        ///         "state": "NY",
+        ///         "zipCode": "90250",
+        ///         "country": "USA"
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">Returns the current logged in user's updated address</response>
+        /// <response code="401">Returns if the User is not logged in</response>
         [Authorize]
         [HttpPut("address")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto addressDto)
         {
             var user = await _userManager.FindUserByClaimsPrincipleWithAddressAsync(User);
@@ -80,7 +127,23 @@ namespace API.Controllers
         }
 
 
+        /// <summary>
+        /// Posts the users's credentials and logs the user in
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     {
+        ///         "email": "bob@test.com",
+        ///         "password": "Pa$$w0rd"
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">Returns the current logged in user</response>
+        /// <response code="401">Returns if the User does not exist or has provided wrong credentials</response>
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
@@ -105,7 +168,24 @@ namespace API.Controllers
             };
         }
 
+        /// <summary>
+        /// Registers the new users's credentials and logs the user in
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     {
+        ///         "displayName": "Tom",    
+        ///         "email": "tom@test.com",
+        ///         "password": "Pa$$w0rd"
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">Returns the newly registered user</response>
+        /// <response code="400">Returns if the new user's email is already in use or registering has failed</response>
         [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
             if (CheckEmailExistsAsync(registerDto.Email).Result.Value)

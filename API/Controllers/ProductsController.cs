@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
 using API.Errors;
@@ -8,13 +7,12 @@ using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
-using Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
+    [Produces("application/json")]
     public class ProductsController : BaseApiController
     {
         private readonly IGenericRepository<Product> _productsRepo;
@@ -33,8 +31,31 @@ namespace API.Controllers
 
         }
 
+        /// <summary>
+        /// Gets all products (with query) and caches them
+        /// </summary>
+        /// <remarks>
+        /// Sample query params:
+        ///     
+        ///     On Page index:
+        ///         1
+        ///     Size of page:
+        ///         4
+        ///     By Brand:
+        ///         3
+        ///     By Type:
+        ///         3
+        ///     Sorting:
+        ///         priceAsc
+        ///         priceDesc
+        ///     Search:
+        ///         red
+        ///         blue
+        ///</remarks>
+        /// <response code="200">Returns all products with the provided paramets</response>
         [Cached(600)]
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery] ProductSpecParams specParams)
         {
             var specification = new ProductsWithTypesAndBrandsSepcification(specParams);
@@ -52,6 +73,16 @@ namespace API.Controllers
             return Ok(new Pagination<ProductToReturnDto>(specParams.PageIndex, specParams.PageSize, totalItems, productDto));
         }
 
+        /// <summary>
+        /// Gets product with provided id
+        /// </summary>
+        /// <remarks>
+        /// Sample id:
+        ///
+        ///     1
+        ///</remarks>
+        /// <response code="200">Returns the product with the provided id</response>
+        /// <response code="404">Returns if the product is not found</response>
         [Cached(600)]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -72,8 +103,13 @@ namespace API.Controllers
             return Ok(productDto);
         }
 
+        /// <summary>
+        /// Gets all brands
+        /// </summary>
+        /// <response code="200">Returns all brands</response>
         [Cached(600)]
         [HttpGet("brands")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
         {
             var brands = await _productBrandsRepo.ListAllAsync();
@@ -81,8 +117,13 @@ namespace API.Controllers
             return Ok(brands);
         }
 
+        /// <summary>
+        /// Gets all types
+        /// </summary>
+        /// <response code="200">Returns all types</response>
         [Cached(600)]
         [HttpGet("types")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypes()
         {
             var types = await _productTypesRepo.ListAllAsync();

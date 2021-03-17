@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     [Authorize]
+    [Produces("application/json")]
     public class OrdersController : BaseApiController
     {
         private readonly IOrderService _orderService;
@@ -23,6 +24,30 @@ namespace API.Controllers
             _orderService = orderService;
         }
 
+
+        /// <summary>
+        /// Posts a new order
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     {
+        ///         "basketId": "basket1",
+        ///         "deliveryMethodId": 1,
+        ///         "shipToAddress": 
+        ///         {
+        ///             "firstName": "Bob",
+        ///             "lastName": "Bobbity",
+        ///             "street": "10 The Street",
+        ///         "city": "New York",
+        ///         state": "NY",
+        ///             "country": "USA",
+        ///             "zipcode": "90250"
+        ///         }
+        ///     }
+        /// </remarks>
+        /// <response code="200">Returns a newly created order</response>
+        /// <response code="400">Returns if the order could not be created</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -42,7 +67,14 @@ namespace API.Controllers
             return Ok(order);
         }
 
+        /// <summary>
+        /// Gets all orders for the current user
+        /// </summary>
+        /// <response code="200">Returns all orders for the current user</response>
+        /// <response code="401">Returns if user is not logged in</response>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<IReadOnlyList<OrderDto>>> GetOrdersForUser()
         {
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
@@ -52,7 +84,19 @@ namespace API.Controllers
             return Ok(_mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders));
         }
 
+        /// <summary>
+        /// Posts a new order
+        /// </summary>
+        /// <remarks>
+        /// Sample id:
+        ///
+        ///     1
+        ///</remarks>
+        /// <response code="200">Returns the order with the provided id for the current user</response>
+        /// <response code="401">Returns if user is not logged in</response>
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<OrderToReturnDto>> GetOrderByIdForUser(int id)
         {
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
@@ -67,7 +111,14 @@ namespace API.Controllers
             return Ok(_mapper.Map<Order, OrderToReturnDto>(order));
         }
 
+        /// <summary>
+        /// Gets all delivery methods
+        /// </summary>
+        /// <response code="200">Returns all delivery methods</response>
+        /// <response code="401">Returns if user is not logged in</response>
         [HttpGet("deliveryMethods")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMEthods()
         {
             return Ok(await _orderService.GetDeliveryMethodsAsync());

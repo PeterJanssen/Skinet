@@ -4,6 +4,7 @@ using API.Errors;
 using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,7 @@ using Order = Core.Entities.OrderAggregate.Order;
 
 namespace API.Controllers
 {
+    [Produces("application/json")]
     public class PaymentsController : BaseApiController
     {
         private readonly IPaymentService _paymentService;
@@ -26,8 +28,23 @@ namespace API.Controllers
             _whSecret = config.GetSection("StripeSettings:WhSecret").Value;
         }
 
+        /// <summary>
+        /// Posts a new paymentIntent to Stripe
+        /// </summary>
+        /// <remarks>
+        /// Listen locally in cmd with the following command:
+        ///     
+        ///     stripe listen -f https://localhost:5001/api/payments/webhook -e payment_intent.succeeded,payment_intent.payment_failed
+        /// Sample basket:
+        ///
+        ///     basket1
+        ///</remarks>
+        /// <response code="200">Returns the basket with the added payment intent</response>
+        /// <response code="400">Returns if user is not logged in</response>
         [Authorize]
         [HttpPost("{basketId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<CustomerBasket>> CreateOrUpdatePaymentIntent(string basketId)
         {
             var basket = await _paymentService.CreateOrUpdatePaymentIntent(basketId);
@@ -40,8 +57,16 @@ namespace API.Controllers
             return basket;
         }
 
-        //to listen locally in cmd with the following command
-        //stripe listen -f https://localhost:5001/api/payments/webhook -e payment_intent.succeeded,payment_intent.payment_failed
+        /// <summary>
+        /// Creates a webhook to Stripe 
+        /// </summary>
+        /// <remarks>
+        /// Listen locally in cmd with the following command:
+        ///     
+        ///     stripe listen -f https://localhost:5001/api/payments/webhook -e payment_intent.succeeded,payment_intent.payment_failed
+        ///
+        /// Can only be tested in the app.
+        ///</remarks>
         [HttpPost("webhook")]
         public async Task<ActionResult> StripeWebhook()
         {
