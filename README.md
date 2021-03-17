@@ -206,6 +206,9 @@ In any terminal run the following command
 
 ### SwaggerUI
 - /api/orders bug in SwaggerUI locks the browser if endpoint is opened in SwaggerUI probably because the example value is too big
+
+## Fixed Bugs
+
 ### Shop
 - When going to the next page of products in the shop, the caching is gone of the detailed productpage of the previous paginated products
 
