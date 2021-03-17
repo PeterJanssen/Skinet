@@ -1,6 +1,7 @@
 # Skinet
 
 ## Table of Contents
+
 **[Description](#Description)**<br>
 **[Features](#Features)**<br>
 **[Visuals](#Visuals)**<br>
@@ -16,6 +17,7 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 ### Features
 
 #### Backend
+
 - .Net Core 5
 - Entity Framework
 - Identity
@@ -30,6 +32,7 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 - Accepting payments using Stripe
 
 #### Frontend
+
 - Angular 11
 - JWT
 - SCSS
@@ -47,25 +50,31 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 
 ### HomePage
 
-![Homepage](ReadMeImages/Home.PNG "Homepage")
+![Homepage](ReadMeImages/Home.PNG 'Homepage')
 
 ### Shop
-![Shop](ReadMeImages/Shop.PNG "Shop")
+
+![Shop](ReadMeImages/Shop.PNG 'Shop')
 
 ### Basket
-![Basket](ReadMeImages/Basket.PNG "Basket")
+
+![Basket](ReadMeImages/Basket.PNG 'Basket')
 
 ### Checkout
-![Checkout](ReadMeImages/Checkout.PNG "Checkout")
+
+![Checkout](ReadMeImages/Checkout.PNG 'Checkout')
 
 ### Orders
-![Orders](ReadMeImages/Orders.PNG "Orders")
+
+![Orders](ReadMeImages/Orders.PNG 'Orders')
 
 ### Login
-![Login](ReadMeImages/Login.PNG "Login")
+
+![Login](ReadMeImages/Login.PNG 'Login')
 
 ### Register
-![Register](ReadMeImages/Register.PNG "Register")
+
+![Register](ReadMeImages/Register.PNG 'Register')
 
 ### Usage
 
@@ -191,7 +200,7 @@ In any terminal run the following command
 
 - Code refactoring
 
-- Testing 
+- Testing
 
 ## Current Bugs
 
@@ -203,3 +212,7 @@ Many thanks to Neil Cummings for his course on .Net Core and Angular. This poc w
 
 - His [website](https://trycatchlearn.com/)
 - His courses on [Udemy](https://www.udemy.com/user/neil-cummings-2/)
+
+Thanks to Ostranme for the material theme for SwaggerUI
+
+- His [GitHub Repo](https://github.com/ostranme/swagger-ui-themes)
