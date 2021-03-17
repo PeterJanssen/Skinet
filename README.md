@@ -193,6 +193,10 @@ In any terminal run the following command
 
 - Testing 
 
+## Current Bugs
+
+- /api/orders bug in SwaggerUI locks the browser if endpoint is opened in SwaggerUI probably because the example value is too big
+
 ## Contributions
 
 Many thanks to Neil Cummings for his course on .Net Core and Angular. This poc was created with the help of his course and further additions have been made by me.
