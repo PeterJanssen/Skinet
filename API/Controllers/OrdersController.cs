@@ -119,7 +119,7 @@ namespace API.Controllers
         [HttpGet("deliveryMethods")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMEthods()
+        public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
         {
             return Ok(await _orderService.GetDeliveryMethodsAsync());
         }

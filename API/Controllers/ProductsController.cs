@@ -15,20 +15,12 @@ namespace API.Controllers
     [Produces("application/json")]
     public class ProductsController : BaseApiController
     {
-        private readonly IGenericRepository<Product> _productsRepo;
-        private readonly IGenericRepository<ProductBrand> _productBrandsRepo;
-        private readonly IGenericRepository<ProductType> _productTypesRepo;
         private readonly IMapper _mapper;
-        public ProductsController(IGenericRepository<Product> productsRepo,
-            IGenericRepository<ProductBrand> productBrandsRepo,
-            IGenericRepository<ProductType> productTypesRepo,
-            IMapper mapper)
+        private readonly IProductService _productService;
+        public ProductsController(IProductService productService, IMapper mapper)
         {
+            _productService = productService;
             _mapper = mapper;
-            _productTypesRepo = productTypesRepo;
-            _productBrandsRepo = productBrandsRepo;
-            _productsRepo = productsRepo;
-
         }
 
         /// <summary>
@@ -58,12 +50,9 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery] ProductSpecParams specParams)
         {
-            var specification = new ProductsWithTypesAndBrandsSepcification(specParams);
-            var countSpec = new ProductWithFiltersForCountSpecification(specParams);
+            var products = await _productService.GetProductsAsync(specParams);
 
-            var totalItems = await _productsRepo.CountAsync(countSpec);
-
-            var products = await _productsRepo.ListAsync(specification);
+            var totalItems = await _productService.CountProductsAsync(specParams);
 
             var productDto = _mapper.Map<
             IReadOnlyList<Product>,
@@ -89,9 +78,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
         {
-            var specification = new ProductsWithTypesAndBrandsSepcification(id);
-
-            var product = await _productsRepo.GetEntityWithSpec(specification);
+            var product = await _productService.GetProductByIdAsync(id);
 
             if (product == null)
             {
@@ -112,7 +99,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
         {
-            var brands = await _productBrandsRepo.ListAllAsync();
+            var brands = await _productService.GetProductBrandsAsync();
 
             return Ok(brands);
         }
@@ -126,7 +113,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypes()
         {
-            var types = await _productTypesRepo.ListAllAsync();
+            var types = await _productService.GetProductTypesAsync();
 
             return Ok(types);
         }

@@ -15,6 +15,7 @@ namespace API.Extensions
             services.AddSingleton<IResponseCacheService, ResponseCacheService>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITokenService, TokenService>();

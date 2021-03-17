@@ -2,9 +2,9 @@ using Core.Entities;
 
 namespace Core.Specifications
 {
-    public class ProductsWithTypesAndBrandsSepcification : BaseSpecification<Product>
+    public class ProductsWithTypesAndBrandsSpecification : BaseSpecification<Product>
     {
-        public ProductsWithTypesAndBrandsSepcification(ProductSpecParams specParams)
+        public ProductsWithTypesAndBrandsSpecification(ProductSpecParams specParams)
          : base(product =>
                 (string.IsNullOrEmpty(specParams.Search) || product.Name.ToLower().Contains(specParams.Search)) &&
                 (!specParams.BrandId.HasValue || product.ProductBrandId == specParams.BrandId) &&
@@ -33,7 +33,7 @@ namespace Core.Specifications
             }
         }
 
-        public ProductsWithTypesAndBrandsSepcification(int id) : base(product => product.Id == id)
+        public ProductsWithTypesAndBrandsSpecification(int id) : base(product => product.Id == id)
         {
             AddInclude(product => product.ProductType);
             AddInclude(product => product.ProductBrand);
