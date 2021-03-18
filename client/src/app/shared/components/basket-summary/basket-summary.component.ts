@@ -12,7 +12,7 @@ export class BasketSummaryComponent implements OnInit {
   @Output()
   increment: EventEmitter<IBasketItem> = new EventEmitter<IBasketItem>();
   @Output() remove: EventEmitter<IBasketItem> = new EventEmitter<IBasketItem>();
-  
+
   @Input() isBasket = true;
   @Input() items: any;
   @Input() isOrder = false;
@@ -21,15 +21,15 @@ export class BasketSummaryComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  decrementItemQuantity(item: IBasketItem) {
+  decrementItemQuantity(item: IBasketItem): void {
     this.decrement.emit(item);
   }
 
-  incrementItemQuantity(item: IBasketItem) {
+  incrementItemQuantity(item: IBasketItem): void {
     this.increment.emit(item);
   }
 
-  removeBasketItem(item: IBasketItem) {
+  removeBasketItem(item: IBasketItem): void {
     this.remove.emit(item);
   }
 }

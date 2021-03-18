@@ -27,7 +27,7 @@ export class CheckoutComponent implements OnInit {
     this.basketTotals$ = this.basketService.basketTotal$;
   }
 
-  createCheckoutform() {
+  createCheckoutform(): void {
     this.checkoutForm = this.fb.group({
       addressForm: this.fb.group({
         firstName: [null, Validators.required],
@@ -46,20 +46,18 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
-  getAddressFormValues() {
+  getAddressFormValues(): void {
     this.accountService.getUserAddress().subscribe(
       (address) => {
         if (address) {
           this.checkoutForm.get('addressForm').patchValue(address);
         }
       },
-      (error) => {
-        console.log(error);
-      }
+      (error) => console.log(error)
     );
   }
 
-  getDeliveryMethodValue() {
+  getDeliveryMethodValue(): void {
     const basket = this.basketService.getCurrentBasketValue();
     if (basket.deliveryMethodId !== null) {
       this.checkoutForm

@@ -14,7 +14,7 @@ export class ProductItemComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  addItemToBasket() {
+  addItemToBasket(): void {
     this.basketService.addItemToBasket(this.product);
   }
 }

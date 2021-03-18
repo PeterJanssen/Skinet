@@ -14,7 +14,7 @@ export class StepperComponent extends CdkStepper implements OnInit {
     this.linear = this.linearModeSelected;
   }
 
-  onClick(index: number) {
+  onClick(index: number): void {
     this.selectedIndex = index;
   }
 }

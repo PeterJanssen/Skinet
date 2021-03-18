@@ -27,31 +27,29 @@ export class ProductDetailsComponent implements OnInit {
     this.loadProduct();
   }
 
-  addItemToBasket() {
+  addItemToBasket(): void {
     this.basketService.addItemToBasket(this.product, this.quantity);
   }
 
-  incrementQuantity() {
+  incrementQuantity(): void {
     this.quantity++;
   }
 
-  decrementQuantity() {
+  decrementQuantity(): void {
     if (this.quantity > 1) {
       this.quantity--;
     }
   }
 
-  loadProduct() {
+  loadProduct(): void {
     this.shopService
       .getProduct(+this.activatedRoute.snapshot.paramMap.get('id'))
       .subscribe(
         (product) => {
           this.product = product;
-          this.bcService.set('@productDetails', product.name);
+          this.bcService.set('@productDetails', this.product.name);
         },
-        (error) => {
-          console.log(error);
-        }
+        (error) => console.log(error)
       );
   }
 }

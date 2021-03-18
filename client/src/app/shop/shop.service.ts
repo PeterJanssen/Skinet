@@ -6,7 +6,7 @@ import { IType } from '../shared/models/ProductType';
 import { map } from 'rxjs/operators';
 import { ShopParams } from '../shared/models/shopParams';
 import { IProduct } from '../shared/models/product';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -23,7 +23,7 @@ export class ShopService {
 
   constructor(private http: HttpClient) {}
 
-  getProducts(useCache: boolean) {
+  getProducts(useCache: boolean): Observable<IPagination> {
     if (useCache === false) {
       this.productCache = new Map();
     }
@@ -58,7 +58,7 @@ export class ShopService {
     return this.http
       .get<IPagination>(this.baseUrl + 'products', {
         observe: 'response',
-        params: params,
+        params,
       })
       .pipe(
         map((response) => {
@@ -72,18 +72,18 @@ export class ShopService {
       );
   }
 
-  setShopParams(params: ShopParams) {
+  setShopParams(params: ShopParams): void {
     this.shopParams = params;
   }
 
-  getShopParams() {
+  getShopParams(): ShopParams {
     return this.shopParams;
   }
 
-  getProduct(id: number) {
+  getProduct(id: number): Observable<IProduct> {
     let product: IProduct;
 
-    for (let [key, value] of this.productCache) {
+    for (const [, value] of this.productCache) {
       product = value.find((p: IProduct) => p.id === id);
       if (product) {
         return of(product);
@@ -93,7 +93,7 @@ export class ShopService {
     return this.http.get<IProduct>(this.baseUrl + 'products/' + id);
   }
 
-  getBrands() {
+  getBrands(): Observable<IBrand[]> {
     if (this.brands.length > 0) {
       return of(this.brands);
     }
@@ -106,7 +106,7 @@ export class ShopService {
     );
   }
 
-  getTypes() {
+  getTypes(): Observable<IType[]> {
     if (this.types.length > 0) {
       return of(this.types);
     }

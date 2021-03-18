@@ -23,13 +23,11 @@ export class CheckoutDeliveryComponent implements OnInit {
       (dm: IDeliveryMethod[]) => {
         this.deliveryMethods = dm;
       },
-      (error) => {
-        console.log(error);
-      }
+      (error) => console.log(error)
     );
   }
 
-  setShippingPrice(deliveryMethod: IDeliveryMethod) {
+  setShippingPrice(deliveryMethod: IDeliveryMethod): void {
     this.basketService.setShippingPrice(deliveryMethod);
   }
 }

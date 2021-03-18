@@ -1,7 +1,7 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { of, ReplaySubject } from 'rxjs';
+import { Observable, of, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IAddress } from '../shared/models/address';
@@ -17,7 +17,7 @@ export class AccountService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  loadCurrentUser(token: string) {
+  loadCurrentUser(token: string): any {
     if (token === null) {
       this.currentUserSource.next(null);
       return of(null);
@@ -33,7 +33,7 @@ export class AccountService {
     );
   }
 
-  login(values: any) {
+  login(values: any): Observable<void> {
     return this.http.post(this.baseURl + 'account/login', values).pipe(
       map((user: IUser) => {
         if (user) {
@@ -44,7 +44,7 @@ export class AccountService {
     );
   }
 
-  register(values: any) {
+  register(values: any): Observable<void> {
     return this.http.post(this.baseURl + 'account/register', values).pipe(
       map((user: IUser) => {
         if (user) {
@@ -55,21 +55,21 @@ export class AccountService {
     );
   }
 
-  logout() {
+  logout(): void {
     localStorage.removeItem('token');
     this.currentUserSource.next(null);
     this.router.navigateByUrl('/');
   }
 
-  checkEmailExists(email: string) {
+  checkEmailExists(email: string): Observable<object> {
     return this.http.get(this.baseURl + 'account/emailexists?email=' + email);
   }
 
-  getUserAddress() {
+  getUserAddress(): Observable<IAddress> {
     return this.http.get<IAddress>(this.baseURl + 'account/address');
   }
 
-  updateUserAddress(address: IAddress) {
+  updateUserAddress(address: IAddress): Observable<IAddress> {
     return this.http.put<IAddress>(this.baseURl + 'account/address', address);
   }
 }

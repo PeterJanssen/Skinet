@@ -18,29 +18,21 @@ export class AppComponent implements OnInit {
     this.loadCurrentUser();
   }
 
-  loadCurrentUser() {
+  loadCurrentUser(): void {
     const token = localStorage.getItem('token');
 
     this.accountService.loadCurrentUser(token).subscribe(
-      () => {
-        console.log('loaded user');
-      },
-      (error) => {
-        console.log(error);
-      }
+      () => {},
+      (error: any) => console.log(error)
     );
   }
 
-  loadBasket() {
+  loadBasket(): void {
     const basketId = localStorage.getItem('basket_id');
     if (basketId) {
       this.basketService.getBasket(basketId).subscribe(
-        () => {
-          console.log('init basket');
-        },
-        (error) => {
-          console.log(error);
-        }
+        () => {},
+        (error) => console.log(error)
       );
     }
   }

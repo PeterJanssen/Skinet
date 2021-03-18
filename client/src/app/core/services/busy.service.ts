@@ -9,7 +9,7 @@ export class BusyService {
 
   constructor(private spinnerService: NgxSpinnerService) {}
 
-  busy() {
+  busy(): void {
     this.busyRequestCount++;
     this.spinnerService.show(undefined, {
       type: 'timer',
@@ -18,7 +18,7 @@ export class BusyService {
     });
   }
 
-  idle() {
+  idle(): void {
     this.busyRequestCount--;
     if (this.busyRequestCount <= 0) {
       this.busyRequestCount = 0;
