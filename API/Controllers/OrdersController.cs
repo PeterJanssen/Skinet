@@ -3,9 +3,11 @@ using System.Threading.Tasks;
 using API.Dtos;
 using API.Errors;
 using API.Extensions;
+using API.Helpers;
 using AutoMapper;
 using Core.Entities.OrderAggregate;
 using Core.Interfaces;
+using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -75,17 +77,21 @@ namespace API.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<IReadOnlyList<OrderDto>>> GetOrdersForUser()
+        public async Task<ActionResult<IReadOnlyList<OrderDto>>> GetOrdersForUser([FromQuery] OrderSpecParams specParams)
         {
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
 
-            var orders = await _orderService.GetOrdersForUserAsync(email);
+            var orders = await _orderService.GetOrdersForUserAsync(specParams, email);
 
-            return Ok(_mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders));
+            var totalItems = await _orderService.CountProductsAsync(specParams, email);
+
+            var orderToReturnDto = _mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders);
+
+            return Ok(new Pagination<OrderToReturnDto>(specParams.PageIndex, specParams.PageSize, totalItems, orderToReturnDto));
         }
 
         /// <summary>
-        /// Posts a new order
+        /// Gets order for the current user provided by Id
         /// </summary>
         /// <remarks>
         /// Sample id:

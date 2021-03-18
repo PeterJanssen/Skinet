@@ -1,31 +1,99 @@
 <div class="container mt-5">
   <div class="row">
-    <div class="col-12">
-      <ng-container *ngIf="orders.length === 0">
-        <p>No orders yet!</p>
-      </ng-container>
-      <table
-        *ngIf="orders.length > 0"
-        class="table table-hover"
-        style="cursor: pointer"
+    <section class="col-3">
+      <h5 class="text-warning ml-3 mt-4 mb-3">Sort</h5>
+      <select
+        class="custom-select mb-4"
+        (change)="onSortSelected($event.target.value)"
       >
-        <thead class="thead-light">
-          <tr>
-            <th>Order</th>
-            <th>Date</th>
-            <th>Total</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let order of orders" routerLink="/orders/{{ order.id }}">
-            <th># {{ order.id }}</th>
-            <td>{{ order.orderDate | date: "medium" }}</td>
-            <td>{{ order.total | currency }}</td>
-            <td>{{ order.status }}</td>
-          </tr>
-        </tbody>
-      </table>
+        <option
+          *ngFor="let sort of sortOptions"
+          [selected]="orderParams.sort === sort.value"
+          [value]="sort.value"
+        >
+          {{ sort.name }}
+        </option>
+      </select>
+
+      <h5 class="text-warning ml-3">Status</h5>
+      <ul class="list-group my-3">
+        <li
+          class="list-group-item"
+          *ngFor="let status of statusFilterOptions"
+          [class.active]="status.value === this.orderParams.status"
+          [value]="status.value"
+          (click)="onStatusSelected(status.value)"
+        >
+          {{ status.name }}
+        </li>
+      </ul>
+    </section>
+
+    <div class="col-9">
+      <div class="d-flex justify-content-between align-items-center pb-2">
+        <app-paging-header
+          [pageNumber]="this.orderParams.pageNumber"
+          [pageSize]="this.orderParams.pageSize"
+          [totalCount]="this.totalCount"
+        >
+        </app-paging-header>
+        <div *ngIf="orders" class="form-inline mt-2">
+          <input
+            (keyup.enter)="onSearch()"
+            #search
+            class="form-control mr-2"
+            type="text"
+            style="width: 300px"
+            placeholder="Search"
+          />
+          <button (click)="onSearch()" class="btn btn-outline-primary my-2">
+            Search
+          </button>
+          <button (click)="onReset()" class="btn btn-outline-warning my-2 ml-2">
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <div class="row">
+        <ng-container *ngIf="orders && orders.length === 0">
+          <p>No orders yet!</p>
+        </ng-container>
+        <table
+          *ngIf="orders && orders.length > 0"
+          class="table table-hover"
+          style="cursor: pointer"
+        >
+          <thead class="thead-light">
+            <tr>
+              <th>Order</th>
+              <th>Date</th>
+              <th>Total</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let order of orders"
+              routerLink="/orders/{{ order.id }}"
+            >
+              <th># {{ order.id }}</th>
+              <td>{{ order.orderDate | date: "medium" }}</td>
+              <td>{{ order.total | currency }}</td>
+              <td>{{ order.status }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <app-pager
+          [pageSize]="orderParams.pageSize"
+          [totalCount]="totalCount"
+          [pageNumber]="orderParams.pageNumber"
+          (pageChanged)="onPageChanged($event)"
+        ></app-pager>
+      </div>
     </div>
   </div>
 </div>

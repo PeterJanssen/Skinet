@@ -179,15 +179,17 @@ In any terminal run the following command
 
 - Moving inline style to stylesheets
 
+- Improve Home page
+
 ### Backend
+
+- Refactor code for orders
 
 ### Front/Backend
 
-- Order filtering
+- Order filtering by ordered items or date
 
 - Order caching
-
-- Order pagination
 
 - Order email
 
@@ -218,6 +220,14 @@ In any terminal run the following command
 - Moved ProductRepo calls to ProductService
 
 ### Front/Backend
+
+- Order filtering by status
+
+- Order sorting by date or price
+
+- Reset order filters
+
+- Order pagination
 
 ## Current_Bugs
 

@@ -23,6 +23,15 @@ namespace Infrastructure.Services
             _paymentService = paymentService;
         }
 
+        public async Task<int> CountProductsAsync(OrderSpecParams specParams, string email)
+        {
+            var countSpec = new OrderWithFiltersForCountSpecification(specParams, email);
+
+            var totalItems = await _unitOfWork.Repository<Order>().CountAsync(countSpec);
+
+            return totalItems;
+        }
+
         public async Task<Order> CreateOrderAsync(string buyerEmail, int deliverMethodId, string basketId, Address shippingAddress)
         {
             var basket = await _basketRepo.GetBasketAsync(basketId);
@@ -77,9 +86,9 @@ namespace Infrastructure.Services
             return await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
         }
 
-        public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
+        public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(OrderSpecParams specParams, string buyerEmail)
         {
-            var spec = new OrdersWithItemsAndOrderingSpecification(buyerEmail);
+            var spec = new OrdersWithItemsAndOrderingSpecification(specParams, buyerEmail);
 
             return await _unitOfWork.Repository<Order>().ListAsync(spec);
         }
