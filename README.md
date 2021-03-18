@@ -8,6 +8,9 @@
 **[Usage](#Usage)**<br>
 **[Commands](#Commands)**<br>
 **[Roadmap](#Roadmap)**<br>
+**[Roadmap_Done](#Roadmap_Done)**<br>
+**[Current_Bugs](#Current_Bugs)**<br>
+**[Fixed_Bugs](#Fixed_Bugs)**<br>
 **[Contributions](#Contributions)**<br>
 
 ## Description
@@ -178,38 +181,54 @@ In any terminal run the following command
 
 ### Backend
 
-- SwaggerUI Documentation
-
 ### Front/Backend
 
 - Order filtering
 
 - Order caching
 
-- Order Pagination
+- Order pagination
+
+- Order email
 
 - Inventory system
 
-- Email Service
+- Email confirmation
 
-- Password forgetting
+- Password forget feature
 
-- Password resetting
+- Password reset feature
 
-- Product Review system
+- Product review system
 
 - Code refactoring
 
 - Testing
 
-## Current Bugs
+## Roadmap_Done
+
+### Frontend
+
+- Migrated to ESLint and fixed Lint Errors
+
+### Backend
+
+- SwaggerUI Documentation
+
+- Moved ProductRepo calls to ProductService
+
+### Front/Backend
+
+## Current_Bugs
 
 ### SwaggerUI
+
 - /api/orders bug in SwaggerUI locks the browser if endpoint is opened in SwaggerUI probably because the example value is too big
 
-## Fixed Bugs
+## Fixed_Bugs
 
 ### Shop
+
 - When going to the next page of products in the shop, the caching is gone of the detailed productpage of the previous paginated products
 
 ## Contributions
