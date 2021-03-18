@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {
   AfterViewInit,
   Component,
@@ -14,7 +15,8 @@ import { IBasket } from 'src/app/shared/models/basket';
 import { IOrderToCreate } from 'src/app/shared/models/order';
 import { CheckoutService } from '../checkout.service';
 
-declare var Stripe;
+// eslint-disable-next-line no-var
+declare var Stripe: (arg0: string) => any;
 
 @Component({
   selector: 'app-checkout-payment',

@@ -12,10 +12,12 @@ import { IUser } from '../shared/models/user';
 })
 export class AccountService {
   baseURl = environment.apiUrl;
+  currentUser$: Observable<IUser>;
   private currentUserSource = new ReplaySubject<IUser>(1);
-  currentUser$ = this.currentUserSource.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {
+    this.currentUser$ = this.currentUserSource.asObservable();
+  }
 
   loadCurrentUser(token: string): any {
     if (token === null) {
@@ -61,7 +63,7 @@ export class AccountService {
     this.router.navigateByUrl('/');
   }
 
-  checkEmailExists(email: string): Observable<object> {
+  checkEmailExists(email: string): Observable<any> {
     return this.http.get(this.baseURl + 'account/emailexists?email=' + email);
   }
 

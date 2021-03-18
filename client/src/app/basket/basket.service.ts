@@ -17,13 +17,16 @@ import { IProduct } from '../shared/models/product';
 })
 export class BasketService {
   baseUrl = environment.apiUrl;
-  private basketSource = new BehaviorSubject<IBasket>(null);
-  basket$ = this.basketSource.asObservable();
-  private basketTotalSource = new BehaviorSubject<IBasketTotals>(null);
-  basketTotal$ = this.basketTotalSource.asObservable();
   shipping = 0;
+  basket$: Observable<IBasket>;
+  basketTotal$: Observable<IBasketTotals>;
+  private basketSource = new BehaviorSubject<IBasket>(null);
+  private basketTotalSource = new BehaviorSubject<IBasketTotals>(null);
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.basket$ = this.basketSource.asObservable();
+    this.basketTotal$ = this.basketTotalSource.asObservable();
+  }
 
   createPaymentIntent(): Observable<void> {
     return this.http
