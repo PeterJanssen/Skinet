@@ -2,6 +2,7 @@
   <div class="row">
     <section class="col-3">
       <h5 class="text-warning ml-3 mt-4 mb-3">Sort</h5>
+
       <select
         class="custom-select mb-4"
         (change)="onSortSelected($event.target.value)"
@@ -15,18 +16,37 @@
         </option>
       </select>
 
-      <h5 class="text-warning ml-3">Status</h5>
-      <ul class="list-group my-3">
-        <li
-          class="list-group-item"
-          *ngFor="let status of statusFilterOptions"
-          [class.active]="status.value === this.orderParams.status"
-          [value]="status.value"
-          (click)="onStatusSelected(status.value)"
-        >
-          {{ status.name }}
-        </li>
-      </ul>
+      <div
+        class="row ml-3 my-3"
+        role="button"
+        (click)="isStatusCollapsed = !isStatusCollapsed"
+        [attr.aria-expanded]="!isStatusCollapsed"
+        aria-controls="collapseStatus"
+      >
+        <h5 class="text-warning">Status</h5>
+        <span class="ml-auto mr-4"
+          ><i
+            class="fa"
+            aria-hidden="true"
+            [class.fa-chevron-down]="isStatusCollapsed"
+            [class.fa-chevron-up]="!isStatusCollapsed"
+          ></i
+        ></span>
+      </div>
+
+      <div id="collapseStatus" [collapse]="isStatusCollapsed" [isAnimated]="true">
+        <ul class="list-group">
+          <li
+            class="list-group-item"
+            *ngFor="let status of statusFilterOptions"
+            [class.active]="status.value === this.orderParams.status"
+            [value]="status.value"
+            (click)="onStatusSelected(status.value)"
+          >
+            {{ status.name }}
+          </li>
+        </ul>
+      </div>
     </section>
 
     <div class="col-9">

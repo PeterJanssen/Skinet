@@ -16,31 +16,77 @@
           </option>
         </select>
 
-        <h5 class="text-warning ml-3">Brands</h5>
-        <ul class="list-group my-3">
-          <li
-            class="list-group-item"
-            *ngFor="let brand of brands"
-            [class.active]="brand.id === this.shopParams.brandId"
-            [value]="brand.id"
-            (click)="onBrandSelected(brand.id)"
-          >
-            {{ brand.name }}
-          </li>
-        </ul>
+        <div
+          class="row ml-3 my-3"
+          role="button"
+          (click)="isBrandsCollapsed = !isBrandsCollapsed"
+          [attr.aria-expanded]="!isBrandsCollapsed"
+          aria-controls="collapseBrands"
+        >
+          <h5 class="text-warning">Brands</h5>
+          <span class="ml-auto mr-4"
+            ><i
+              class="fa fa-chevron-down"
+              [class.fa-chevron-down]="isBrandsCollapsed"
+              [class.fa-chevron-up]="!isBrandsCollapsed"
+              aria-hidden="true"
+            ></i
+          ></span>
+        </div>
 
-        <h5 class="text-warning ml-3">Types</h5>
-        <ul class="list-group my-3">
-          <li
-            class="list-group-item"
-            *ngFor="let type of types"
-            [class.active]="type.id === this.shopParams.typeId"
-            [value]="type.id"
-            (click)="onTypeSelected(type.id)"
-          >
-            {{ type.name }}
-          </li>
-        </ul>
+        <div
+          id="collapseBrands"
+          [collapse]="isBrandsCollapsed"
+          [isAnimated]="true"
+        >
+          <ul class="list-group">
+            <li
+              class="list-group-item"
+              *ngFor="let brand of brands"
+              [class.active]="brand.id === this.shopParams.brandId"
+              [value]="brand.id"
+              (click)="onBrandSelected(brand.id)"
+            >
+              {{ brand.name }}
+            </li>
+          </ul>
+        </div>
+
+        <div
+          class="row ml-3 my-3"
+          role="button"
+          (click)="isTypesCollapsed = !isTypesCollapsed"
+          [attr.aria-expanded]="!isTypesCollapsed"
+          aria-controls="collapseTypes"
+        >
+          <h5 class="text-warning">Types</h5>
+          <span class="ml-auto mr-4"
+            ><i
+              class="fa"
+              aria-hidden="true"
+              [class.fa-chevron-down]="isTypesCollapsed"
+              [class.fa-chevron-up]="!isTypesCollapsed"
+            ></i
+          ></span>
+        </div>
+
+        <div
+          id="collapseTypes"
+          [collapse]="isTypesCollapsed"
+          [isAnimated]="true"
+        >
+          <ul class="list-group">
+            <li
+              class="list-group-item"
+              *ngFor="let type of types"
+              [class.active]="type.id === this.shopParams.typeId"
+              [value]="type.id"
+              (click)="onTypeSelected(type.id)"
+            >
+              {{ type.name }}
+            </li>
+          </ul>
+        </div>
       </ng-container>
     </section>
 

@@ -22,6 +22,8 @@ export class ShopComponent implements OnInit {
     { name: 'Price: Low to High', value: 'priceAsc' },
     { name: 'Price: High to Low', value: 'priceDesc' },
   ];
+  isBrandsCollapsed = false;
+  isTypesCollapsed = false;
 
   constructor(private shopService: ShopService) {
     this.shopParams = shopService.getShopParams();

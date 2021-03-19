@@ -25,6 +25,7 @@ export class OrdersComponent implements OnInit {
     { name: 'Payment Received', value: 1 },
     { name: 'Payment Failed', value: 2 },
   ];
+  isStatusCollapsed = false;
 
   constructor(private orderService: OrdersService) {
     this.orderParams = orderService.getOrderParams();
