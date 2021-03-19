@@ -179,8 +179,6 @@ In any terminal run the following command
 
 - Moving inline style to stylesheets
 
-- Improve Home page
-
 ### Backend
 
 - Refactor code for orders
@@ -212,6 +210,8 @@ In any terminal run the following command
 ### Frontend
 
 - Migrated to ESLint and fixed Lint Errors
+
+- Improve Home page
 
 ### Backend
 
