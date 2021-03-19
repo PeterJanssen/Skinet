@@ -9,20 +9,16 @@
     </div>
     <div class="col-6">
       <h3>{{ product.name }}</h3>
-      <p style="font-size: 2em">{{ product.price | currency }}</p>
+      <p class="price">{{ product.price | currency }}</p>
       <div class="d-flex justify-content-start align-items-center">
         <i
           (click)="decrementQuantity()"
-          class="fa fa-minus-circle text-warning"
-          style="cursor: pointer; font-size: 2em"
+          class="fa fa-minus-circle text-warning quantity-editor"
         ></i>
-        <span class="font-weight-bold mx-2" style="font-size: 1.5em">{{
-          quantity
-        }}</span>
+        <span class="font-weight-bold mx-2 quantity">{{ quantity }}</span>
         <i
           (click)="incrementQuantity()"
-          class="fa fa-plus-circle text-warning"
-          style="cursor: pointer; font-size: 2em"
+          class="fa fa-plus-circle text-warning quantity-editor"
         ></i>
         <button
           (click)="addItemToBasket()"

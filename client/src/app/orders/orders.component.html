@@ -34,7 +34,11 @@
         ></span>
       </div>
 
-      <div id="collapseStatus" [collapse]="isStatusCollapsed" [isAnimated]="true">
+      <div
+        id="collapseStatus"
+        [collapse]="isStatusCollapsed"
+        [isAnimated]="true"
+      >
         <ul class="list-group">
           <li
             class="list-group-item"
@@ -61,9 +65,8 @@
           <input
             (keyup.enter)="onSearch()"
             #search
-            class="form-control mr-2"
+            class="form-control mr-2 searchInput"
             type="text"
-            style="width: 300px"
             placeholder="Search"
           />
           <button (click)="onSearch()" class="btn btn-outline-primary my-2">
@@ -79,11 +82,7 @@
         <ng-container *ngIf="orders && orders.length === 0">
           <p>No orders yet!</p>
         </ng-container>
-        <table
-          *ngIf="orders && orders.length > 0"
-          class="table table-hover"
-          style="cursor: pointer"
-        >
+        <table *ngIf="orders && orders.length > 0" class="table table-hover">
           <thead class="thead-light">
             <tr>
               <th>Order</th>

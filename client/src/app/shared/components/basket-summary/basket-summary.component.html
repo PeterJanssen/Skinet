@@ -27,8 +27,7 @@
               <img
                 src="{{ item.pictureUrl }}"
                 alt="{{ item.productName }}"
-                class="img-fluid"
-                style="max-height: 50px"
+                class="img-fluid img-size"
               />
               <div class="ml-3 d-inline-block align-middle">
                 <h5 class="mb-0">
@@ -55,17 +54,15 @@
               <i
                 *ngIf="isBasket"
                 (click)="decrementItemQuantity(item)"
-                class="fa fa-minus-circle text-warning mr-2"
-                style="cursor: pointer; font-size: 2em"
+                class="fa fa-minus-circle text-warning mr-2 quantity-editor"
               ></i>
-              <span class="font-weight-bold" style="font-size: 1.5em">
+              <span class="font-weight-bold quantity">
                 {{ item.quantity }}
               </span>
               <i
                 *ngIf="isBasket"
                 (click)="incrementItemQuantity(item)"
-                class="fa fa-plus-circle text-warning mx-2"
-                style="cursor: pointer; font-size: 2em"
+                class="fa fa-plus-circle text-warning mx-2 quantity-editor"
               ></i>
             </div>
           </td>
@@ -77,8 +74,7 @@
               <i
                 *ngIf="isBasket"
                 (click)="removeBasketItem(item)"
-                class="fa fa-trash"
-                style="font-size: 2em; cursor: pointer"
+                class="fa fa-trash quantity-editor"
               ></i>
             </a>
           </td>
