@@ -9,6 +9,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 })
 export class SectionHeaderComponent implements OnInit {
   breadCrumb$: Observable<any[]>;
+  isBreadCrumbsCollapsed = false;
 
   constructor(private bcService: BreadcrumbService) {}
 
