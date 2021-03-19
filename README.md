@@ -177,8 +177,6 @@ In any terminal run the following command
 
 - Making the frontend responsive
 
-- Moving inline style to stylesheets
-
 - Improve Home page
 
 ### Backend
@@ -212,6 +210,10 @@ In any terminal run the following command
 ### Frontend
 
 - Migrated to ESLint and fixed Lint Errors
+
+- Moving inline style to stylesheets
+
+- Making elements collapsable (filter lists, breadcrumbs)
 
 ### Backend
 
