@@ -45,7 +45,7 @@ namespace API.Controllers
         ///         blue
         ///</remarks>
         /// <response code="200">Returns all products with the provided paramets</response>
-        [Cached(600)]
+        //[Cached(600)]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery] ProductSpecParams specParams)

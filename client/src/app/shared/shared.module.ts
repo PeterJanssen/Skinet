@@ -14,6 +14,7 @@ import { BasketSummaryComponent } from './components/basket-summary/basket-summa
 import { RouterModule } from '@angular/router';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { NgxNavbarModule } from 'ngx-bootstrap-navbar';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { NgxNavbarModule } from 'ngx-bootstrap-navbar';
     CdkStepperModule,
     RouterModule,
     CollapseModule.forRoot(),
+    CurrencyMaskModule,
   ],
   exports: [
     PaginationModule,
@@ -51,6 +53,7 @@ import { NgxNavbarModule } from 'ngx-bootstrap-navbar';
     StepperComponent,
     BasketSummaryComponent,
     CollapseModule,
+    CurrencyMaskModule,
   ],
 })
 export class SharedModule {}
