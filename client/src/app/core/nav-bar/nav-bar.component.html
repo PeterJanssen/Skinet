@@ -30,6 +30,40 @@
             >Shop</a
           >
         </li>
+
+        <ng-container *ngIf="isScreenSmall$ | async">
+          <ng-container
+            *ngIf="(currentUser$ | async) === null && isScreenSmall$ | async"
+          >
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                routerLink="/account/login"
+                routerLinkActive="active"
+                >Login</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                routerLink="/account/register"
+                routerLinkActive="active"
+                >Register</a
+              >
+            </li>
+          </ng-container>
+          <ng-container *ngIf="currentUser$ | async as user">
+            <li class="nav-item">
+              <a routerLink="/basket" class="nav-link"> View Basket </a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/orders" class="nav-link"> View Orders </a>
+            </li>
+            <li class="nav-item">
+              <a (click)="logout()" class="nav-link"> Logout </a>
+            </li>
+          </ng-container>
+        </ng-container>
       </ul>
       <ul class="nav navbar-nav w-100 justify-content-end">
         <li class="nav-item">
@@ -40,7 +74,9 @@
             </div>
           </a>
         </li>
-        <ng-container *ngIf="(currentUser$ | async) === null">
+        <ng-container
+          *ngIf="!(isScreenSmall$ | async) && (currentUser$ | async) === null"
+        >
           <div class="form-inline my-1">
             <li class="nav-item mr-1 my-1">
               <a class="btn btn-outline-primary" routerLink="/account/login"
@@ -49,14 +85,17 @@
             </li>
             <li class="nav-item">
               <a
-                class="btn btn-outline-primary mr-3"
+                class="btn btn-outline-primary mr-1"
                 routerLink="/account/register"
-                >Sign up</a
+                >Register</a
               >
             </li>
           </div>
         </ng-container>
-        <ng-container *ngIf="currentUser$ | async as user">
+
+        <ng-container
+          *ngIf="!(isScreenSmall$ | async) && currentUser$ | async as user"
+        >
           <div class="form-inline dropdown" dropdown>
             <a class="dropdown-toggle" style="cursor: pointer" dropdownToggle>
               <strong>Welcome {{ user.displayName }}</strong>
