@@ -4,19 +4,37 @@
   min-width: 25px;
   border-radius: 50%;
   font-size: 1em;
-  background: blue;
+  background: orange;
   color: white;
   text-align: center;
-  top: -12px;
-  right: 32px;
+  top: -6px;
+  right: 8px;
+  animation-name: shakeMe;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+.basket {
+  display: none;
+}
+
+@media (min-width: 50rem) {
+  .basket {
+    display: block;
+  }
+}
+
+.navDropDownMenu {
+  cursor: pointer;
 }
 
 a {
-  text-decoration: none;
-  color: #343a40;
+  text-decoration: none !important;
+  color: #343a40 !important;
 
   &.active {
-    color: orange;
+    color: orange !important;
   }
 }
 
@@ -25,5 +43,32 @@ a {
 
   &:focus {
     outline: none;
+  }
+}
+
+@keyframes shakeMe {
+  2%,
+  18% {
+    transform: rotateZ(0) translateY(0);
+  }
+
+  4%,
+  16% {
+    transform: rotateZ(15deg) translateY(0.10rem);
+  }
+
+  6%,
+  10%,
+  14% {
+    transform: rotateZ(-15deg) translateY(-0.5rem);
+  }
+
+  8%,
+  12% {
+    transform: rotateZ(15deg) translateY(-0.75rem);
+  }
+
+  18.1% {
+    transform: translate3d(0px, 0, 0);
   }
 }

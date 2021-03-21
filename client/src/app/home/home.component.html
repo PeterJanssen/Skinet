@@ -1,28 +1,27 @@
-<carousel>
+<carousel [isAnimated]="true">
   <slide>
     <img src="assets/images/hero1.jpg" alt="first slide" />
   </slide>
   <slide>
-    <img src="assets/images/hero2.jpg" alt="first slide" />
+    <img src="assets/images/hero2.jpg" alt="second slide" />
   </slide>
   <slide>
-    <img src="assets/images/hero3.jpg" alt="first slide" />
+    <img src="assets/images/hero3.jpg" alt="third slide" />
   </slide>
 </carousel>
-
 <section class="featured">
   <div class="d-flex justify-content-center pt-4">
-    <h1>Welcome to the Shop!</h1>
+    <h1 class="text-center">Welcome to the Shop!</h1>
   </div>
 </section>
 
 <section class="featured">
   <div class="d-flex justify-content-center pt-1">
-    <h1>Featured Products</h1>
+    <h1 class="text-center">Featured Products</h1>
   </div>
   <div class="container">
     <div class="row">
-      <div class="col mb-4" *ngFor="let product of products">
+      <div class="col-sm-3 my-4" *ngFor="let product of products">
         <app-product-item [product]="product"></app-product-item>
       </div>
     </div>

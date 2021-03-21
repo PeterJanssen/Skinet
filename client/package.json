@@ -25,6 +25,7 @@
     "bootswatch": "^4.6.0",
     "font-awesome": "^4.7.0",
     "ngx-bootstrap": "^6.2.0",
+    "ngx-bootstrap-navbar": "0.0.5",
     "ngx-spinner": "^10.0.1",
     "ngx-toastr": "^13.2.0",
     "rxjs": "~6.6.0",

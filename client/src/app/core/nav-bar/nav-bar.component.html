@@ -1,74 +1,103 @@
-<header
-  class="d-flex flex-column flex-md-row align-items-center justify-content-between p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm fixed-top"
->
-  <img
-    src="/assets/images/logo.png"
-    routerLink="/"
-    style="max-height: 70px"
-    alt="logo"
-    class="logo"
-  />
-  <nav class="my-2 my-md-0 mr-md-3 text-uppercase" style="font-size: larger">
-    <a
-      class="p-2"
+<nav ngxNavbarDynamicExpand class="navbar-expand-lg navbar-light bg-light">
+  <button class="navbar-toggler" type="button" (click)="collapse.toggle()">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand">
+    <img
+      src="/assets/images/logo.png"
       routerLink="/"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-    >
-      Home
-    </a>
-    <a class="p-2" routerLink="/shop" routerLinkActive="active">Shop</a>
-    <a class="p-2" routerLink="/test-error" routerLinkActive="active">Errors</a>
-  </nav>
-  <div class="d-flex align-items-center">
-    <a routerLink="/basket" class="position-relative">
-      <i class="fa fa-shopping-cart fa-2x mr-5 text-dark"></i>
-      <div *ngIf="basket$ | async as basket" class="cart-no">
-        {{ basket.items.length }}
-      </div>
-    </a>
-    <ng-container *ngIf="(currentUser$ | async) === null">
-      <a class="btn btn-outline-secondary mr-2" routerLink="/account/login"
-        >Login</a
+      style="max-height: 70px"
+      alt="logo"
+      class="logo d-inline-block align-top"
+  /></a>
+  <ngx-navbar-collapse #collapse="ngxNavbarCollapse">
+    <div class="navbar-collapse w-100 justify-content-center">
+      <ul
+        class="navbar-nav mr-5 w-100 justify-content-end text-uppercase"
+        style="font-size: larger"
       >
-      <a class="btn btn-outline-secondary mr-3" routerLink="/account/register"
-        >Sign up</a
-      >
-    </ng-container>
-    <ng-container *ngIf="currentUser$ | async as user">
-      <div class="dropdown ml-3 mr-5" dropdown>
-        <a class="dropdown-toggle" style="cursor: pointer" dropdownToggle>
-          <strong>Welcome {{ user.displayName }}</strong>
-        </a>
-        <div
-          *dropdownMenu
-          style="cursor: pointer"
-          class="dropdown-menu dropdown-menu-right"
-        >
+        <li class="nav-item">
           <a
-            routerLink="/basket"
-            class="dropdown-item d-flex align-items-center py-2"
+            class="nav-link"
+            routerLink="/"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >Home</a
           >
-            <i class="fa fa-shopping-cart mr-3"></i>
-            View Basket
-          </a>
-          <a
-            routerLink="/orders"
-            class="dropdown-item d-flex align-items-center py-2"
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/shop" routerLinkActive="active"
+            >Shop</a
           >
-            <i class="fa fa-history mr-3"></i>
-            View Orders
+        </li>
+      </ul>
+      <ul class="nav navbar-nav w-100 justify-content-end">
+        <li class="nav-item">
+          <a routerLink="/basket" class="nav-link position-relative basket">
+            <i class="fa fa-shopping-cart fa-2x mr-3 text-dark"></i>
+            <div *ngIf="basket$ | async as basket" class="cart-no">
+              {{ basket.items.length }}
+            </div>
           </a>
-          <div class="dropdown-divider"></div>
-          <a
-            (click)="logout()"
-            class="dropdown-item d-flex align-items-center py-2"
-          >
-            <i class="fa fa-sign-out mr-3"></i>
-            Logout
-          </a>
-        </div>
-      </div>
-    </ng-container>
-  </div>
-</header>
+        </li>
+        <ng-container *ngIf="(currentUser$ | async) === null">
+          <div class="form-inline my-1">
+            <li class="nav-item mr-1 my-1">
+              <a class="btn btn-outline-primary" routerLink="/account/login"
+                >Login</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="btn btn-outline-primary mr-3"
+                routerLink="/account/register"
+                >Sign up</a
+              >
+            </li>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="currentUser$ | async as user">
+          <div class="form-inline dropdown" dropdown>
+            <a class="dropdown-toggle" style="cursor: pointer" dropdownToggle>
+              <strong>Welcome {{ user.displayName }}</strong>
+            </a>
+            <div
+              id="dropdown-animated"
+              *dropdownMenu
+              class="dropdown-menu dropdown-menu-right navDropDownMenu"
+            >
+              <li role="menuitem">
+                <a
+                  routerLink="/basket"
+                  class="dropdown-item d-flex align-items-center py-2"
+                >
+                  <i class="fa fa-shopping-cart mr-3"></i>
+                  View Basket
+                </a>
+              </li>
+              <li role="menuitem">
+                <a
+                  routerLink="/orders"
+                  class="dropdown-item d-flex align-items-center py-2"
+                >
+                  <i class="fa fa-history mr-3"></i>
+                  View Orders
+                </a>
+              </li>
+              <div class="dropdown-divider"></div>
+              <li role="menuitem">
+                <a
+                  (click)="logout()"
+                  class="dropdown-item d-flex align-items-center py-2"
+                >
+                  <i class="fa fa-sign-out mr-3"></i>
+                  Logout
+                </a>
+              </li>
+            </div>
+          </div>
+        </ng-container>
+      </ul>
+    </div>
+  </ngx-navbar-collapse>
+</nav>

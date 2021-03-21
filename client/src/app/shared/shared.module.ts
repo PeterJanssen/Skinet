@@ -13,6 +13,7 @@ import { StepperComponent } from './components/stepper/stepper.component';
 import { BasketSummaryComponent } from './components/basket-summary/basket-summary.component';
 import { RouterModule } from '@angular/router';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { NgxNavbarModule } from 'ngx-bootstrap-navbar';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
     ReactiveFormsModule,
     FormsModule,
     BsDropdownModule.forRoot(),
+    NgxNavbarModule,
     CdkStepperModule,
     RouterModule,
     CollapseModule.forRoot(),
@@ -43,11 +45,12 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
     FormsModule,
     ReactiveFormsModule,
     BsDropdownModule,
+    NgxNavbarModule,
     TextInputComponent,
     CdkStepperModule,
     StepperComponent,
     BasketSummaryComponent,
-    CollapseModule
+    CollapseModule,
   ],
 })
 export class SharedModule {}
