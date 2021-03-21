@@ -15,6 +15,22 @@
   animation-timing-function: linear;
 }
 
+.dropdown-item {
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: #78c2ad;
+  }
+}
+
+.dropdown-item.logout {
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: #f3969a;
+  }
+}
+
 .basket {
   display: none;
 }
@@ -71,37 +87,4 @@ a {
   18.1% {
     transform: translate3d(0px, 0, 0);
   }
-}
-
-.cAnimatedExpander {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  height: 20px;
-  margin-right: 10px;
-  cursor: pointer;
-}
-
-.cAnimatedExpander span {
-  height: 2px;
-  width: 20px;
-  background-color: blue;
-  transition-duration: 1s;
-}
-
-.cross span.top {
-  transform: translate(0px, -4px) rotate(45deg);
-  transition-duration: 1s;
-  transform-origin: left;
-}
-
-.cross span.middle {
-  opacity: 0;
-  transition-duration: 1s;
-}
-
-.cross span.bottom {
-  transform: translate(0px, -4px) rotate(-45deg);
-  transition-duration: 1s;
-  transform-origin: left;
 }
