@@ -24,6 +24,7 @@
     "bootstrap": "^4.6.0",
     "bootswatch": "^4.6.0",
     "font-awesome": "^4.7.0",
+    "hamburgers": "^1.1.3",
     "ngx-bootstrap": "^6.2.0",
     "ngx-bootstrap-navbar": "0.0.5",
     "ngx-spinner": "^10.0.1",

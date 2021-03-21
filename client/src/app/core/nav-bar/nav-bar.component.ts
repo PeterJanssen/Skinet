@@ -15,6 +15,7 @@ export class NavBarComponent implements OnInit {
   basket$: Observable<IBasket>;
   currentUser$: Observable<IUser>;
   isScreenSmall$: Observable<boolean>;
+  isNavBarOpen: boolean;
 
   constructor(
     private basketService: BasketService,
@@ -35,6 +36,10 @@ export class NavBarComponent implements OnInit {
     // Start off with the initial value use the isScreenSmall$ | async in the
     // view to get both the original value and the new value after resize.
     this.isScreenSmall$ = screenSizeChanged$.pipe(startWith(checkScreenSize()));
+  }
+
+  toggleCollapse(): void {
+    this.isNavBarOpen = !this.isNavBarOpen;
   }
 
   logout(): void {

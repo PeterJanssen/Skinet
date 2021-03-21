@@ -1,6 +1,14 @@
 <nav ngxNavbarDynamicExpand class="navbar-expand-lg navbar-light bg-light">
-  <button class="navbar-toggler" type="button" (click)="collapse.toggle()">
-    <span class="navbar-toggler-icon"></span>
+  <button
+    class="navbar-toggler hamburger hamburger--spin"
+    [ngClass]="{ 'is-active': this.isNavBarOpen }"
+    type="button"
+    (click)="collapse.toggle()"
+    (click)="toggleCollapse()"
+  >
+    <span class="hamburger-box">
+      <span class="hamburger-inner"></span>
+    </span>
   </button>
   <a class="navbar-brand">
     <img
@@ -54,10 +62,22 @@
           </ng-container>
           <ng-container *ngIf="currentUser$ | async as user">
             <li class="nav-item">
-              <a routerLink="/basket" class="nav-link"> View Basket </a>
+              <a
+                routerLink="/basket"
+                routerLinkActive="active"
+                class="nav-link"
+              >
+                View Basket
+              </a>
             </li>
             <li class="nav-item">
-              <a routerLink="/orders" class="nav-link"> View Orders </a>
+              <a
+                routerLink="/orders"
+                routerLinkActive="active"
+                class="nav-link"
+              >
+                View Orders
+              </a>
             </li>
             <li class="nav-item">
               <a (click)="logout()" class="nav-link"> Logout </a>
