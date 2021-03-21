@@ -49,5 +49,29 @@ namespace Infrastructure.Services
 
             return types;
         }
+        public async Task<int> CreateProductAsync(Product productToCreate)
+        {
+            _unitOfWork.Repository<Product>().Add(productToCreate);
+
+            var result = await _unitOfWork.Complete();
+
+            return result;
+        }
+        public async Task<int> UpdateProductAsync(Product product)
+        {
+            _unitOfWork.Repository<Product>().Update(product);
+
+            var result = await _unitOfWork.Complete();
+
+            return result;
+        }
+        public async Task<int> DeleteProductAsync(Product product)
+        {
+            _unitOfWork.Repository<Product>().Delete(product);
+
+            var result = await _unitOfWork.Complete();
+
+            return result;
+        }
     }
 }
