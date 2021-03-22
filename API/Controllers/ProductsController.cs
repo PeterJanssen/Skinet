@@ -7,6 +7,7 @@ using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,7 +45,7 @@ namespace API.Controllers
         ///         red
         ///         blue
         ///</remarks>
-        /// <response code="200">Returns all products with the provided paramets</response>
+        /// <response code="200">Returns all products with the provided parameters</response>
         //[Cached(600)]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -134,7 +135,9 @@ namespace API.Controllers
         /// </remarks>
         /// <response code="200">Returns a newly created product</response>
         /// <response code="400">Returns if the product could not be created</response>
+        /// <response code="403">Returns if the current user is not an admin</response>
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Product>> CreateProduct(ProductCreateDto productToCreate)
         {
             var product = _mapper.Map<ProductCreateDto, Product>(productToCreate);
@@ -167,7 +170,9 @@ namespace API.Controllers
         /// </remarks>
         /// <response code="200">Returns the updated product</response>
         /// <response code="400">Returns if the product could not be updated</response>
+        /// <response code="403">Returns if the current user is not an admin</response>
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Product>> UpdateProduct(int id, ProductCreateDto productToUpdate)
         {
             var product = await _productService.GetProductByIdAsync(id);
@@ -194,7 +199,9 @@ namespace API.Controllers
         /// </remarks>
         /// <response code="200">Returns if the product is deleted</response>
         /// <response code="400">Returns if the product could not be deleted</response>
+        /// <response code="403">Returns if the current user is not an admin</response>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteProduct(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);

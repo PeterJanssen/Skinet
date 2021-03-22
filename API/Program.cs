@@ -29,14 +29,15 @@ namespace API
                     await StoreContextSeed.SeedAsync(storeContext, loggerFactory);
 
                     var userManager = services.GetRequiredService<UserManager<AppUser>>();
+                    var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
                     var identityContext = services.GetRequiredService<AppIdentityDbContext>();
                     await identityContext.Database.MigrateAsync();
-                    await AppIdentityDbContextSeed.SeedUserAsync(userManager);
+                    await AppIdentityDbContextSeed.SeedUsersAsync(userManager, roleManager);
                 }
                 catch (Exception exception)
                 {
                     var logger = loggerFactory.CreateLogger<Program>();
-                    logger.LogError(exception, "An error occured during migration");
+                    logger.LogError(exception, "An error occurred during migration");
                 }
             }
 

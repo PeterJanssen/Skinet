@@ -49,7 +49,7 @@ namespace API.Controllers
             return new UserDto
             {
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 DisplayName = user.DisplayName
             };
         }
@@ -131,10 +131,17 @@ namespace API.Controllers
         /// Posts the users's credentials and logs the user in
         /// </summary>
         /// <remarks>
-        /// Sample request:
+        /// Sample request Member:
         ///
         ///     {
         ///         "email": "bob@test.com",
+        ///         "password": "Pa$$w0rd"
+        ///     }
+        ///
+        /// Sample request Admin:
+        ///
+        ///     {
+        ///         "email": "admin@test.com",
         ///         "password": "Pa$$w0rd"
         ///     }
         ///
@@ -163,7 +170,7 @@ namespace API.Controllers
             return new UserDto
             {
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 DisplayName = user.DisplayName
             };
         }
@@ -193,7 +200,7 @@ namespace API.Controllers
                 return new BadRequestObjectResult(
                     new ApiValidationErrorResponse
                     {
-                        Errors = new[] { "Email adress is in use" }
+                        Errors = new[] { "Email address is in use" }
                     }
                     );
             }
@@ -212,10 +219,17 @@ namespace API.Controllers
                 return BadRequest(new ApiResponse(400));
             }
 
+            var roleAddResult = await _userManager.AddToRoleAsync(user, "Member");
+
+            if (!roleAddResult.Succeeded)
+            {
+                return BadRequest("Failed to add to role");
+            }
+
             return new UserDto
             {
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 DisplayName = user.DisplayName
             };
         }
