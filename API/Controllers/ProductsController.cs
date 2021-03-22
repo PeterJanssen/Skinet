@@ -280,6 +280,14 @@ namespace API.Controllers
                 return NotFound(new ApiResponse(404));
             }
 
+            foreach (var photo in product.Photos)
+            {
+                if (photo.Id > 18)
+                {
+                    _photoService.DeleteFromDisk(photo);
+                }
+            }
+
             var result = await _productService.DeleteProductAsync(product);
 
             if (result <= 0)

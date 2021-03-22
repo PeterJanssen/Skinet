@@ -177,11 +177,11 @@ In any terminal run the following command
 
 - Making the frontend responsive
 
-- Moving inline style to stylesheets
-
 ### Backend
 
 - Refactor code for orders
+
+- Refactor product controller
 
 ### Front/Backend
 
@@ -191,8 +191,6 @@ In any terminal run the following command
 
 - Order email
 
-- Inventory system
-
 - Email confirmation
 
 - Password forget feature
@@ -200,8 +198,6 @@ In any terminal run the following command
 - Password reset feature
 
 - Product review system
-
-- Code refactoring
 
 - Testing
 
@@ -212,6 +208,10 @@ In any terminal run the following command
 - Migrated to ESLint and fixed Lint Errors
 
 - Improve Home page
+
+- Improve Nav Bar
+
+- Moving inline style to stylesheets
 
 ### Backend
 
@@ -228,6 +228,10 @@ In any terminal run the following command
 - Reset order filters
 
 - Order pagination
+
+- Inventory system
+
+- Product picture feature
 
 ## Current_Bugs
 

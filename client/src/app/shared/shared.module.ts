@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 import { PagingHeaderComponent } from './components/paging-header/paging-header.component';
 import { PagerComponent } from './components/pager/pager.component';
 import { OrderTotalsComponent } from './components/order-totals/order-totals.component';
@@ -16,6 +17,9 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { NgxNavbarModule } from 'ngx-bootstrap-navbar';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
+import { PhotoWidgetComponent } from './components/photo-widget/photo-widget.component';
+import { ImageCropperModule } from 'ngx-image-cropper';
+import { NgxDropzoneModule } from 'ngx-dropzone';
 
 @NgModule({
   declarations: [
@@ -25,6 +29,7 @@ import { NgxGalleryModule } from '@kolkov/ngx-gallery';
     TextInputComponent,
     StepperComponent,
     BasketSummaryComponent,
+    PhotoWidgetComponent,
   ],
   imports: [
     CommonModule,
@@ -39,6 +44,9 @@ import { NgxGalleryModule } from '@kolkov/ngx-gallery';
     CollapseModule.forRoot(),
     CurrencyMaskModule,
     NgxGalleryModule,
+    TabsModule.forRoot(),
+    NgxDropzoneModule,
+    ImageCropperModule,
   ],
   exports: [
     PaginationModule,
@@ -57,6 +65,9 @@ import { NgxGalleryModule } from '@kolkov/ngx-gallery';
     CollapseModule,
     CurrencyMaskModule,
     NgxGalleryModule,
+    TabsModule,
+    ImageCropperModule,
+    PhotoWidgetComponent,
   ],
 })
 export class SharedModule {}
