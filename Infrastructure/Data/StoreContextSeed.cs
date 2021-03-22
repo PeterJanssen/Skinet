@@ -51,11 +51,23 @@ namespace Infrastructure.Data
                 {
                     var productsData = File.ReadAllText(path + @"/Data/SeedData/products.json");
 
-                    var products = JsonSerializer.Deserialize<List<Product>>(productsData);
+                    var products = JsonSerializer.Deserialize<List<ProductSeedModel>>(productsData);
 
                     foreach (var product in products)
                     {
-                        storeContext.Products.Add(product);
+                        var pictureFileName = product.PictureUrl.Substring(16);
+
+                        var productWithPicture = new Product
+                        {
+                            Name = product.Name,
+                            Description = product.Description,
+                            Price = product.Price,
+                            ProductBrandId = product.ProductBrandId,
+                            ProductTypeId = product.ProductTypeId
+                        };
+
+                        productWithPicture.AddPhoto(product.PictureUrl, pictureFileName);
+                        storeContext.Products.Add(productWithPicture);
                     }
 
                     await storeContext.SaveChangesAsync();

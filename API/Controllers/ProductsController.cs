@@ -138,10 +138,9 @@ namespace API.Controllers
         /// <response code="403">Returns if the current user is not an admin</response>
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Product>> CreateProduct(ProductCreateDto productToCreate)
+        public async Task<ActionResult<ProductToReturnDto>> CreateProduct(ProductCreateDto productToCreate)
         {
             var product = _mapper.Map<ProductCreateDto, Product>(productToCreate);
-            product.PictureUrl = "images/products/placeholder.png";
 
             var result = await _productService.CreateProductAsync(product);
 
@@ -173,11 +172,9 @@ namespace API.Controllers
         /// <response code="403">Returns if the current user is not an admin</response>
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Product>> UpdateProduct(int id, ProductCreateDto productToUpdate)
+        public async Task<ActionResult<ProductToReturnDto>> UpdateProduct(int id, ProductCreateDto productToUpdate)
         {
             var product = await _productService.GetProductByIdAsync(id);
-
-            productToUpdate.PictureUrl = product.PictureUrl;
 
             _mapper.Map(productToUpdate, product);
 
