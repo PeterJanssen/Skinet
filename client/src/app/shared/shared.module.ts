@@ -15,6 +15,7 @@ import { RouterModule } from '@angular/router';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { NgxNavbarModule } from 'ngx-bootstrap-navbar';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
     RouterModule,
     CollapseModule.forRoot(),
     CurrencyMaskModule,
+    NgxGalleryModule,
   ],
   exports: [
     PaginationModule,
@@ -54,6 +56,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
     BasketSummaryComponent,
     CollapseModule,
     CurrencyMaskModule,
+    NgxGalleryModule,
   ],
 })
 export class SharedModule {}
