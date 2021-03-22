@@ -58,14 +58,19 @@
               >
             </li>
           </ng-container>
-          <ng-container *ngIf="isAdmin$ | async">
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/admin" routerLinkActive="active"
-                >Admin</a
-              >
-            </li>
-          </ng-container>
-          <ng-container *ngIf="currentUser$ | async as user">
+
+          <ng-container *ngIf="currentUser$ | async">
+            <ng-container *ngIf="isAdmin$ | async">
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  routerLink="/admin"
+                  routerLinkActive="active"
+                  >Admin</a
+                >
+              </li>
+            </ng-container>
+            
             <li class="nav-item">
               <a
                 routerLink="/basket"
@@ -101,7 +106,10 @@
           </a>
         </li>
         <ng-container
-          *ngIf="!(isScreenSmall$ | async) && (currentUser$ | async) === null"
+          *ngIf="
+            (isScreenSmall$ | async) === false &&
+            (currentUser$ | async) === null
+          "
         >
           <div class="form-inline my-1">
             <li class="nav-item mr-1 my-1">
@@ -120,7 +128,9 @@
         </ng-container>
 
         <ng-container
-          *ngIf="!(isScreenSmall$ | async) && currentUser$ | async as user"
+          *ngIf="
+            (isScreenSmall$ | async) === false && currentUser$ | async as user
+          "
         >
           <div class="form-inline dropdown" dropdown>
             <a class="dropdown-toggle" style="cursor: pointer" dropdownToggle>
