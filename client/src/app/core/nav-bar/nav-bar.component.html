@@ -16,12 +16,12 @@
       routerLink="/"
       style="max-height: 70px"
       alt="logo"
-      class="logo d-inline-block align-top ml-5"
+      class="logo d-inline-block align-top"
   /></a>
   <ngx-navbar-collapse #collapse="ngxNavbarCollapse">
     <div class="navbar-collapse w-100 justify-content-center">
       <ul
-        class="navbar-nav w-100 justify-content-end text-uppercase"
+        class="navbar-nav w-100 justify-content-end text-uppercase mr-5"
         style="font-size: larger"
       >
         <li class="nav-item">
@@ -38,16 +38,9 @@
             >Shop</a
           >
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/admin" routerLinkActive="active"
-            >Admin</a
-          >
-        </li>
 
         <ng-container *ngIf="isScreenSmall$ | async">
-          <ng-container
-            *ngIf="(currentUser$ | async) === null && isScreenSmall$ | async"
-          >
+          <ng-container *ngIf="(currentUser$ | async) === null">
             <li class="nav-item">
               <a
                 class="nav-link"
@@ -62,6 +55,13 @@
                 routerLink="/account/Register"
                 routerLinkActive="active"
                 >Register</a
+              >
+            </li>
+          </ng-container>
+          <ng-container *ngIf="isAdmin$ | async">
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/admin" routerLinkActive="active"
+                >Admin</a
               >
             </li>
           </ng-container>
@@ -90,6 +90,7 @@
           </ng-container>
         </ng-container>
       </ul>
+
       <ul class="nav navbar-nav w-100 justify-content-end">
         <li class="nav-item">
           <a routerLink="/basket" class="nav-link position-relative basket">
@@ -148,6 +149,19 @@
                   View Orders
                 </a>
               </li>
+              <ng-container *ngIf="isAdmin$ | async">
+                <div class="dropdown-divider"></div>
+                <li role="menuitem">
+                  <a
+                    class="nav-link"
+                    routerLink="/admin"
+                    class="dropdown-item d-flex align-items-center py-2"
+                  >
+                    <i class="fa fa-address-card mr-3"></i>
+                    Admin
+                  </a>
+                </li>
+              </ng-container>
               <div class="dropdown-divider"></div>
               <li role="menuitem">
                 <a

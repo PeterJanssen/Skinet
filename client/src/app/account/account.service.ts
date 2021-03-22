@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, ReplaySubject } from 'rxjs';
@@ -13,10 +13,13 @@ import { IUser } from '../shared/models/user';
 export class AccountService {
   baseURl = environment.apiUrl;
   currentUser$: Observable<IUser>;
+  isAdmin$: Observable<boolean>;
   private currentUserSource = new ReplaySubject<IUser>(1);
+  private isAdminSource = new ReplaySubject<boolean>(1);
 
   constructor(private http: HttpClient, private router: Router) {
     this.currentUser$ = this.currentUserSource.asObservable();
+    this.isAdmin$ = this.isAdminSource.asObservable();
   }
 
   loadCurrentUser(token: string): any {
@@ -25,11 +28,15 @@ export class AccountService {
       return of(null);
     }
 
-    return this.http.get(this.baseURl + 'account').pipe(
+    let headers = new HttpHeaders();
+    headers = headers.set('Authorization', `Bearer ${token}`);
+
+    return this.http.get(this.baseURl + 'account', { headers }).pipe(
       map((user: IUser) => {
         if (user) {
           localStorage.setItem('token', user.token);
           this.currentUserSource.next(user);
+          this.isAdminSource.next(this.isAdmin(user.token));
         }
       })
     );
@@ -41,6 +48,7 @@ export class AccountService {
         if (user) {
           localStorage.setItem('token', user.token);
           this.currentUserSource.next(user);
+          this.isAdminSource.next(this.isAdmin(user.token));
         }
       })
     );
@@ -73,5 +81,14 @@ export class AccountService {
 
   updateUserAddress(address: IAddress): Observable<IAddress> {
     return this.http.put<IAddress>(this.baseURl + 'account/address', address);
+  }
+
+  isAdmin(token: string): boolean {
+    if (token) {
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      if (decodedToken.role.indexOf('Admin') > -1) {
+        return true;
+      }
+    }
   }
 }

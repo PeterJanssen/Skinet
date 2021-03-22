@@ -177,6 +177,8 @@ namespace API.Controllers
         {
             var product = await _productService.GetProductByIdAsync(id);
 
+            productToUpdate.PictureUrl = product.PictureUrl;
+
             _mapper.Map(productToUpdate, product);
 
             var result = await _productService.UpdateProductAsync(product);

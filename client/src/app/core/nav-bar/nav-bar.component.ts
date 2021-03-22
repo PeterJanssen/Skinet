@@ -14,6 +14,7 @@ import { IUser } from 'src/app/shared/models/user';
 export class NavBarComponent implements OnInit {
   basket$: Observable<IBasket>;
   currentUser$: Observable<IUser>;
+  isAdmin$: Observable<boolean>;
   isScreenSmall$: Observable<boolean>;
   isNavBarOpen: boolean;
 
@@ -25,6 +26,7 @@ export class NavBarComponent implements OnInit {
   ngOnInit(): void {
     this.basket$ = this.basketService.basket$;
     this.currentUser$ = this.accountService.currentUser$;
+    this.isAdmin$ = this.accountService.isAdmin$;
 
     const checkScreenSize = () => document.body.offsetWidth < 620;
 
