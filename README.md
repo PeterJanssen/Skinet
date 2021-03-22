@@ -45,6 +45,7 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 - Angular Routing
 - Angular Reactive Forms
 - Angular Creating a MultiStep form wizard
+- Ngx-Gallery, Spinner, Toastr, Dropzone, Image-Cropper, Hamburgers, Navbar
 - Accepting payments using Stripe
 - Angular Re-usable form components
 - Angular validation and async validation
@@ -78,6 +79,13 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 ### Register
 
 ![Register](ReadMeImages/Register.PNG 'Register')
+
+### Admin
+
+![Dashboard](ReadMeImages/AdminProductDash.PNG 'Admin Dash')
+![CreateProduct](ReadMeImages/AdminProductCreate1.PNG 'Create New Product')
+![AddImageToProduct](ReadMeImages/AdminProductCreate2.PNG 'Add Image to Product')
+![EditProduct](ReadMeImages/AdminProductEdit1.PNG 'Edit Existing Product')
 
 ### Usage
 
