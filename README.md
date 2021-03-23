@@ -256,6 +256,7 @@ In any terminal run the following command
 ### Orders
 
 - Photo of products are not displayed in order detail page because they are not included in call for the ordered product in database so no pictureURL is inserted into database
+- Id property of OrderItemDto in backend was not the same as IOrder ProductId property so the route to the product page could not be resolved and redirected to shop page, fixed by refactoring 
 
 ## Contributions
 
