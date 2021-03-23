@@ -29,11 +29,7 @@ namespace API
             services.AddControllers();
             services.AddDbContext<StoreContext>
             (x => x.UseNpgsql(_config.GetConnectionString("DefaultConnection")));
-
-            services.AddDbContext<AppIdentityDbContext>(x =>
-            {
-                x.UseNpgsql(_config.GetConnectionString("IdentityConnection"));
-            });
+            
             services.AddApplicationServices();
             services.AddIdentityServices(_config);
             services.AddSwaggerDocumentation();

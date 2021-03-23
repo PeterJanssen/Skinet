@@ -30,7 +30,6 @@ namespace API.Controllers
             _tokenService = tokenService;
             _mapper = mapper;
             _userManager = userManager;
-
         }
 
         /// <summary>
@@ -205,12 +204,9 @@ namespace API.Controllers
                     );
             }
 
-            var user = new AppUser
-            {
-                DisplayName = registerDto.DisplayName,
-                Email = registerDto.Email,
-                UserName = registerDto.Email
-            };
+            var user = _mapper.Map<AppUser>(registerDto);
+
+            user.UserName = registerDto.Email;
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 

@@ -90,7 +90,7 @@ namespace Infrastructure.Data
             catch (Exception exception)
             {
                 var logger = loggerFactory.CreateLogger<StoreContextSeed>();
-                logger.LogError(exception, "An error occured during seeding");
+                logger.LogError(exception, "An error occurred during seeding");
             }
         }
     }

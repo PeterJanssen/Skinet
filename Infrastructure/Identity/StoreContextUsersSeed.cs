@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Identity
 {
-    public class AppIdentityDbContextSeed
+    public class StoreContextUsersSeed
     {
         public static async Task SeedUsersAsync(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
         {
@@ -19,10 +20,29 @@ namespace Infrastructure.Identity
                         DisplayName = "Bob",
                         Email = "bob@test.com",
                         UserName = "bob@test.com",
+                        Gender = "male",
+                        DateOfBirth= DateTime.Parse("1995-02-07"),
                         Address = new Address
                         {
                             FirstName = "Bob",
                             LastName = "Bobbity",
+                            Street = "10 The Street",
+                            City = "New York",
+                            State = "NY",
+                            ZipCode = "90210"
+                        }
+                    },
+                    new AppUser
+                    {
+                        DisplayName = "Amber",
+                        Email = "amber@test.com",
+                        UserName = "amber@test.com",
+                        Gender = "female",
+                        DateOfBirth= DateTime.Parse("1990-02-07"),
+                        Address = new Address
+                        {
+                            FirstName = "Amber",
+                            LastName = "Ambrosia",
                             Street = "10 The Street",
                             City = "New York",
                             State = "NY",
