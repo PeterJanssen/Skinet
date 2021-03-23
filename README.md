@@ -253,6 +253,10 @@ In any terminal run the following command
 
 - When going to the next page of products in the shop, the caching is gone of the detailed productpage of the previous paginated products
 
+### Orders
+
+- Photo of products are not displayed in order detail page because they are not included in call for the ordered product in database so no pictureURL is inserted into database
+
 ## Contributions
 
 Many thanks to Neil Cummings for his course on .Net Core and Angular. This poc was created with the help of his course and further additions have been made by me.
