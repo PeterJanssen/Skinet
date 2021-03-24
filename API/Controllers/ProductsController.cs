@@ -121,6 +121,7 @@ namespace API.Controllers
 
             return Ok(types);
         }
+
         /// <summary>
         /// Updates a product and adds a photo with the provided id
         /// </summary>
@@ -177,6 +178,46 @@ namespace API.Controllers
 
             return productDto;
         }
+
+        /// <summary>
+        /// Adds a review to a product with the provided id
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///   
+        ///     {
+        ///         "rating": 3,
+        ///         "reviewText": "Good Product"
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">Returns the updated product</response>
+        /// <response code="400">Returns if the product could not be updated</response>
+        /// <response code="404">Returns if the product could not be found</response>
+        [HttpPut("{id}/rating")]
+        public async Task<ActionResult<ProductToReturnDto>> AddProductReview(int id, ProductReviewDto ProductReview)
+        {
+            var product = await _productService.GetProductByIdAsync(id);
+
+            if (product == null)
+            {
+                return NotFound(new ApiResponse(404));
+            }
+
+            product.AddReview(ProductReview.Rating, ProductReview.ReviewText);
+
+            var result = await _productService.UpdateProductAsync(product);
+
+            if (result <= 0)
+            {
+                return BadRequest(new ApiResponse(400, "Product could not be updated, please try again."));
+            }
+
+            var productDto = _mapper.Map<Product, ProductToReturnDto>(product);
+
+            return productDto;
+        }
+
         /// <summary>
         /// Posts a new product
         /// </summary>
@@ -212,6 +253,7 @@ namespace API.Controllers
 
             return Ok(createdProduct);
         }
+
         /// <summary>
         /// Updates a product with the provided id
         /// </summary>
@@ -256,6 +298,7 @@ namespace API.Controllers
 
             return Ok(updatedProduct);
         }
+
         /// <summary>
         /// Deletes a product with the provided id
         /// </summary>
@@ -297,6 +340,7 @@ namespace API.Controllers
 
             return Ok();
         }
+
         /// <summary>
         /// Deletes a product photo with the provided id's
         /// </summary>
@@ -351,6 +395,7 @@ namespace API.Controllers
             }
             return Ok();
         }
+
         /// <summary>
         /// Sets a photo as the main photo for a product with the provided id
         /// </summary>

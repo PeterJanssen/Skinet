@@ -34,5 +34,23 @@
         <p>{{ product.description }}</p>
       </div>
     </div>
+    <div class="row mt-5">
+      <div class="col-12 ml-3">
+        <h4>Rating</h4>
+        <div>
+          <p>Amount of people that have rated this product: 0</p>
+          <rating
+            [max]="5"
+            [(ngModel)]="quantity"
+            [customTemplate]="tt"
+          ></rating>
+          <ng-template #tt let-i="index" let-v="value">
+            <button class="btn btn-{{ i < v ? 'warning' : 'info' }}">
+              {{ i < v ? "&#9733;" : "&#9734;" }}
+            </button>
+          </ng-template>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

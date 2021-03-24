@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,6 +13,8 @@ namespace Core.Entities
         public int ProductTypeId { get; set; }
         public ProductBrand ProductBrand { get; set; }
         public int ProductBrandId { get; set; }
+        private readonly List<Review> _reviews = new List<Review>();
+        public IReadOnlyList<Review> Reviews => _reviews.AsReadOnly();
         private readonly List<Photo> _photos = new List<Photo>();
         public IReadOnlyList<Photo> Photos => _photos.AsReadOnly();
         public void AddPhoto(string pictureUrl, string fileName, bool isMain = false)
@@ -45,6 +48,17 @@ namespace Core.Entities
                 photo.IsMain = true;
                 if (currentMain != null) currentMain.IsMain = false;
             }
+        }
+
+        public void AddReview(int rating, string review)
+        {
+            var productReview = new Review
+            {
+                Rating = rating,
+                ReviewText = review
+            };
+
+            _reviews.Add(productReview);
         }
     }
 }

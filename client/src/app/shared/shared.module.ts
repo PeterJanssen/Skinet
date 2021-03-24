@@ -20,6 +20,7 @@ import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { PhotoWidgetComponent } from './components/photo-widget/photo-widget.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { NgxDropzoneModule } from 'ngx-dropzone';
+import { RatingModule } from 'ngx-bootstrap/rating';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     TabsModule.forRoot(),
     NgxDropzoneModule,
     ImageCropperModule,
+    RatingModule,
   ],
   exports: [
     PaginationModule,
@@ -68,6 +70,7 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     TabsModule,
     ImageCropperModule,
     PhotoWidgetComponent,
+    RatingModule,
   ],
 })
 export class SharedModule {}

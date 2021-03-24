@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20210323144923_PostGres init")]
+    [Migration("20210324000327_PostGres init")]
     partial class PostGresinit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -333,6 +333,29 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("ProductTypes");
                 });
 
+            modelBuilder.Entity("Core.Entities.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ReviewText")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Review");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -556,6 +579,17 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("ProductType");
                 });
 
+            modelBuilder.Entity("Core.Entities.Review", b =>
+                {
+                    b.HasOne("Core.Entities.Product", "Product")
+                        .WithMany("Reviews")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Core.Entities.Identity.AppRole", null)
@@ -620,6 +654,8 @@ namespace Infrastructure.Data.Migrations
             modelBuilder.Entity("Core.Entities.Product", b =>
                 {
                     b.Navigation("Photos");
+
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }
