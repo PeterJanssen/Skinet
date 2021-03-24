@@ -258,6 +258,10 @@ In any terminal run the following command
 - Photo of products are not displayed in order detail page because they are not included in call for the ordered product in database so no pictureURL is inserted into database
 - Id property of OrderItemDto in backend was not the same as IOrder ProductId property so the route to the product page could not be resolved and redirected to shop page, fixed by refactoring 
 
+### Basket-summary
+
+- When not logged in the user is not redirected to the login page when clicking on the checkout button
+
 ## Contributions
 
 Many thanks to Neil Cummings for his course on .Net Core and Angular. This poc was created with the help of his course and further additions have been made by me.
