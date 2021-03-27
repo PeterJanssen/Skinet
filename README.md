@@ -113,7 +113,15 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 
 - A server certification and key (self signed or by a CA) and placed in client/ssl
 
-- Postman or any equivalant
+- Postman or any equivalant, API contains SwaggerUI at `https://localhost:5001/swagger/index.html`
+
+## First steps before running the app for the first time
+
+1) "npm install" in the client folder
+2) "dotnet restore" in root folder
+3) create appsettings.json in API folder and copy content of appsettings.Development.json into it, add or change keys for Stripe and SendGrid
+4) "docker-compose up --detach" in the root folder
+5) add server.crt and server.key (self signed or by a CA) and place them in client/ssl
 
 ## Commands
 
@@ -141,13 +149,7 @@ Creates and/or seeds the databases if they are non-existent
 
 In any folder run the following command, replace the text between #
 
-#### For the skinet database containing store information:
-
 `dotnet ef migrations add "#Name of migration#" -p .\Infrastructure\ -s .\API\ -c StoreContext -o Data/Migrations`
-
-#### For the identity database containing account information:
-
-`dotnet ef migrations add "#Name of migration#" -p .\Infrastructure\ -s .\API\ -c AppIdentityDbContext -o Identity/Migrations`
 
 ### Running the backend
 
@@ -175,7 +177,7 @@ In the root folder run the following command
 
 ### Listening to the Stripe CLI webhook
 
-In any terminal run the following command
+In any terminal run the following command, Stripe CLI is needed
 
 `stripe listen -f https://localhost:5001/api/payments/webhook -e payment_intent.succeeded,payment_intent.payment_failed`
 
