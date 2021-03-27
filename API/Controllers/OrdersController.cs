@@ -19,11 +19,15 @@ namespace API.Controllers
     public class OrdersController : BaseApiController
     {
         private readonly IOrderService _orderService;
+        private readonly IDeliveryMethodService _deliveryMethodService;
+        private readonly IBasketRepository _basketRepository;
         private readonly IMapper _mapper;
-        public OrdersController(IOrderService orderService, IMapper mapper)
+        public OrdersController(IOrderService orderService, IMapper mapper, IDeliveryMethodService deliveryMethodService, IBasketRepository basketRepository)
         {
             _mapper = mapper;
             _orderService = orderService;
+            _deliveryMethodService = deliveryMethodService;
+            _basketRepository = basketRepository;
         }
 
 
@@ -41,8 +45,8 @@ namespace API.Controllers
         ///             "firstName": "Bob",
         ///             "lastName": "Bobbity",
         ///             "street": "10 The Street",
-        ///         "city": "New York",
-        ///         state": "NY",
+        ///             "city": "New York",
+        ///             "state": "NY",
         ///             "country": "USA",
         ///             "zipcode": "90250"
         ///         }
@@ -53,13 +57,22 @@ namespace API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<OrdersController>> CreateOrder(OrderDto orderDto)
+        public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
         {
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
 
             var address = _mapper.Map<AddressDto, Address>(orderDto.ShipToAddress);
 
-            var order = await _orderService.CreateOrderAsync(email, orderDto.DeliveryMethodId, orderDto.BasketId, address);
+            var deliveryMethod = await _deliveryMethodService.GetDeliveryMethodByIdAsync(orderDto.DeliveryMethodId);
+
+            var basket = await _basketRepository.GetBasketAsync(orderDto.BasketId);
+
+            if (email == null || address == null || deliveryMethod == null || basket == null)
+            {
+                return BadRequest(new ApiResponse(400, "Problem creating order"));
+            }
+
+            var order = await _orderService.CreateOrderAsync(email, deliveryMethod, basket, address);
 
             if (order == null)
             {
@@ -77,7 +90,7 @@ namespace API.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<IReadOnlyList<OrderDto>>> GetOrdersForUser([FromQuery] OrderSpecParams specParams)
+        public async Task<ActionResult<Pagination<OrderDto>>> GetOrdersForUser([FromQuery] OrderSpecParams specParams)
         {
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
 

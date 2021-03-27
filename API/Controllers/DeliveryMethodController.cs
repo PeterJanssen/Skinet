@@ -33,7 +33,9 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
         {
-            return Ok(await _deliveryMethodService.GetDeliveryMethodsAsync());
+            var deliveryMethods = await _deliveryMethodService.GetDeliveryMethodsAsync();
+
+            return Ok(deliveryMethods);
         }
     }
 }

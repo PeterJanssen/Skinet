@@ -245,10 +245,6 @@ In any terminal run the following command, Stripe CLI is needed
 
 ## Current_Bugs
 
-### SwaggerUI
-
-- /api/orders bug in SwaggerUI locks the browser if endpoint is opened in SwaggerUI probably because the example value is too big
-
 ## Fixed_Bugs
 
 ### Shop
@@ -263,6 +259,10 @@ In any terminal run the following command, Stripe CLI is needed
 ### Basket-summary
 
 - When not logged in the user is not redirected to the login page when clicking on the checkout button
+
+### SwaggerUI
+
+- POST /api/orders bug in SwaggerUI locks the browser if endpoint is opened in SwaggerUI because of the wrong return type
 
 ## Contributions
 

@@ -17,5 +17,10 @@ namespace Infrastructure.Services
         {
             return await _unitOfWork.Repository<DeliveryMethod>().ListAllAsync();
         }
+        public async Task<DeliveryMethod> GetDeliveryMethodByIdAsync(int deliveryMethodId)
+        {
+            return await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(deliveryMethodId);
+        }
+
     }
 }
