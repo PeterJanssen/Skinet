@@ -76,11 +76,11 @@ export class AccountService {
   }
 
   getUserAddress(): Observable<IAddress> {
-    return this.http.get<IAddress>(this.baseURl + 'address');
+    return this.http.get<IAddress>(this.baseURl + 'account/address');
   }
 
   updateUserAddress(address: IAddress): Observable<IAddress> {
-    return this.http.put<IAddress>(this.baseURl + 'address', address);
+    return this.http.put<IAddress>(this.baseURl + 'account/address', address);
   }
 
   isAdmin(token: string): boolean {

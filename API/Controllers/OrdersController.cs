@@ -116,18 +116,5 @@ namespace API.Controllers
 
             return Ok(_mapper.Map<Order, OrderToReturnDto>(order));
         }
-
-        /// <summary>
-        /// Gets all delivery methods
-        /// </summary>
-        /// <response code="200">Returns all delivery methods</response>
-        /// <response code="401">Returns if user is not logged in</response>
-        [HttpGet("deliveryMethods")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
-        {
-            return Ok(await _orderService.GetDeliveryMethodsAsync());
-        }
     }
 }

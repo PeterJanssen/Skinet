@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize]
     [Produces("application/json")]
     public class AccountController : BaseApiController
     {

@@ -10,7 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize]
     [Produces("application/json")]
+    [Route("api/account/[controller]")]
     public class AddressController : BaseApiController
     {
         private readonly UserManager<AppUser> _userManager;
