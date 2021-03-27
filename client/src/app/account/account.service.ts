@@ -43,7 +43,7 @@ export class AccountService {
   }
 
   login(values: any): Observable<void> {
-    return this.http.post(this.baseURl + 'account/login', values).pipe(
+    return this.http.post(this.baseURl + 'auth/login', values).pipe(
       map((user: IUser) => {
         if (user) {
           localStorage.setItem('token', user.token);
@@ -55,7 +55,7 @@ export class AccountService {
   }
 
   register(values: any): Observable<void> {
-    return this.http.post(this.baseURl + 'account/register', values).pipe(
+    return this.http.post(this.baseURl + 'auth/register', values).pipe(
       map((user: IUser) => {
         if (user) {
           localStorage.setItem('token', user.token);
@@ -72,15 +72,15 @@ export class AccountService {
   }
 
   checkEmailExists(email: string): Observable<any> {
-    return this.http.get(this.baseURl + 'account/emailexists?email=' + email);
+    return this.http.get(this.baseURl + 'auth/emailexists?email=' + email);
   }
 
   getUserAddress(): Observable<IAddress> {
-    return this.http.get<IAddress>(this.baseURl + 'account/address');
+    return this.http.get<IAddress>(this.baseURl + 'address');
   }
 
   updateUserAddress(address: IAddress): Observable<IAddress> {
-    return this.http.put<IAddress>(this.baseURl + 'account/address', address);
+    return this.http.put<IAddress>(this.baseURl + 'address', address);
   }
 
   isAdmin(token: string): boolean {
