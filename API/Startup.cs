@@ -1,8 +1,8 @@
 using System.IO;
 using API.Extensions;
-using API.Helpers;
+using API.Helpers.SharedHelpers;
 using API.Middleware;
-using Infrastructure.Data;
+using Infrastructure.Data.Contexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;

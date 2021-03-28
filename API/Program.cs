@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using Core.Entities.Identity;
-using Infrastructure.Data;
-using Infrastructure.Identity;
+using Core.Entities.AccountEntities;
+using Infrastructure.Data.Contexts;
+using Infrastructure.Data.SeedData;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

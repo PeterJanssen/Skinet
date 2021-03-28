@@ -1,9 +1,16 @@
 using System.Linq;
 using API.Errors;
-using Core.Interfaces;
-using Infrastructure.Data;
+using Core.Interfaces.Repositories;
+using Core.Interfaces.Services.AccountServices;
+using Core.Interfaces.Services.OrderServices;
+using Core.Interfaces.Services.ProductServices;
+using Core.Interfaces.Services.Shared;
+using Infrastructure.Data.Repositories;
 using Infrastructure.Identity.Email;
-using Infrastructure.Services;
+using Infrastructure.Services.AccountServices;
+using Infrastructure.Services.OrderServices;
+using Infrastructure.Services.ProductServices;
+using Infrastructure.Services.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
