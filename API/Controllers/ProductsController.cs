@@ -95,34 +95,6 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Gets all brands
-        /// </summary>
-        /// <response code="200">Returns all brands</response>
-        [Cached(600)]
-        [HttpGet("brands")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
-        {
-            var brands = await _productService.GetProductBrandsAsync();
-
-            return Ok(brands);
-        }
-
-        /// <summary>
-        /// Gets all types
-        /// </summary>
-        /// <response code="200">Returns all types</response>
-        [Cached(600)]
-        [HttpGet("types")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypes()
-        {
-            var types = await _productService.GetProductTypesAsync();
-
-            return Ok(types);
-        }
-
-        /// <summary>
         /// Updates a product and adds a photo with the provided id
         /// </summary>
         /// <remarks>

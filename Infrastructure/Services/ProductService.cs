@@ -13,12 +13,6 @@ namespace Infrastructure.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<IReadOnlyList<ProductBrand>> GetProductBrandsAsync()
-        {
-            var brands = await _unitOfWork.Repository<ProductBrand>().ListAllAsync();
-
-            return brands;
-        }
         public async Task<Product> GetProductByIdAsync(int id)
         {
             var specification = new ProductsWithTypesAndBrandsSpecification(id);
@@ -42,12 +36,6 @@ namespace Infrastructure.Services
             var totalItems = await _unitOfWork.Repository<Product>().CountAsync(countSpec);
 
             return totalItems;
-        }
-        public async Task<IReadOnlyList<ProductType>> GetProductTypesAsync()
-        {
-            var types = await _unitOfWork.Repository<ProductType>().ListAllAsync();
-
-            return types;
         }
         public async Task<int> CreateProductAsync(Product productToCreate)
         {

@@ -46,12 +46,12 @@ namespace Infrastructure.Services
                 shippingPrice = deliveryMethod.Price;
             }
 
-            foreach (var itemt in basket.Items)
+            foreach (var item in basket.Items)
             {
-                var productItem = await _unitOfWork.Repository<Core.Entities.Product>().GetByIdAsync(itemt.Id);
-                if (itemt.Price != productItem.Price)
+                var productItem = await _unitOfWork.Repository<Core.Entities.Product>().GetByIdAsync(item.Id);
+                if (item.Price != productItem.Price)
                 {
-                    itemt.Price = productItem.Price;
+                    item.Price = productItem.Price;
                 }
             }
 
