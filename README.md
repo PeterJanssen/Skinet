@@ -33,6 +33,7 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 - Specification Pattern
 - Caching with Redis
 - Accepting payments using Stripe
+- Profiling with MiniProfiler at `https://localhost:5001/mini-profiler-resources/results-index`
 
 #### Frontend
 
@@ -228,6 +229,8 @@ In any terminal run the following command, Stripe CLI is needed
 - SwaggerUI Documentation
 
 - Moved ProductRepo calls to ProductService
+
+- Added Profiler (MiniProfiler)
 
 ### Front/Backend
 
