@@ -1,0 +1,43 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Add review for {{ productName }}</h4>
+  <button
+    type="button"
+    class="close pull-right"
+    aria-label="Close"
+    (click)="bsModalRef.hide()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <h4>Your Rating</h4>
+  <div class="form-group">
+    <rating [max]="5" [(ngModel)]="reviewScore" [customTemplate]="tt"></rating>
+    <ng-template #tt let-i="index" let-v="value">
+      <button class="btn btn-{{ i < v ? 'warning' : 'info' }}">
+        {{ i < v ? "&#9733;" : "&#9734;" }}
+      </button>
+    </ng-template>
+  </div>
+  <div class="form-group">
+    <label for="reviewDescription">Review</label>
+    <input
+      type="text"
+      id="reviewDescription"
+      class="form-control"
+      [(ngModel)]="reviewDescription"
+    />
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-warning" (click)="bsModalRef.hide()">
+    Cancel
+  </button>
+  <button
+    type="button"
+    class="btn btn-success"
+    (click)="addReviewAndCloseModal()"
+  >
+    Add Review
+  </button>
+</div>

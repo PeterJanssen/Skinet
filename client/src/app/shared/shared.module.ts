@@ -21,6 +21,7 @@ import { PhotoWidgetComponent } from './components/photo-widget/photo-widget.com
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { RatingModule } from 'ngx-bootstrap/rating';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { RatingModule } from 'ngx-bootstrap/rating';
     NgxDropzoneModule,
     ImageCropperModule,
     RatingModule,
+    ModalModule.forRoot(),
   ],
   exports: [
     PaginationModule,
@@ -71,6 +73,7 @@ import { RatingModule } from 'ngx-bootstrap/rating';
     ImageCropperModule,
     PhotoWidgetComponent,
     RatingModule,
+    ModalModule,
   ],
 })
 export class SharedModule {}

@@ -17,6 +17,12 @@ export interface IPhoto {
   isMain: boolean;
 }
 
+export interface IReview {
+  productId?: number;
+  reviewDescription: string;
+  reviewScore: number;
+}
+
 export interface IProductToCreate {
   name: string;
   description: string;

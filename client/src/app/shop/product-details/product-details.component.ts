@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BasketService } from 'src/app/basket/basket.service';
-import { IProduct } from 'src/app/shared/models/product';
+import { IProduct, IReview } from 'src/app/shared/models/product';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ShopService } from '../shop.service';
 import {
@@ -10,6 +10,8 @@ import {
   NgxGalleryImageSize,
   NgxGalleryOptions,
 } from '@kolkov/ngx-gallery';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ProductReviewModalComponent } from './product-review-modal/product-review-modal.component';
 
 @Component({
   selector: 'app-product-details',
@@ -21,12 +23,14 @@ export class ProductDetailsComponent implements OnInit {
   quantity = 1;
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
+  bsModalRef: BsModalRef;
 
   constructor(
     private shopService: ShopService,
     private activatedRoute: ActivatedRoute,
     private bcService: BreadcrumbService,
-    private basketService: BasketService
+    private basketService: BasketService,
+    private modalService: BsModalService
   ) {
     this.bcService.set('@productDetails', ' ');
   }
@@ -88,5 +92,26 @@ export class ProductDetailsComponent implements OnInit {
       });
     }
     return imageUrls;
+  }
+
+  addReviewToProduct(productName: string) {
+    const config = {
+      class: 'modal-dialog-centered',
+      initialState: {
+        productName,
+      },
+    };
+    this.bsModalRef = this.modalService.show(
+      ProductReviewModalComponent,
+      config
+    );
+    this.bsModalRef.content.addReviewToProduct.subscribe((values: any) => {
+      const review: IReview = {
+        ...values,
+      };
+      review.productId = this.product.id;
+
+      console.log(review);
+    });
   }
 }
