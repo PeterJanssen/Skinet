@@ -68,6 +68,7 @@ namespace Infrastructure.Data.SeedData
                         };
 
                         productWithPicture.AddPhoto(product.PictureUrl, pictureFileName);
+                        productWithPicture.AddReview(3, "Best product ever");
                         storeContext.Products.Add(productWithPicture);
                     }
 

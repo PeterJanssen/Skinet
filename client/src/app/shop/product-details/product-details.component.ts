@@ -24,6 +24,7 @@ export class ProductDetailsComponent implements OnInit {
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
   bsModalRef: BsModalRef;
+  isReadonly = true;
 
   constructor(
     private shopService: ShopService,
@@ -109,7 +110,7 @@ export class ProductDetailsComponent implements OnInit {
       const review: IReview = {
         ...values,
       };
-      review.productId = this.product.id;
+      review.id = this.product.id;
 
       console.log(review);
     });

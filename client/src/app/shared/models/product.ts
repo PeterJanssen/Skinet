@@ -8,6 +8,7 @@ export interface IProduct {
   productType: string;
   productBrand: string;
   photos: IPhoto[];
+  reviews: IReview[];
 }
 
 export interface IPhoto {
@@ -18,9 +19,9 @@ export interface IPhoto {
 }
 
 export interface IReview {
-  productId?: number;
-  reviewDescription: string;
-  reviewScore: number;
+  id?: number;
+  reviewText: string;
+  rating: number;
 }
 
 export interface IProductToCreate {

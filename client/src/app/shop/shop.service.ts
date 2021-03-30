@@ -5,7 +5,7 @@ import { ProductPagination } from '../shared/models/pagination';
 import { IType } from '../shared/models/ProductType';
 import { map } from 'rxjs/operators';
 import { ShopParams } from '../shared/models/shopParams';
-import { IProduct } from '../shared/models/product';
+import { IProduct, IReview } from '../shared/models/product';
 import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -17,6 +17,7 @@ export class ShopService {
   products: IProduct[] = [];
   brands: IBrand[] = [];
   types: IType[] = [];
+  reviews: IReview[] = [];
   pagination = new ProductPagination();
   shopParams = new ShopParams();
   productCache = new Map();
