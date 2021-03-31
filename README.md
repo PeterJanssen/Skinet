@@ -246,6 +246,8 @@ In any terminal run the following command, Stripe CLI is needed
 
 - Product picture feature
 
+- Product add review feature
+
 ## Current_Bugs
 
 ## Fixed_Bugs

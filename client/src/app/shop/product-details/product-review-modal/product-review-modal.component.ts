@@ -20,6 +20,7 @@ export class ProductReviewModalComponent implements OnInit {
 
   addReviewAndCloseModal() {
     this.review = {
+      productId: 0,
       reviewText: this.reviewDescription,
       rating: this.reviewScore,
     };

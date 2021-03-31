@@ -106,13 +106,16 @@ export class ProductDetailsComponent implements OnInit {
       ProductReviewModalComponent,
       config
     );
-    this.bsModalRef.content.addReviewToProduct.subscribe((values: any) => {
+    this.bsModalRef.content.addReviewToProduct.subscribe((values: IReview) => {
       const review: IReview = {
         ...values,
       };
-      review.id = this.product.id;
-
-      console.log(review);
+      review.productId = this.product.id;
+      this.shopService
+        .addReviewToProduct(review)
+        .subscribe((product: IProduct) => {
+          this.product = product;
+        });
     });
   }
 }

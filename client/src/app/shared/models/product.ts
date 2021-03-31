@@ -19,7 +19,7 @@ export interface IPhoto {
 }
 
 export interface IReview {
-  id?: number;
+  productId: number;
   reviewText: string;
   rating: number;
 }

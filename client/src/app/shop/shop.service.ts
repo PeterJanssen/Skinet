@@ -119,4 +119,11 @@ export class ShopService {
       })
     );
   }
+
+  addReviewToProduct(review: IReview) {
+    return this.http.put(
+      this.baseUrl + 'products/' + review.productId + '/rating',
+      review
+    );
+  }
 }
