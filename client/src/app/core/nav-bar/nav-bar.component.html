@@ -14,7 +14,6 @@
     <img
       src="/assets/images/logo.png"
       routerLink="/"
-      style="max-height: 70px"
       alt="logo"
       class="logo d-inline-block align-top"
   /></a>
@@ -69,8 +68,16 @@
                   >Admin</a
                 >
               </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  routerLink="/test-error"
+                  routerLinkActive="active"
+                  >Error</a
+                >
+              </li>
             </ng-container>
-            
+
             <li class="nav-item">
               <a
                 routerLink="/basket"
@@ -170,6 +177,13 @@
                     <i class="fa fa-address-card mr-3"></i>
                     Admin
                   </a>
+                </li>
+                <li class="menuitem">
+                  <a
+                    class="dropdown-item d-flex align-items-center py-2"
+                    routerLink="/test-error"
+                    ><i class="fa fa-bug mr-3"></i> Error</a
+                  >
                 </li>
               </ng-container>
               <div class="dropdown-divider"></div>

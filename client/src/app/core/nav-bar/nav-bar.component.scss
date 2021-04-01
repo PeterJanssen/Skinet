@@ -56,7 +56,7 @@ a {
 
 .logo {
   cursor: pointer;
-
+  max-height: 70px;
   &:focus {
     outline: none;
   }
