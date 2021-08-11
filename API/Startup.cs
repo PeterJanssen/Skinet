@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using StackExchange.Redis;
 
 namespace API
@@ -92,6 +93,8 @@ namespace API
                 endpoints.MapControllers().RequireCors(_myAllowSpecificOrigins);
                 endpoints.MapFallbackToController("Index", "Fallback").RequireCors(_myAllowSpecificOrigins);
             });
+
+            app.UseSerilogRequestLogging();
         }
     }
 }
