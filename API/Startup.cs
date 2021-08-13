@@ -2,16 +2,15 @@ using System.IO;
 using API.Extensions;
 using API.Helpers.SharedHelpers;
 using API.Middleware;
-using Infrastructure.Data.Contexts;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using StackExchange.Redis;
 
 namespace API
 {
@@ -38,6 +37,7 @@ namespace API
             services.AddSwaggerDocumentation();
 
             services.AddAutoMapper(typeof(MappingProfiles));
+            services.AddHealthCheck(_config);
 
             services.AddMiniProfiler();
         }
@@ -71,6 +71,14 @@ namespace API
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseHealthChecks("/health", new HealthCheckOptions
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+
+            app.UseHealthChecksUI();
 
             app.UseEndpoints(endpoints =>
             {
