@@ -115,7 +115,7 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 
 - A server certification and key (self signed or by a CA) and placed in client/ssl
 
-- Postman or any equivalant, API contains SwaggerUI at `https://localhost:5001/swagger/index.html`
+- Postman or any equivalent, API contains SwaggerUI at `https://localhost:5001/swagger/index.html`
 
 ## First steps before running the app for the first time
 
@@ -276,9 +276,9 @@ In any terminal run the following command, Stripe CLI is needed
 
 Many thanks to Neil Cummings for his course on .Net Core and Angular. This poc was created with the help of his course and further additions have been made by me.
 
-- His [website](https://trycatchlearn.com/)
-- His courses on [Udemy](https://www.udemy.com/user/neil-cummings-2/)
+- Neil's [website](https://trycatchlearn.com/)
+- Neil's courses on [Udemy](https://www.udemy.com/user/neil-cummings-2/)
 
 Thanks to Ostranme for the material theme for SwaggerUI
 
-- His [GitHub Repo](https://github.com/ostranme/swagger-ui-themes)
+- Ostranme's [GitHub Repo](https://github.com/ostranme/swagger-ui-themes)
