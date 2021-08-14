@@ -36,6 +36,7 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 - Profiling with MiniProfiler at `https://localhost:5001/mini-profiler-resources/results-index`
 - Logging events and HTTP requests in console and to PostGreSQL database with Serilog
 - HealthCheck with UI available at `https://localhost:5001/healthchecks-ui#/healthchecks`
+- API Versioning
 
 #### Frontend
 
@@ -247,6 +248,8 @@ In any terminal run the following command, Stripe CLI is needed
 - Logging events and HTTP requests in console and to PostGreSQL database with Serilog
 
 - HealthCheck implementation 
+
+- API Versioning
 
 ### Front/Backend
 

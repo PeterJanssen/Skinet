@@ -34,6 +34,9 @@ namespace API
 
             services.AddApplicationServices();
             services.AddIdentityServices(_config);
+
+            services.AddApiVersioningExtension();
+
             services.AddSwaggerDocumentation();
 
             services.AddAutoMapper(typeof(MappingProfiles));
