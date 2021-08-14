@@ -38,9 +38,21 @@ namespace API
                         .WriteTo.PostgreSQL(
                             connectionString:
                                 configuration.GetConnectionString("DefaultConnection"),
-                            restrictedToMinimumLevel: LogEventLevel.Information,
-                            tableName: "LogEvents",
+                            restrictedToMinimumLevel: LogEventLevel.Error,
+                            tableName: "LogErrorEvents",
                             needAutoCreateTable: true)
+                        .WriteTo.File(
+                                path: "Logs/Error/logErrors.txt",
+                                rollingInterval: Serilog.RollingInterval.Day,
+                                restrictedToMinimumLevel: LogEventLevel.Error,
+                                outputTemplate: "{Timestamp} [{Level}] - Message: {Message}{NewLine}{Exception}{NewLine}{NewLine}"
+                        )
+                        .WriteTo.File(
+                                path: "Logs/Info/logInfo.txt",
+                                rollingInterval: Serilog.RollingInterval.Day,
+                                restrictedToMinimumLevel: LogEventLevel.Information,
+                                outputTemplate: "{Timestamp} [{Level}] - Message: {Message}{NewLine}{Exception}{NewLine}{NewLine}"
+                        )
                         .WriteTo.Console()
                         .CreateLogger();
 

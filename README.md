@@ -34,7 +34,7 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 - Caching with Redis
 - Accepting payments using Stripe
 - Profiling with MiniProfiler at `https://localhost:5001/mini-profiler-resources/results-index`
-- Logging events and HTTP requests in console and to PostGreSQL database with Serilog
+- Logging events and HTTP requests in console, separate files in Logs folder and to PostGreSQL database table with Serilog
 - HealthCheck with UI available at `https://localhost:5001/healthchecks-ui#/healthchecks`
 - API Versioning
 
@@ -245,7 +245,7 @@ In any terminal run the following command, Stripe CLI is needed
 
 - Added Profiler (MiniProfiler)
 
-- Logging events and HTTP requests in console and to PostGreSQL database with Serilog
+- Logging events and HTTP requests in console, separate files in Logs folder and to PostGreSQL database table with Serilog
 
 - HealthCheck implementation 
 

@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using Serilog.Events;
 
 namespace API
 {
@@ -68,6 +69,17 @@ namespace API
                 RequestPath = "/content"
             });
 
+            app.UseSerilogRequestLogging(options =>
+            {
+                options.GetLevel = (httpContext, elapsed, ex) => LogEventLevel.Information;
+
+                options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+                {
+                    diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
+                    diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
+                };
+            });
+
             app.UseRouting();
 
             app.UseCors(_myAllowSpecificOrigins);
@@ -88,8 +100,6 @@ namespace API
                 endpoints.MapControllers().RequireCors(_myAllowSpecificOrigins);
                 endpoints.MapFallbackToController("Index", "Fallback").RequireCors(_myAllowSpecificOrigins);
             });
-
-            app.UseSerilogRequestLogging();
         }
     }
 }
