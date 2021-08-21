@@ -55,7 +55,7 @@ namespace API
                 app.UseMiniProfiler();
             }
 
-            app.UseMiddleware<ExceptionMIddleware>();
+            app.UseMiddleware<ExceptionMiddleware>();
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseHttpsRedirection();

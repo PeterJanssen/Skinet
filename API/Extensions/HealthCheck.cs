@@ -20,8 +20,8 @@ namespace API.Extensions
                 healthQuery: "select 1",
                 failureStatus: HealthStatus.Unhealthy,
                 name: "PostGreSQL Server")
-                .AddUrlGroup(new Uri("https://localhost:5001/api"),
-                name: "base URL",
+                .AddUrlGroup(new Uri("https://localhost:4200/"),
+                name: "Client URL",
                 failureStatus: HealthStatus.Unhealthy);
 
             services.AddHealthChecksUI(opt =>

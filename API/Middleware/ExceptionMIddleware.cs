@@ -9,14 +9,14 @@ using Microsoft.Extensions.Logging;
 
 namespace API.Middleware
 {
-    public class ExceptionMIddleware
+    public class ExceptionMiddleware
     {
         private readonly IHostEnvironment _environment;
-        private readonly ILogger<ExceptionMIddleware> _logger;
+        private readonly ILogger<ExceptionMiddleware> _logger;
         private readonly RequestDelegate _next;
-        public ExceptionMIddleware(
+        public ExceptionMiddleware(
             RequestDelegate next,
-            ILogger<ExceptionMIddleware> logger,
+            ILogger<ExceptionMiddleware> logger,
             IHostEnvironment environment)
         {
             _next = next;

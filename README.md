@@ -15,7 +15,7 @@
 
 ## Description
 
-A proof of concept e-commerce store using Angular, .Net Core and Stripe for payment processing
+A proof of concept e-commerce store using Angular, .Net Core and Stripe for payment processing(Portnumbers in readme may be different for you depending on how you run the app).
 
 ### Features
 
@@ -129,11 +129,11 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 
 ## First steps before running the app for the first time
 
-1) "npm install" in the client folder
-2) "dotnet restore" in root folder
-3) create appsettings.json in API folder and copy content of appsettings.Development.json into it, add or change keys for Stripe and SendGrid
-4) "docker-compose up --detach" in the root folder
-5) add server.crt and server.key (self signed or by a CA) and place them in client/ssl
+1. "npm install" in the client folder
+2. "dotnet restore" in root folder
+3. create appsettings.json in API folder and copy content of appsettings.Development.json into it, add or change keys for Stripe and SendGrid
+4. "docker-compose up --detach" in the root folder
+5. add server.crt and server.key (self signed or by a CA) and place them in client/ssl
 
 ## Commands
 
@@ -247,7 +247,7 @@ In any terminal run the following command, Stripe CLI is needed
 
 - Logging events and HTTP requests in console, separate files in Logs folder and to PostGreSQL database table with Serilog
 
-- HealthCheck implementation 
+- HealthCheck implementation
 
 - API Versioning
 
@@ -278,7 +278,7 @@ In any terminal run the following command, Stripe CLI is needed
 ### Orders
 
 - Photo of products are not displayed in order detail page because they are not included in call for the ordered product in database so no pictureURL is inserted into database
-- Id property of OrderItemDto in backend was not the same as IOrder ProductId property so the route to the product page could not be resolved and redirected to shop page, fixed by refactoring 
+- Id property of OrderItemDto in backend was not the same as IOrder ProductId property so the route to the product page could not be resolved and redirected to shop page, fixed by refactoring
 
 ### Basket-summary
 
