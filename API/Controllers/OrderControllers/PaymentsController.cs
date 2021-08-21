@@ -1,15 +1,14 @@
 using System.IO;
 using System.Threading.Tasks;
-using API.Errors;
-using Core.Entities.BasketEntities;
-using Core.Interfaces.Services.OrderServices;
+using Application.Core.Services.Interfaces.OrderServices;
+using Domain.Models.BasketModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Stripe;
-using Order = Core.Entities.OrderEntities.Order;
+using Order = Domain.Models.OrderModels.Order;
 
 namespace API.Controllers.OrdersControllers
 {
@@ -18,10 +17,14 @@ namespace API.Controllers.OrdersControllers
     {
         private readonly IPaymentService _paymentService;
         //Key generated with Stripe CLI
-        //Needs to be generated locally and replaced
+        //Needs to be generated locally and placed in appsettings
         private readonly string _whSecret;
         private readonly ILogger<PaymentsController> _logger;
-        public PaymentsController(IPaymentService paymentService, ILogger<PaymentsController> logger, IConfiguration config)
+        public PaymentsController(
+            IPaymentService paymentService,
+            ILogger<PaymentsController> logger,
+            IConfiguration config
+            )
         {
             _logger = logger;
             _paymentService = paymentService;
@@ -44,15 +47,12 @@ namespace API.Controllers.OrdersControllers
         [Authorize]
         [HttpPost("{basketId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<CustomerBasket>> CreateOrUpdatePaymentIntent(string basketId)
         {
             var basket = await _paymentService.CreateOrUpdatePaymentIntent(basketId);
 
-            if (basket == null)
-            {
-                return BadRequest(new ApiResponse(400, "Problem with your basket"));
-            }
+            if (basket == null) return BadRequest;
 
             return basket;
         }
@@ -76,7 +76,6 @@ namespace API.Controllers.OrdersControllers
 
             PaymentIntent intent;
             Order order;
-
 
             switch (stripeEvent.Type)
             {

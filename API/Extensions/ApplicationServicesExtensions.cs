@@ -1,24 +1,22 @@
 using System.Linq;
 using API.Errors;
-using Core.Interfaces.Repositories;
-using Core.Interfaces.Services.AccountServices;
-using Core.Interfaces.Services.OrderServices;
-using Core.Interfaces.Services.ProductServices;
-using Core.Interfaces.Services.Shared;
-using Infrastructure.Data.Repositories;
+using Application.Core.Services.Interfaces.OrderServices;
+using Application.Core.Services.Interfaces.ProductServices;
+using Application.Core.Services.Interfaces.Shared;
+using Application.Core.Services.OrderServices;
+using Application.Core.Services.ProductServices;
+using Application.Core.Services.Shared;
 using Infrastructure.Identity.Email;
-using Infrastructure.Services.AccountServices;
-using Infrastructure.Services.OrderServices;
-using Infrastructure.Services.ProductServices;
-using Infrastructure.Services.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Persistence.Data.Repository.Implementations;
+using Persistence.Data.Repository.Interfaces;
 
 namespace API.Extensions
 {
     public static class ApplicationServicesExtensions
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection AddApplicationServicesExtension(this IServiceCollection services)
         {
             services.AddSingleton<IResponseCacheService, ResponseCacheService>();
             services.AddScoped<IOrderService, OrderService>();
@@ -28,7 +26,6 @@ namespace API.Extensions
             services.AddScoped<IProductBrandsService, ProductBrandsService>();
             services.AddScoped<IProductTypesService, ProductTypesService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<EmailSender>();
             services.AddScoped<IBasketRepository, BasketRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -38,9 +35,9 @@ namespace API.Extensions
             options.InvalidModelStateResponseFactory = actionContext =>
             {
                 var errors = actionContext.ModelState
-                .Where(errors => errors.Value.Errors.Count > 0)
-                .SelectMany(x => x.Value.Errors)
-                .Select(x => x.ErrorMessage)
+                .Where(ModelStateEntryErrors => ModelStateEntryErrors.Value.Errors.Count > 0)
+                .SelectMany(ModelStateEntryErors => ModelStateEntryErors.Value.Errors)
+                .Select(ModelError => ModelError.ErrorMessage)
                 .ToArray();
 
                 var errorResponse = new ApiValidationErrorResponse

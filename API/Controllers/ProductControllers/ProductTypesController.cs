@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using API.Helpers.SharedHelpers;
-using AutoMapper;
-using Core.Entities.ProductEntities;
-using Core.Interfaces.Services.ProductServices;
+using API.Caching;
+using Application.Core.Services.Interfaces.ProductServices;
+using Domain.Models.ProductModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,12 +12,10 @@ namespace API.Controllers.ProductsControllers
     [Route("api/products/types")]
     public class ProductTypesController : BaseApiController
     {
-        private readonly IMapper _mapper;
         private readonly IProductTypesService _productTypesService;
-        public ProductTypesController(IProductTypesService productTypesService, IMapper mapper)
+        public ProductTypesController(IProductTypesService productTypesService)
         {
             _productTypesService = productTypesService;
-            _mapper = mapper;
         }
 
         /// <summary>

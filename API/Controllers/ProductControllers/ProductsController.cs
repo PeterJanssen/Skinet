@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using API.Dtos.Product;
-using API.Errors;
-using API.Helpers.SharedHelpers;
-using AutoMapper;
-using Core.Entities.ProductEntities;
-using Core.Interfaces.Services.ProductServices;
-using Core.Specifications.ProductSpecifications;
+using API.Caching;
+using Application.Core.Paging;
+using Application.Core.Services.Implementations.Identity;
+using Application.Core.Services.Interfaces.ProductServices;
+using Application.Core.Specifications.ProductSpec;
+using Application.Dtos.Product;
+using Domain.Models.ProductModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,14 +17,12 @@ namespace API.Controllers.ProductsControllers
     [Produces("application/json")]
     public class ProductsController : BaseApiController
     {
-        private readonly IMapper _mapper;
         private readonly IProductService _productService;
         private readonly IPhotoService _photoService;
-        public ProductsController(IProductService productService, IMapper mapper, IPhotoService photoService)
+        public ProductsController(IProductService productService, IPhotoService photoService)
         {
             _productService = productService;
             _photoService = photoService;
-            _mapper = mapper;
         }
 
         /// <summary>
@@ -58,7 +56,7 @@ namespace API.Controllers.ProductsControllers
 
             var totalItems = await _productService.CountProductsAsync(specParams);
 
-            var productDto = _mapper.Map<
+            var productDto = Mapper.Map<
             IReadOnlyList<Product>,
             IReadOnlyList<ProductToReturnDto>>
             (products);
@@ -79,17 +77,14 @@ namespace API.Controllers.ProductsControllers
         [Cached(600)]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
 
-            if (product == null)
-            {
-                return NotFound(new ApiResponse(404));
-            }
+            if (product == null) return NotFound;
 
-            var productDto = _mapper.Map<Product, ProductToReturnDto>(product);
+            var productDto = Mapper.Map<Product, ProductToReturnDto>(product);
 
             return Ok(productDto);
         }
@@ -115,15 +110,12 @@ namespace API.Controllers.ProductsControllers
         /// <response code="403">Returns if the current user is not an admin</response>
         /// <response code="404">Returns if the product could not be found</response>
         [HttpPut("{id}/photo")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<ProductToReturnDto>> AddProductPhoto(int id, [FromForm] ProductPhotoDto photoDto)
         {
             var product = await _productService.GetProductByIdAsync(id);
 
-            if (product == null)
-            {
-                return NotFound(new ApiResponse(404));
-            }
+            if (product == null) return NotFound;
 
             if (photoDto.Photo.Length > 0)
             {
@@ -137,16 +129,16 @@ namespace API.Controllers.ProductsControllers
 
                     if (result <= 0)
                     {
-                        return BadRequest(new ApiResponse(400, "Problem adding photo product"));
+                        return BadRequest;
                     }
                 }
                 else
                 {
-                    return BadRequest(new ApiResponse(400, "problem saving photo to disk"));
+                    return BadRequest;
                 }
             }
 
-            var productDto = _mapper.Map<Product, ProductToReturnDto>(product);
+            var productDto = Mapper.Map<Product, ProductToReturnDto>(product);
 
             return productDto;
         }
@@ -167,25 +159,20 @@ namespace API.Controllers.ProductsControllers
         /// <response code="400">Returns if the product could not be updated</response>
         /// <response code="404">Returns if the product could not be found</response>
         [HttpPut("{id}/rating")]
+        [Authorize]
         public async Task<ActionResult<ProductToReturnDto>> AddProductReview(int id, ProductReviewDto ProductReview)
         {
             var product = await _productService.GetProductByIdAsync(id);
 
-            if (product == null)
-            {
-                return NotFound(new ApiResponse(404));
-            }
+            if (product == null) return NotFound;
 
             product.AddReview(ProductReview.Rating, ProductReview.ReviewText);
 
             var result = await _productService.UpdateProductAsync(product);
 
-            if (result <= 0)
-            {
-                return BadRequest(new ApiResponse(400, "Product could not be updated, please try again."));
-            }
+            if (result <= 0) return BadRequest;
 
-            var productDto = _mapper.Map<Product, ProductToReturnDto>(product);
+            var productDto = Mapper.Map<Product, ProductToReturnDto>(product);
 
             return productDto;
         }
@@ -209,19 +196,16 @@ namespace API.Controllers.ProductsControllers
         /// <response code="400">Returns if the product could not be created</response>
         /// <response code="403">Returns if the current user is not an admin</response>
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<ProductToReturnDto>> CreateProduct(ProductCreateDto productToCreate)
         {
-            var product = _mapper.Map<ProductCreateDto, Product>(productToCreate);
+            var product = Mapper.Map<ProductCreateDto, Product>(productToCreate);
 
             var result = await _productService.CreateProductAsync(product);
 
-            if (result <= 0)
-            {
-                return BadRequest(new ApiResponse(400, "Product could not be created, please try again."));
-            }
+            if (result <= 0) return BadRequest;
 
-            var createdProduct = _mapper.Map<Product, ProductToReturnDto>(product);
+            var createdProduct = Mapper.Map<Product, ProductToReturnDto>(product);
 
             return Ok(createdProduct);
         }
@@ -247,26 +231,20 @@ namespace API.Controllers.ProductsControllers
         /// <response code="403">Returns if the current user is not an admin</response>
         /// <response code="404">Returns if the product could not be found</response>
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<ProductToReturnDto>> UpdateProduct(int id, ProductCreateDto productToUpdate)
         {
             var product = await _productService.GetProductByIdAsync(id);
 
-            if (product == null)
-            {
-                return NotFound(new ApiResponse(404));
-            }
+            if (product == null) return NotFound;
 
-            _mapper.Map(productToUpdate, product);
+            Mapper.Map(productToUpdate, product);
 
             var result = await _productService.UpdateProductAsync(product);
 
-            if (result <= 0)
-            {
-                return BadRequest(new ApiResponse(400, "Product could not be updated, please try again."));
-            }
+            if (result <= 0) return BadRequest;
 
-            var updatedProduct = _mapper.Map<Product, ProductToReturnDto>(product);
+            var updatedProduct = Mapper.Map<Product, ProductToReturnDto>(product);
 
             return Ok(updatedProduct);
         }
@@ -285,15 +263,12 @@ namespace API.Controllers.ProductsControllers
         /// <response code="403">Returns if the current user is not an admin</response>
         /// <response code="404">Returns if the product could not be found</response>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult> DeleteProduct(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
 
-            if (product == null)
-            {
-                return NotFound(new ApiResponse(404));
-            }
+            if (product == null) return NotFound;
 
             foreach (var photo in product.Photos)
             {
@@ -305,10 +280,7 @@ namespace API.Controllers.ProductsControllers
 
             var result = await _productService.DeleteProductAsync(product);
 
-            if (result <= 0)
-            {
-                return BadRequest(new ApiResponse(400, "Product could not be deleted, please try again."));
-            }
+            if (result <= 0) return BadRequest;
 
             return Ok();
         }
@@ -327,44 +299,35 @@ namespace API.Controllers.ProductsControllers
         /// <response code="403">Returns if the current user is not an admin</response>
         /// <response code="404">Returns if the product or photo could not be found</response>
         [HttpDelete("{id}/photo/{photoId}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult> DeleteProductPhoto(int id, int photoId)
         {
             var product = await _productService.GetProductByIdAsync(id);
 
-            if (product == null)
-            {
-                return NotFound(new ApiResponse(404));
-            }
+            if (product == null || product.Photos.All(photo => photo.Id != photoId)) return NotFound;
 
-            if (product.Photos.All(x => x.Id != photoId))
-            {
-                return NotFound(new ApiResponse(404));
-            }
-
-            var photo = product.Photos.SingleOrDefault(x => x.Id == photoId);
+            var photo = product.Photos.SingleOrDefault(photo => photo.Id == photoId);
 
             if (photo != null)
             {
                 if (photo.IsMain)
-                    return BadRequest(new ApiResponse(400,
-                        "You cannot delete the main photo"));
+                {
+                    return BadRequest;
+                }
 
                 _photoService.DeleteFromDisk(photo);
             }
             else
             {
-                return BadRequest(new ApiResponse(400, "Photo does not exist"));
+                return BadRequest;
             }
 
             product.RemovePhoto(photoId);
 
             var result = await _productService.UpdateProductAsync(product);
 
-            if (result <= 0)
-            {
-                return BadRequest(new ApiResponse(400, "Problem adding photo product"));
-            }
+            if (result <= 0) return BadRequest;
+
             return Ok();
         }
 
@@ -382,31 +345,20 @@ namespace API.Controllers.ProductsControllers
         /// <response code="403">Returns if the current user is not an admin</response>
         /// <response code="404">Returns if the product or photo could not be found</response>
         [HttpPost("{id}/photo/{photoId}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<ProductToReturnDto>> SetMainPhoto(int id, int photoId)
         {
             var product = await _productService.GetProductByIdAsync(id);
 
-            if (product == null)
-            {
-                return NotFound(new ApiResponse(404));
-            }
-
-            if (product.Photos.All(x => x.Id != photoId))
-            {
-                return NotFound(new ApiResponse(404));
-            }
+            if (product == null || product.Photos.All(photo => photo.Id != photoId)) return NotFound;
 
             product.SetMainPhoto(photoId);
 
             var result = await _productService.UpdateProductAsync(product);
 
-            if (result <= 0)
-            {
-                return BadRequest(new ApiResponse(400, "Problem adding photo product"));
-            }
+            if (result <= 0) return BadRequest;
 
-            var updatedProduct = _mapper.Map<Product, ProductToReturnDto>(product);
+            var updatedProduct = Mapper.Map<Product, ProductToReturnDto>(product);
 
             return Ok(updatedProduct);
         }

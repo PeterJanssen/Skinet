@@ -4,7 +4,7 @@ namespace API.Extensions
 {
     public static class MiniProfilerExtensions
     {
-        public static IServiceCollection AddMiniProfiler(this IServiceCollection services)
+        public static IServiceCollection AddMiniProfilerExtension(this IServiceCollection services)
         {
             services.AddMiniProfiler(options =>
             {

@@ -1,14 +1,14 @@
 using System;
-using Infrastructure.Data.Contexts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Persistence.Contexts;
 
 namespace API.Extensions
 {
     public static class HealthCheck
     {
-        public static IServiceCollection AddHealthCheck(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection AddHealthCheckExtension(this IServiceCollection services, IConfiguration config)
         {
 
             services.AddHealthChecks()

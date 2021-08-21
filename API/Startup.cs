@@ -1,7 +1,7 @@
 using System.IO;
 using API.Extensions;
-using API.Helpers.SharedHelpers;
 using API.Middleware;
+using Application.Core;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -18,44 +18,48 @@ namespace API
     public class Startup
     {
         private readonly IConfiguration _config;
+        private readonly IWebHostEnvironment _env;
         readonly string _myAllowSpecificOrigins = "_myAllowSpecificOrigins";
-        public Startup(IConfiguration config)
+        public Startup(IConfiguration config, IWebHostEnvironment env)
         {
             _config = config;
+            _env = env;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddCorsPolicy(_myAllowSpecificOrigins);
 
             services.AddControllers();
-            services.AddDatabaseConnections(_config);
 
-            services.AddApplicationServices();
-            services.AddIdentityServices(_config);
+            services.AddDatabaseConnectionsExtension(_config);
+
+            services.AddApplicationServicesExtension();
+            services.AddIdentityServiceExtension(_config);
 
             services.AddApiVersioningExtension();
 
-            services.AddSwaggerDocumentation();
+            services.AddSwaggerExtension();
 
             services.AddAutoMapper(typeof(MappingProfiles));
-            services.AddHealthCheck(_config);
 
-            services.AddMiniProfiler();
+            services.AddHealthCheckExtension(_config);
+
+            services.AddMiniProfilerExtension();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            app.UseMiddleware<ExceptionMiddleware>();
+
+            if (_env.IsDevelopment())
             {
                 app.UseSwaggerDocumentation();
                 app.UseMiniProfiler();
             }
 
-            app.UseMiddleware<ExceptionMiddleware>();
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseHttpsRedirection();

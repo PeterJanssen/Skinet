@@ -1,18 +1,16 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using API.Dtos.AccountDtos;
-using API.Dtos.OrderDtos;
-using API.Errors;
 using API.Extensions;
-using API.Helpers.SharedHelpers;
-using AutoMapper;
-using Core.Entities.OrderEntities;
-using Core.Interfaces.Repositories;
-using Core.Interfaces.Services.OrderServices;
-using Core.Specifications.OrderSpecifications;
+using Application.Core.Paging;
+using Application.Core.Services.Interfaces.OrderServices;
+using Application.Core.Specifications.OrderSpec;
+using Application.Dtos.AccountDtos;
+using Application.Dtos.OrderDtos;
+using Domain.Models.OrderModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Persistence.Data.Repository.Interfaces;
 
 namespace API.Controllers.OrdersControllers
 {
@@ -23,10 +21,12 @@ namespace API.Controllers.OrdersControllers
         private readonly IOrderService _orderService;
         private readonly IDeliveryMethodService _deliveryMethodService;
         private readonly IBasketRepository _basketRepository;
-        private readonly IMapper _mapper;
-        public OrdersController(IOrderService orderService, IMapper mapper, IDeliveryMethodService deliveryMethodService, IBasketRepository basketRepository)
+        public OrdersController(
+            IOrderService orderService,
+            IDeliveryMethodService deliveryMethodService,
+            IBasketRepository basketRepository
+            )
         {
-            _mapper = mapper;
             _orderService = orderService;
             _deliveryMethodService = deliveryMethodService;
             _basketRepository = basketRepository;
@@ -58,28 +58,22 @@ namespace API.Controllers.OrdersControllers
         /// <response code="400">Returns if the order could not be created</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
         {
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
 
-            var address = _mapper.Map<AddressDto, OrderAddress>(orderDto.ShipToAddress);
+            var address = Mapper.Map<AddressDto, OrderAddress>(orderDto.ShipToAddress);
 
             var deliveryMethod = await _deliveryMethodService.GetDeliveryMethodByIdAsync(orderDto.DeliveryMethodId);
 
             var basket = await _basketRepository.GetBasketAsync(orderDto.BasketId);
 
-            if (email == null || address == null || deliveryMethod == null || basket == null)
-            {
-                return BadRequest(new ApiResponse(400, "Problem creating order"));
-            }
+            if (email == null || address == null || deliveryMethod == null || basket == null) return BadRequest;
 
             var order = await _orderService.CreateOrderAsync(email, deliveryMethod, basket, address);
 
-            if (order == null)
-            {
-                return BadRequest(new ApiResponse(400, "Problem creating order"));
-            }
+            if (order == null) return BadRequest;
 
             return Ok(order);
         }
@@ -91,7 +85,7 @@ namespace API.Controllers.OrdersControllers
         /// <response code="401">Returns if user is not logged in</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Pagination<OrderDto>>> GetOrdersForUser([FromQuery] OrderSpecParams specParams)
         {
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
@@ -100,7 +94,7 @@ namespace API.Controllers.OrdersControllers
 
             var totalItems = await _orderService.CountProductsAsync(specParams, email);
 
-            var orderToReturnDto = _mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders);
+            var orderToReturnDto = Mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders);
 
             return Ok(new Pagination<OrderToReturnDto>(specParams.PageIndex, specParams.PageSize, totalItems, orderToReturnDto));
         }
@@ -117,19 +111,16 @@ namespace API.Controllers.OrdersControllers
         /// <response code="401">Returns if user is not logged in</response>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<OrderToReturnDto>> GetOrderByIdForUser(int id)
         {
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
 
             var order = await _orderService.GetOrderByIdAsync(id, email);
 
-            if (order == null)
-            {
-                return NotFound(new ApiResponse(404));
-            }
+            if (order == null) return NotFound;
 
-            return Ok(_mapper.Map<Order, OrderToReturnDto>(order));
+            return Ok(Mapper.Map<Order, OrderToReturnDto>(order));
         }
     }
 }

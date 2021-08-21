@@ -1,10 +1,9 @@
 using System.Threading.Tasks;
-using API.Dtos.BasketDtos;
-using AutoMapper;
-using Core.Entities.BasketEntities;
-using Core.Interfaces.Repositories;
+using Application.Dtos.BasketDtos;
+using Domain.Models.BasketModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Persistence.Data.Repository.Interfaces;
 
 namespace API.Controllers.BasketControllers
 {
@@ -12,10 +11,8 @@ namespace API.Controllers.BasketControllers
     public class BasketController : BaseApiController
     {
         private readonly IBasketRepository _basketRepository;
-        private readonly IMapper _mapper;
-        public BasketController(IBasketRepository basketRepository, IMapper mapper)
+        public BasketController(IBasketRepository basketRepository)
         {
-            _mapper = mapper;
             _basketRepository = basketRepository;
         }
 
@@ -63,7 +60,7 @@ namespace API.Controllers.BasketControllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<CustomerBasket>> UpdateBasket(CustomerBasketDto basketDto)
         {
-            var customerBasket = _mapper.Map<CustomerBasketDto, CustomerBasket>(basketDto);
+            var customerBasket = Mapper.Map<CustomerBasketDto, CustomerBasket>(basketDto);
 
             var updatedBasket = await _basketRepository.UpdateBasketAsync(customerBasket);
 

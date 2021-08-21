@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using API.Errors;
-using AutoMapper;
-using Core.Entities.OrderEntities;
-using Core.Interfaces.Services.OrderServices;
+using Application.Core.Services.Interfaces.OrderServices;
+using Domain.Models.OrderModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,10 +14,8 @@ namespace API.Controllers.OrdersControllers
     public class DeliveryMethodsController : BaseApiController
     {
         private readonly IDeliveryMethodService _deliveryMethodService;
-        private readonly IMapper _mapper;
-        public DeliveryMethodsController(IDeliveryMethodService deliveryMethodService, IMapper mapper)
+        public DeliveryMethodsController(IDeliveryMethodService deliveryMethodService)
         {
-            _mapper = mapper;
             _deliveryMethodService = deliveryMethodService;
         }
 
@@ -30,7 +26,7 @@ namespace API.Controllers.OrdersControllers
         /// <response code="401">Returns if user is not logged in</response>
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
         {
             var deliveryMethods = await _deliveryMethodService.GetDeliveryMethodsAsync();

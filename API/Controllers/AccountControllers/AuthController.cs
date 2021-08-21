@@ -1,11 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using API.Dtos.AccountDtos;
 using API.Errors;
-using AutoMapper;
-using Core.Entities.AccountEntities;
-using Core.Interfaces.Services.AccountServices;
+using Application.Core.Services.Interfaces.Identity;
+using Application.Core.Services.Interfaces.Identity.JWT;
+using Application.Dtos.AccountDtos;
+using Domain.Models.AccountModels.AppUserModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.AccountControllers
@@ -13,21 +17,13 @@ namespace API.Controllers.AccountControllers
     [Produces("application/json")]
     public class AuthController : BaseApiController
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signingManager;
-        private readonly ITokenService _tokenService;
-        private readonly IMapper _mapper;
+        private readonly IUserService _userService;
+        private readonly IJwtAuthManager _jwtAuthManager;
 
-        public AuthController(
-            UserManager<AppUser> userManager,
-            SignInManager<AppUser> signingManager,
-            ITokenService tokenService,
-            IMapper mapper)
+        public AuthController(IUserService userService, IJwtAuthManager jwtAuthManager)
         {
-            _signingManager = signingManager;
-            _tokenService = tokenService;
-            _mapper = mapper;
-            _userManager = userManager;
+            _userService = userService;
+            _jwtAuthManager = jwtAuthManager;
         }
 
         /// <summary>
@@ -54,28 +50,57 @@ namespace API.Controllers.AccountControllers
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+        public async Task<ActionResult<LoginResult>> Login(LoginRequest request)
         {
-            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            var user = await _userService.GetUser(request.Email);
 
-            if (user == null)
+            if (user == null) return Unauthorized;
+
+            var result = await _userService.SignUserIn(user, request.Password);
+
+            if (!result.Succeeded) return Unauthorized;
+
+            var userRoles = await _userService.GetUserRoles(user);
+
+            List<Claim> claims = new()
             {
-                return Unauthorized(new ApiResponse(401));
-            }
-
-            var result = await _signingManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
-
-            if (!result.Succeeded)
-            {
-                return Unauthorized(new ApiResponse(401));
-            }
-
-            return new UserDto
-            {
-                Email = user.Email,
-                Token = await _tokenService.CreateToken(user),
-                DisplayName = user.DisplayName
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.GivenName, user.DisplayName)
             };
+
+            claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+            var jwtResult = _jwtAuthManager.GenerateTokens(user.Email, claims, DateTime.Now);
+
+            return Ok(CreateLoginResult(
+                    user.Email,
+                    user.DisplayName,
+                    userRoles.ToList(),
+                    User.FindFirst("OriginalUserName")?.Value,
+                    jwtResult.AccessToken,
+                    jwtResult.RefreshToken.TokenString
+                    ));
+        }
+
+        /// <summary>
+        /// Posts and logs the user out by removing their tokens
+        /// </summary>
+        /// <response code="200">Returns Status200OK</response>
+        /// <response code="401">Returns if no user is logged in</response>
+        [HttpPost("logout")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Authorize]
+        public ActionResult Logout()
+        {
+            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+
+            if (userName == null) return Unauthorized;
+
+            _jwtAuthManager.RemoveRefreshTokenByUserName(userName);
+
+            return Ok();
         }
 
         /// <summary>
@@ -94,11 +119,14 @@ namespace API.Controllers.AccountControllers
         /// <response code="200">Returns the newly registered user</response>
         /// <response code="400">Returns if the new user's email is already in use or registering has failed</response>
         [HttpPost("register")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        public async Task<ActionResult<LoginResult>> Register(RegisterRequest registerRequest)
         {
-            if (CheckEmailExistsAsync(registerDto.Email).Result.Value)
+            var existingEmail = await _userService.GetUser(registerRequest.Email);
+
+            if (existingEmail != null)
             {
                 return new BadRequestObjectResult(
                     new ApiValidationErrorResponse
@@ -108,30 +136,39 @@ namespace API.Controllers.AccountControllers
                     );
             }
 
-            var user = _mapper.Map<AppUser>(registerDto);
+            var existingUsername = await _userService.GetUser(registerRequest.Email);
 
-            user.UserName = registerDto.Email;
-
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
-
-            if (!result.Succeeded)
+            if (existingUsername != null)
             {
-                return BadRequest(new ApiResponse(400));
+                return new BadRequestObjectResult(
+                new ApiValidationErrorResponse
+                {
+                    Errors = new[] { "Username is in use" }
+                }
+                    );
             }
 
-            var roleAddResult = await _userManager.AddToRoleAsync(user, "Member");
-
-            if (!roleAddResult.Succeeded)
+            var user = new AppUser()
             {
-                return BadRequest("Failed to add to role");
-            }
+                Email = registerRequest.Email,
+                Created = DateTime.Now,
+                DisplayName = registerRequest.DisplayName,
+                UserName = registerRequest.Email
+            };
 
-            return new UserDto
+            var result = await _userService.CreateAsync(user, registerRequest.Password);
+
+            if (!result.Succeeded) return BadRequest;
+
+            var roleAddResult = await _userService.AddToRoleAsync(user);
+
+            if (!roleAddResult.Succeeded) return BadRequest;
+
+            return Login(new LoginRequest()
             {
                 Email = user.Email,
-                Token = await _tokenService.CreateToken(user),
-                DisplayName = user.DisplayName
-            };
+                Password = registerRequest.Password
+            }).Result;
         }
 
         /// <summary>
@@ -145,10 +182,31 @@ namespace API.Controllers.AccountControllers
         /// </remarks>
         /// <response code="200">Returns true if email exists in database false if not</response>
         [HttpGet("emailexists")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<bool>> CheckEmailExistsAsync([FromQuery] string email)
         {
-            return await _userManager.FindByEmailAsync(email) != null;
+            return await _userService.GetUser(email) != null;
+        }
+
+        private static LoginResult CreateLoginResult(
+            string email,
+            string displayName,
+            List<string> roles,
+            string originalUsername,
+            string accessToken,
+            string refreshToken
+            )
+        {
+            return new LoginResult
+            {
+                Email = email,
+                Roles = roles,
+                DisplayName = displayName,
+                OriginalUserName = originalUsername,
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            };
         }
 
     }

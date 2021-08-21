@@ -1,11 +1,9 @@
 using System.Threading.Tasks;
-using API.Dtos.AccountDtos;
-using API.Extensions;
-using AutoMapper;
-using Core.Entities.AccountEntities;
+using Application.Core.Services.Interfaces.Identity;
+using Application.Dtos.AccountDtos;
+using Domain.Models.AccountModels.AppUserModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.AccountControllers
@@ -15,15 +13,10 @@ namespace API.Controllers.AccountControllers
     [Route("api/account/[controller]")]
     public class AddressController : BaseApiController
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly IMapper _mapper;
-
-        public AddressController(
-            UserManager<AppUser> userManager,
-            IMapper mapper)
+        private readonly IUserService _userService;
+        public AddressController(IUserService userService)
         {
-            _mapper = mapper;
-            _userManager = userManager;
+            _userService = userService;
         }
 
         /// <summary>
@@ -37,11 +30,11 @@ namespace API.Controllers.AccountControllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<AddressDto>> getUserAddress()
+        public async Task<ActionResult<AddressDto>> GetUserAddress()
         {
-            var user = await _userManager.FindUserByClaimsPrincipleWithAddressAsync(User);
+            var user = await _userService.FindUserByClaimsPrincipleWithAddressAsync(User);
 
-            return _mapper.Map<Address, AddressDto>(user.Address);
+            return Mapper.Map<Address, AddressDto>(user.Address);
         }
 
         /// <summary>
@@ -69,17 +62,17 @@ namespace API.Controllers.AccountControllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto addressDto)
         {
-            var user = await _userManager.FindUserByClaimsPrincipleWithAddressAsync(User);
-            user.Address = _mapper.Map<AddressDto, Address>(addressDto);
+            var user = await _userService.FindUserByClaimsPrincipleWithAddressAsync(User);
+            user.Address = Mapper.Map<AddressDto, Address>(addressDto);
 
-            var result = await _userManager.UpdateAsync(user);
+            var result = await _userService.UpdateAsync(user);
 
             if (result.Succeeded)
             {
-                return Ok(_mapper.Map<Address, AddressDto>(user.Address));
+                return Ok(Mapper.Map<Address, AddressDto>(user.Address));
             }
 
-            return BadRequest("Updating user failed");
+            return BadRequest;
         }
 
     }
