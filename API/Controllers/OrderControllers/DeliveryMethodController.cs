@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Core.Services.Interfaces.OrderServices;
+using Application.Dtos.OrderDtos;
 using Domain.Models.OrderModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -27,11 +28,16 @@ namespace API.Controllers.OrdersControllers
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
+        public async Task<ActionResult<IReadOnlyList<DeliveryMethodDto>>> GetDeliveryMethods()
         {
             var deliveryMethods = await _deliveryMethodService.GetDeliveryMethodsAsync();
 
-            return Ok(deliveryMethods);
+            var deliveryMethodDtoList = Mapper.Map<
+            IReadOnlyList<DeliveryMethod>,
+            IReadOnlyList<DeliveryMethodDto>>
+            (deliveryMethods);
+
+            return Ok(deliveryMethodDtoList);
         }
     }
 }

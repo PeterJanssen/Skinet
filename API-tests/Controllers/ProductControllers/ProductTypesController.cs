@@ -1,4 +1,4 @@
-﻿using Domain.Models.ProductModels;
+﻿using Application.Dtos.ProductDtos;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Net;
@@ -33,7 +33,7 @@ namespace API_tests.Controllers.ProductControllers
             var response = await _httpClient.GetAsync(baseUrl);
 
             var productTypeResponseContent = await response.Content.ReadAsStringAsync();
-            var productTypeResult = JsonSerializer.Deserialize<IReadOnlyList<ProductType>>(productTypeResponseContent);
+            var productTypeResult = JsonSerializer.Deserialize<IReadOnlyList<ProductTypeDto>>(productTypeResponseContent);
 
             Assert.IsNotNull(productTypeResult);
             Assert.That(productTypeResult.Count, Is.EqualTo(4));

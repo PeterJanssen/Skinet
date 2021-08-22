@@ -1,7 +1,7 @@
 using Application.Dtos.AccountDtos;
 using Application.Dtos.BasketDtos;
 using Application.Dtos.OrderDtos;
-using Application.Dtos.Product;
+using Application.Dtos.ProductDtos;
 using Application.Helpers.OrderHelpers;
 using Application.Helpers.ProductHelpers;
 using AutoMapper;
@@ -46,6 +46,12 @@ namespace Application.Core
 
             CreateMap<Photo, PhotoToReturnDto>()
                 .ForMember(d => d.PictureUrl, o => o.MapFrom<PhotoUrlResolver>());
+
+            CreateMap<ProductTypeDto, ProductType>().ReverseMap();
+
+            CreateMap<ProductBrandDto, ProductBrand>().ReverseMap();
+
+            CreateMap<DeliveryMethodDto, DeliveryMethod>().ReverseMap();
         }
     }
 }

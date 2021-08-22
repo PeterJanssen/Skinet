@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Application.Dtos.Product
+namespace Application.Dtos.ProductDtos
 {
     public class ProductToReturnDto
     {
@@ -15,7 +15,7 @@ namespace Application.Dtos.Product
         public decimal Price { get; set; }
         [JsonPropertyName("pictureUrl")]
         public string PictureUrl { get; set; }
-        [JsonPropertyName("ProductType")]
+        [JsonPropertyName("productType")]
         public string ProductType { get; set; }
         [JsonPropertyName("productBrand")]
         public string ProductBrand { get; set; }

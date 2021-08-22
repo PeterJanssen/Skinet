@@ -1,6 +1,5 @@
 ﻿using Application.Core.Paging;
-using Application.Dtos.Product;
-using Microsoft.AspNetCore.Http;
+using Application.Dtos.ProductDtos;
 using NUnit.Framework;
 using System.Net;
 using System.Net.Http;
@@ -77,7 +76,8 @@ namespace API_tests.Controllers.ProductControllers
         [Test, Order(6)]
         public async Task HTTPPOST_Return200OK_CreateProduct()
         {
-            _httpClient.DefaultRequestHeaders.Authorization = await _testHostFixture.SetAuthenticationHeaderValue(TestHostFixture.AdminLogin());
+            _httpClient.DefaultRequestHeaders.Authorization =
+                await _testHostFixture.SetAuthenticationHeaderValue(TestHostFixture.AdminLogin());
 
             ProductCreateDto product = new()
             {
@@ -105,7 +105,8 @@ namespace API_tests.Controllers.ProductControllers
         [Test, Order(7)]
         public async Task HTTPPOST_Return400BadRequest_CreateProduct()
         {
-            _httpClient.DefaultRequestHeaders.Authorization = await _testHostFixture.SetAuthenticationHeaderValue(TestHostFixture.AdminLogin());
+            _httpClient.DefaultRequestHeaders.Authorization =
+                await _testHostFixture.SetAuthenticationHeaderValue(TestHostFixture.AdminLogin());
 
             ProductCreateDto product = null;
 
@@ -118,7 +119,8 @@ namespace API_tests.Controllers.ProductControllers
         [Test, Order(8)]
         public async Task HTTPDELETE_Return200Ok_DeleteProduct()
         {
-            _httpClient.DefaultRequestHeaders.Authorization = await _testHostFixture.SetAuthenticationHeaderValue(TestHostFixture.AdminLogin());
+            _httpClient.DefaultRequestHeaders.Authorization =
+                await _testHostFixture.SetAuthenticationHeaderValue(TestHostFixture.AdminLogin());
 
             var response = await _httpClient.DeleteAsync(
             baseUrl + "/1");
@@ -128,7 +130,8 @@ namespace API_tests.Controllers.ProductControllers
         [Test, Order(9)]
         public async Task HTTPDELETE_Return404NotFound_DeleteProduct()
         {
-            _httpClient.DefaultRequestHeaders.Authorization = await _testHostFixture.SetAuthenticationHeaderValue(TestHostFixture.AdminLogin());
+            _httpClient.DefaultRequestHeaders.Authorization =
+                await _testHostFixture.SetAuthenticationHeaderValue(TestHostFixture.AdminLogin());
 
             var response = await _httpClient.DeleteAsync(baseUrl + "/0");
 
@@ -137,7 +140,8 @@ namespace API_tests.Controllers.ProductControllers
         [Test, Order(10)]
         public async Task HTTPPUT_Return200OK_AddProductReview()
         {
-            _httpClient.DefaultRequestHeaders.Authorization = await _testHostFixture.SetAuthenticationHeaderValue(TestHostFixture.AdminLogin());
+            _httpClient.DefaultRequestHeaders.Authorization =
+                await _testHostFixture.SetAuthenticationHeaderValue(TestHostFixture.AdminLogin());
 
             var productReview = new ProductReviewDto()
             {
@@ -154,7 +158,8 @@ namespace API_tests.Controllers.ProductControllers
         [Test, Order(11)]
         public async Task HTTPPUT_Return404NotFound_AddProductReview()
         {
-            _httpClient.DefaultRequestHeaders.Authorization = await _testHostFixture.SetAuthenticationHeaderValue(TestHostFixture.AdminLogin());
+            _httpClient.DefaultRequestHeaders.Authorization =
+                await _testHostFixture.SetAuthenticationHeaderValue(TestHostFixture.AdminLogin());
 
             var productReview = new ProductReviewDto()
             {
@@ -171,7 +176,8 @@ namespace API_tests.Controllers.ProductControllers
         [Test, Order(12)]
         public async Task HTTPPUT_Return400BadRequest_AddProductReview()
         {
-            _httpClient.DefaultRequestHeaders.Authorization = await _testHostFixture.SetAuthenticationHeaderValue(TestHostFixture.AdminLogin());
+            _httpClient.DefaultRequestHeaders.Authorization =
+                await _testHostFixture.SetAuthenticationHeaderValue(TestHostFixture.AdminLogin());
 
             ProductReviewDto productReview = null;
 

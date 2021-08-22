@@ -1,7 +1,7 @@
 using Application.Helpers.SharedHelpers;
 using Microsoft.AspNetCore.Http;
 
-namespace Application.Dtos.Product
+namespace Application.Dtos.ProductDtos
 {
     public class ProductPhotoDto
     {

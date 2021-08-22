@@ -1,5 +1,5 @@
 using System.Linq;
-using Application.Dtos.Product;
+using Application.Dtos.ProductDtos;
 using AutoMapper;
 using Domain.Models.ProductModels;
 using Microsoft.Extensions.Configuration;

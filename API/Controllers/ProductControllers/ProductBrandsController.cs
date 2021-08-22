@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Caching;
 using Application.Core.Services.Interfaces.ProductServices;
+using Application.Dtos.ProductDtos;
 using Domain.Models.ProductModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,11 +26,16 @@ namespace API.Controllers.ProductsControllers
         [Cached(600)]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
+        public async Task<ActionResult<IReadOnlyList<ProductBrandDto>>> GetProductBrands()
         {
             var brands = await _productBrandsService.GetProductBrandsAsync();
 
-            return Ok(brands);
+            var productBrandDtoList = Mapper.Map<
+            IReadOnlyList<ProductBrand>,
+            IReadOnlyList<ProductBrandDto>>
+            (brands);
+
+            return Ok(productBrandDtoList);
         }
     }
 }

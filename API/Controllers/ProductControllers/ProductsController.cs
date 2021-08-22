@@ -6,7 +6,7 @@ using Application.Core.Paging;
 using Application.Core.Services.Implementations.Identity;
 using Application.Core.Services.Interfaces.ProductServices;
 using Application.Core.Specifications.ProductSpec;
-using Application.Dtos.Product;
+using Application.Dtos.ProductDtos;
 using Domain.Models.ProductModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
