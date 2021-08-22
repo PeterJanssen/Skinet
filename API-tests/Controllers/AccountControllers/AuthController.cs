@@ -24,7 +24,6 @@ namespace API_tests.Controllers.AccountControllers
         private HttpClient _httpClient;
         private IServiceProvider _serviceProvider;
         private const string baseUrl = "api/auth";
-        private const string accountUrl = "api/account";
 
         [SetUp()]
         public void SetUp()
@@ -36,30 +35,21 @@ namespace API_tests.Controllers.AccountControllers
         [Test]
         public async Task HTTPPOST_Return401Unauthorized_ShouldForbidInvalidCredentials_Login_Test()
         {
-            var credentials = new LoginRequest
-            {
-                Email = "invalid",
-                Password = "invalidPassword"
-            };
-            var response = await _httpClient.PostAsync(baseUrl + "/login",
-                new StringContent(JsonSerializer.Serialize(credentials), Encoding.UTF8, MediaTypeNames.Application.Json));
-            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+            var loginResponse = await _testHostFixture.GetLoginResponse(TestHostFixture.InvalidLogin());
+            Assert.AreEqual(HttpStatusCode.Unauthorized, loginResponse.StatusCode);
         }
 
         [Test]
         public async Task HTTPPOST_Return200OK_ShouldReturnLoginResult_Login_Test()
         {
-            var credentials = new LoginRequest
-            {
-                Email = "admin@test.com",
-                Password = "Pa$$w0rd"
-            };
-            var loginResponse = await _httpClient.PostAsync(baseUrl + "/login",
-                new StringContent(JsonSerializer.Serialize(credentials), Encoding.UTF8, MediaTypeNames.Application.Json));
+            var credentials = TestHostFixture.AdminLogin();
+
+            var loginResponse = await _testHostFixture.GetLoginResponse(credentials);
             Assert.AreEqual(HttpStatusCode.OK, loginResponse.StatusCode);
 
-            var loginResponseContent = await loginResponse.Content.ReadAsStringAsync();
-            var loginResult = JsonSerializer.Deserialize<LoginResult>(loginResponseContent);
+            var loginResponseContent = await TestHostFixture.GetLoginResponseContent(loginResponse);
+            var loginResult = TestHostFixture.GetLoginResult(loginResponseContent);
+
             Assert.AreEqual(credentials.Email, loginResult.Email);
             Assert.IsNull(loginResult.OriginalUserName);
             Assert.IsTrue(loginResult.Roles.Contains(UserRoles.Admin));
@@ -76,15 +66,11 @@ namespace API_tests.Controllers.AccountControllers
         [Test]
         public async Task HTTPPOST_Return200OK_ShouldBeAbleToLogout_Logout_Test()
         {
-            var credentials = new LoginRequest
-            {
-                Email = "admin@test.com",
-                Password = "Pa$$w0rd"
-            };
-            var loginResponse = await _httpClient.PostAsync(baseUrl + "/login",
-                new StringContent(JsonSerializer.Serialize(credentials), Encoding.UTF8, MediaTypeNames.Application.Json));
-            var loginResponseContent = await loginResponse.Content.ReadAsStringAsync();
-            var loginResult = JsonSerializer.Deserialize<LoginResult>(loginResponseContent);
+            var credentials = TestHostFixture.AdminLogin();
+
+            var loginResponse = await _testHostFixture.GetLoginResponse(credentials);
+            var loginResponseContent = await TestHostFixture.GetLoginResponseContent(loginResponse);
+            var loginResult = TestHostFixture.GetLoginResult(loginResponseContent);
 
             var jwtAuthManager = _serviceProvider.GetRequiredService<IJwtAuthManager>();
             Assert.IsTrue(jwtAuthManager.UsersRefreshTokensReadOnlyDictionary.ContainsKey(loginResult.RefreshToken));
@@ -98,7 +84,7 @@ namespace API_tests.Controllers.AccountControllers
         [Test]
         public async Task HTTPPOST_Return200OK_ShouldCorrectlyRefreshToken_RefreshToken_Test()
         {
-            const string userName = "admin@test.com";
+            string userName = TestHostFixture.AdminLogin().Email;
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name,userName),
@@ -114,8 +100,8 @@ namespace API_tests.Controllers.AccountControllers
             };
             var response = await _httpClient.PostAsync(baseUrl + "/refresh-token",
                 new StringContent(JsonSerializer.Serialize(refreshRequest), Encoding.UTF8, MediaTypeNames.Application.Json));
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<LoginResult>(responseContent);
+            var responseContent = await TestHostFixture.GetLoginResponseContent(response);
+            var result = TestHostFixture.GetLoginResult(responseContent);
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
             var refreshToken2 = jwtAuthManager.UsersRefreshTokensReadOnlyDictionary.GetValueOrDefault(result.RefreshToken);
@@ -128,7 +114,7 @@ namespace API_tests.Controllers.AccountControllers
         [Test]
         public async Task HTTPPOST_Return401Unauthorized_ShouldNotAllowWhenRefreshTokenIsExpired_RefreshToken_Test()
         {
-            const string userName = "admin@test.com";
+            string userName = TestHostFixture.AdminLogin().Email;
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name,userName),
@@ -146,7 +132,7 @@ namespace API_tests.Controllers.AccountControllers
             };
             var response = await _httpClient.PostAsync(baseUrl + "/refresh-token",
                 new StringContent(JsonSerializer.Serialize(refreshRequest), Encoding.UTF8, MediaTypeNames.Application.Json)); // expired Refresh token
-            var responseContent = await response.Content.ReadAsStringAsync();
+            var responseContent = await TestHostFixture.GetLoginResponseContent(response);
             Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
             Assert.IsTrue(responseContent.Contains("Unauthorized action"));
         }

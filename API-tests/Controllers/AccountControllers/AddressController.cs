@@ -1,16 +1,10 @@
-﻿using Application.Core.Services.Implementations.Identity;
-using Application.Core.Services.Interfaces.Identity.JWT;
-using Application.Dtos.AccountDtos;
+﻿using Application.Dtos.AccountDtos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Mime;
@@ -22,7 +16,6 @@ namespace API_tests.Controllers.AccountControllers
     {
         private readonly TestHostFixture _testHostFixture = new();
         private HttpClient _httpClient;
-        private IServiceProvider _serviceProvider;
         private const string baseUrl = "api/account/address";
         private const string authUrl = "api/auth";
 
@@ -30,7 +23,6 @@ namespace API_tests.Controllers.AccountControllers
         public void SetUp()
         {
             _httpClient = _testHostFixture.Client;
-            _serviceProvider = _testHostFixture.ServiceProvider;
         }
 
         [Test, Order(1)]

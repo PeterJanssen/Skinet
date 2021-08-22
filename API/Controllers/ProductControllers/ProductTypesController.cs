@@ -25,7 +25,7 @@ namespace API.Controllers.ProductsControllers
         [Cached(600)]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IReadOnlyList<ProductType>>> GetTypes()
+        public async Task<ActionResult<IReadOnlyList<ProductType>>> GetProductTypes()
         {
             var types = await _productTypesService.GetProductTypesAsync();
 

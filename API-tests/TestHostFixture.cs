@@ -1,7 +1,14 @@
 ﻿using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Mime;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 using API;
+using Application.Dtos.AccountDtos;
 using Domain.Models.AccountModels.AppUserModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.TestHost;
@@ -58,10 +65,55 @@ namespace API_tests
             Client = host.GetTestClient();
             Console.WriteLine("TEST Host Started.");
         }
-
         public void Dispose()
         {
             Client.Dispose();
+        }
+        public static LoginRequest AdminLogin()
+        {
+            return new LoginRequest()
+            {
+                Email = "admin@test.com",
+                Password = "Pa$$w0rd"
+            };
+        }
+        public static LoginRequest MemberLogin()
+        {
+            return new LoginRequest()
+            {
+                Email = "bob@test.com",
+                Password = "Pa$$w0rd"
+            };
+        }
+        public static LoginRequest InvalidLogin()
+        {
+            return new LoginRequest()
+            {
+                Email = "INVALID",
+                Password = "INVALID"
+            };
+        }
+        public async Task<HttpResponseMessage> GetLoginResponse(LoginRequest loginRequest)
+        {
+            return await Client.PostAsync("api/auth/login",
+                new StringContent(JsonSerializer.Serialize(loginRequest), Encoding.UTF8, MediaTypeNames.Application.Json));
+        }
+        public static async Task<string> GetLoginResponseContent(HttpResponseMessage loginResponse)
+        {
+            return await loginResponse.Content.ReadAsStringAsync();
+        }
+        public static LoginResult GetLoginResult(string loginResponseContent)
+        {
+            return JsonSerializer.Deserialize<LoginResult>(loginResponseContent);
+        }
+
+        public async Task<AuthenticationHeaderValue> SetAuthenticationHeaderValue(LoginRequest loginRequest)
+        {
+            var loginResponse = await GetLoginResponse(loginRequest);
+            var loginResponseContent = await GetLoginResponseContent(loginResponse);
+            var loginResult = GetLoginResult(loginResponseContent);
+
+            return new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, loginResult.AccessToken);
         }
     }
 }

@@ -23,7 +23,6 @@ namespace API_tests.Controllers.AccountControllers
         private HttpClient _httpClient;
         private IServiceProvider _serviceProvider;
         private const string baseUrl = "api/account";
-        private const string authUrl = "api/auth";
 
         [SetUp()]
         public void SetUp()
@@ -43,19 +42,14 @@ namespace API_tests.Controllers.AccountControllers
         [Test, Order(2)]
         public async Task HTTPGET_Return200OK_ReturnsCurrentUser_GetCurrentUser_Test()
         {
-            var credentials = new LoginRequest
-            {
-                Email = "admin@test.com",
-                Password = "Pa$$w0rd"
-            };
+            var credentials = TestHostFixture.AdminLogin();
 
-            var loginResponse = await _httpClient.PostAsync(authUrl + "/login",
-                new StringContent(JsonSerializer.Serialize(credentials), Encoding.UTF8, MediaTypeNames.Application.Json));
+            var loginResponse = await _testHostFixture.GetLoginResponse(credentials);
 
             Assert.AreEqual(HttpStatusCode.OK, loginResponse.StatusCode);
 
-            var loginResponseContent = await loginResponse.Content.ReadAsStringAsync();
-            var loginResult = JsonSerializer.Deserialize<LoginResult>(loginResponseContent);
+            var loginResponseContent = await TestHostFixture.GetLoginResponseContent(loginResponse);
+            var loginResult = TestHostFixture.GetLoginResult(loginResponseContent);
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, loginResult.AccessToken);
 
@@ -63,8 +57,8 @@ namespace API_tests.Controllers.AccountControllers
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<LoginResult>(responseContent);
+            var responseContent = await TestHostFixture.GetLoginResponseContent(response);
+            var result = TestHostFixture.GetLoginResult(responseContent);
 
             Assert.AreEqual(credentials.Email, result.Email);
             Assert.IsTrue(result.Roles.Contains(UserRoles.Admin));
@@ -73,7 +67,7 @@ namespace API_tests.Controllers.AccountControllers
         [Test, Order(3)]
         public async Task HTTPPOST_Return200OK_ShouldAllowAdminImpersonateOthers_Impersonate_Test()
         {
-            const string userName = "admin@test.com";
+            string userName = TestHostFixture.AdminLogin().Email;
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name,userName),
@@ -83,11 +77,13 @@ namespace API_tests.Controllers.AccountControllers
             var jwtResult = jwtAuthManager.GenerateTokens(userName, claims, DateTime.Now.AddMinutes(-1));
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, jwtResult.AccessToken);
+            
             var request = new ImpersonationRequest { UserName = "amber@test.com" };
             var response = await _httpClient.PostAsync(baseUrl + "/impersonation",
                 new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, MediaTypeNames.Application.Json));
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<LoginResult>(responseContent);
+
+            var responseContent = await TestHostFixture.GetLoginResponseContent(response);
+            var result = TestHostFixture.GetLoginResult(responseContent);
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             Assert.AreEqual(request.UserName, result.Email);
@@ -107,7 +103,7 @@ namespace API_tests.Controllers.AccountControllers
         public async Task HTTPPOST_Return200OK_ShouldAllowAdminToStopImpersonation_StopImpersonation_Test()
         {
             const string userName = "amber@test.com";
-            const string originalUserName = "admin@test.com";
+            string originalUserName = TestHostFixture.AdminLogin().Email;
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name,userName),
@@ -119,8 +115,8 @@ namespace API_tests.Controllers.AccountControllers
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, jwtResult.AccessToken);
             var response = await _httpClient.PostAsync(baseUrl + "/stop-impersonation", null);
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<LoginResult>(responseContent);
+            var responseContent = await TestHostFixture.GetLoginResponseContent(response);
+            var result = TestHostFixture.GetLoginResult(responseContent);
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             Assert.AreEqual(originalUserName, result.Email);
@@ -139,7 +135,7 @@ namespace API_tests.Controllers.AccountControllers
         [Test, Order(5)]
         public async Task HTTPPOST_Return400BadRequest_ShouldNotAllowStopWhenNotImpersonating_StopImpersonation_Test()
         {
-            const string userName = "admin@test.com";
+            string userName = TestHostFixture.AdminLogin().Email;
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name,userName),
@@ -159,7 +155,7 @@ namespace API_tests.Controllers.AccountControllers
         [Test, Order(6)]
         public async Task HTTPPOST_Return401Unauthorized_ShouldForbidNonAdminToImpersonate_Impersonate_Test()
         {
-            const string userName = "bob@test.com";
+            string userName = TestHostFixture.MemberLogin().Email;
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name,userName),
