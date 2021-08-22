@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Application.Core.Services.Implementations.Identity;
 using Application.Core.Services.Interfaces.Identity;
 using Application.Core.Services.Interfaces.Identity.JWT;
 using Application.Dtos.AccountDtos;
@@ -57,6 +58,75 @@ namespace API.Controllers.AccountControllers
                     user.DisplayName,
                     userRoles.ToList(),
                     User.FindFirst("OriginalUserName")?.Value,
+                    jwtResult.AccessToken,
+                    jwtResult.RefreshToken.TokenString
+                    ));
+        }
+
+        [HttpPost("impersonation")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<ActionResult> Impersonate([FromBody] ImpersonationRequest request)
+        {
+            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+
+            var user = await _userService.GetUser(User.Identity?.Name);
+
+            if (user == null) return BadRequest;
+
+            var impersonatedUser = await _userService.GetUser(request.UserName);
+            var impersonatedRoles = await _userService.GetUserRoles(impersonatedUser);
+
+            if (impersonatedRoles.Contains(UserRoles.Admin)) return BadRequest;
+
+            List<Claim> claims = new()
+            {
+                new Claim(ClaimTypes.Email, impersonatedUser.Email),
+                new Claim(ClaimTypes.Name, impersonatedUser.UserName),
+                new Claim(ClaimTypes.GivenName, impersonatedUser.DisplayName),
+                new Claim("OriginalUserName", userName ?? string.Empty)
+            };
+
+            claims.AddRange(impersonatedRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+            var jwtResult = _jwtAuthManager.GenerateTokens(request.UserName, claims, DateTime.Now);
+
+            return Ok(CreateLoginResult(
+                    request.UserName,
+                    impersonatedUser.DisplayName,
+                    impersonatedRoles.ToList(),
+                    userName,
+                    jwtResult.AccessToken,
+                    jwtResult.RefreshToken.TokenString
+                    ));
+        }
+
+        [HttpPost("stop-impersonation")]
+        public async Task<ActionResult> StopImpersonation()
+        {
+            var user = await _userService.GetUser(User.Identity.Name);
+
+            var originalUser = await _userService.GetUser(User.FindFirst("OriginalUserName")?.Value);
+
+            if (originalUser == null) return BadRequest;
+
+            var roles = await _userService.GetUserRoles(originalUser);
+
+            List<Claim> claims = new()
+            {
+                new Claim(ClaimTypes.Email, originalUser.Email),
+                new Claim(ClaimTypes.Name, originalUser.UserName),
+                new Claim(ClaimTypes.GivenName, originalUser.DisplayName),
+            };
+
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+            var jwtResult = _jwtAuthManager.GenerateTokens(originalUser.UserName, claims, DateTime.Now);
+
+            return Ok(CreateLoginResult(
+                    originalUser.UserName,
+                    originalUser.DisplayName,
+                    roles.ToList(),
+                    null,
                     jwtResult.AccessToken,
                     jwtResult.RefreshToken.TokenString
                     ));

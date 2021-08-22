@@ -8,9 +8,11 @@ using Application.Core.Services.Interfaces.Identity;
 using Application.Core.Services.Interfaces.Identity.JWT;
 using Application.Dtos.AccountDtos;
 using Domain.Models.AccountModels.AppUserModels;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace API.Controllers.AccountControllers
 {
@@ -169,6 +171,37 @@ namespace API.Controllers.AccountControllers
                 Email = user.Email,
                 Password = registerRequest.Password
             }).Result;
+        }
+
+        [HttpPost("refresh-token")]
+        [Authorize]
+        public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+        {
+            try
+            {
+                var userName = User.Identity.Name;
+
+                if (string.IsNullOrWhiteSpace(request.RefreshToken)) return Unauthorized;
+
+                var accessToken = await HttpContext.GetTokenAsync("Bearer", "access_token");
+                var jwtResult = _jwtAuthManager.Refresh(request.RefreshToken, accessToken, DateTime.Now);
+
+                var user = await _userService.GetUser(userName);
+                var roles = await _userService.GetUserRoles(user);
+
+                return Ok(CreateLoginResult(
+                        user.Email,
+                        user.DisplayName,
+                        roles.ToList(),
+                        User.FindFirst("OriginalUserName")?.Value,
+                        jwtResult.AccessToken,
+                        jwtResult.RefreshToken.TokenString
+                        ));
+            }
+            catch (SecurityTokenException)
+            {
+                return Unauthorized;
+            }
         }
 
         /// <summary>
