@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Content\**" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="Content\**" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>

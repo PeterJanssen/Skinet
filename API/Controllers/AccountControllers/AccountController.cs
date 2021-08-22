@@ -30,14 +30,19 @@ namespace API.Controllers.AccountControllers
         /// Gets the current logged in user
         /// </summary>
         /// <response code="200">Returns the current logged in user</response>
+        /// <response code="400">If the user is not found</response>  
         /// <response code="401">If the user is not logged in</response>      
         [Authorize]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<LoginResult>> GetCurrentUser()
         {
             var user = await _userService.GetUser(User.Identity.Name);
+
+            if (user == null) return BadRequest;
+
             var roles = await _userService.GetUserRoles(user);
 
             var userRoles = await _userService.GetUserRoles(user);
@@ -63,8 +68,25 @@ namespace API.Controllers.AccountControllers
                     ));
         }
 
+        /// <summary>
+        /// Impersonates the given user
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///   
+        ///     {
+        ///         "UserName": "bob@test.com"
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">Returns the impersonated user</response>
+        /// <response code="400">If the user or impersonated user is not found</response>  
+        /// <response code="401">If the user is not an admin or not logged in</response> 
         [HttpPost("impersonation")]
         [Authorize(Roles = UserRoles.Admin)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult> Impersonate([FromBody] ImpersonationRequest request)
         {
             var userName = User.FindFirst(ClaimTypes.Name)?.Value;
@@ -100,7 +122,14 @@ namespace API.Controllers.AccountControllers
                     ));
         }
 
+        /// <summary>
+        /// Stops the impersonation of the given user
+        /// </summary>
+        /// <response code="200">Returns the original user</response>
+        /// <response code="400">If the user or original user is not found</response>  
         [HttpPost("stop-impersonation")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> StopImpersonation()
         {
             var user = await _userService.GetUser(User.Identity.Name);

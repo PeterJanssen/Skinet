@@ -78,7 +78,7 @@ namespace Application.Core.Services.Implementations.Identity.JWT
         public JwtAuthResult Refresh(string refreshToken, string accessToken, DateTime now)
         {
             var (principal, jwtToken) = DecodeJwtToken(accessToken);
-            if (jwtToken == null || !jwtToken.Header.Alg.Equals(SecurityAlgorithms.Sha256))
+            if (jwtToken == null || !jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256))
             {
                 throw new SecurityTokenException("Invalid token");
             }

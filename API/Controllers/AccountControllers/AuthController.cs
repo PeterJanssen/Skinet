@@ -173,9 +173,22 @@ namespace API.Controllers.AccountControllers
             }).Result;
         }
 
+        /// <summary>
+        /// Takes the old refreshtoken and returns a LoginResult with the new refreshtoken
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     {
+        ///         "refreshToken": "PUT YOUR REFRESHTOKEN HERE FROM YOUR LOGINRESULT",
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">Returns the new refreshtoken in a LoginResult</response>
+        /// <response code="401">Returns if the user is not logged in or a SecurityTokenException occurs</response>
         [HttpPost("refresh-token")]
         [Authorize]
-        public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+        public async Task<ActionResult<LoginResult>> RefreshToken([FromBody] RefreshTokenRequest request)
         {
             try
             {

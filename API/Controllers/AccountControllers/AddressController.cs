@@ -28,13 +28,12 @@ namespace API.Controllers.AccountControllers
         [Authorize]
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<AddressDto>> GetUserAddress()
         {
             var user = await _userService.FindUserByClaimsPrincipleWithAddressAsync(User);
 
-            return Mapper.Map<Address, AddressDto>(user.Address);
+            return Ok(Mapper.Map<Address, AddressDto>(user.Address));
         }
 
         /// <summary>
@@ -55,10 +54,12 @@ namespace API.Controllers.AccountControllers
         ///
         /// </remarks>
         /// <response code="200">Returns the current logged in user's updated address</response>
+        /// <response code="400">Returns if the User could not be updated</response>
         /// <response code="401">Returns if the User is not logged in</response>
         [Authorize]
         [HttpPut()]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto addressDto)
         {
