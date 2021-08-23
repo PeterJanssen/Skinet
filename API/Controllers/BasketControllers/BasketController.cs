@@ -27,11 +27,13 @@ namespace API.Controllers.BasketControllers
         /// <response code="200">Returns a basket with the provided id if the basket id does not exist returns a new basket</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<CustomerBasket>> GetBasketById(string id)
+        public async Task<ActionResult<CustomerBasketDto>> GetBasketById(string id)
         {
             var basket = await _basketRepository.GetBasketAsync(id);
 
-            return Ok(basket ?? new CustomerBasket(id));
+            var basketDto = Mapper.Map<CustomerBasket, CustomerBasketDto>(basket);
+
+            return Ok(basketDto ?? new CustomerBasketDto() { Id = id });
         }
 
         /// <summary>
@@ -58,11 +60,13 @@ namespace API.Controllers.BasketControllers
         /// <response code="200">Updates a basket with the provided id if the basket id does not exist returns a new basket</response>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<CustomerBasket>> UpdateBasket(CustomerBasketDto basketDto)
+        public async Task<ActionResult<CustomerBasketDto>> UpdateBasket(CustomerBasketDto basketDto)
         {
             var customerBasket = Mapper.Map<CustomerBasketDto, CustomerBasket>(basketDto);
 
-            var updatedBasket = await _basketRepository.UpdateBasketAsync(customerBasket);
+            var result = await _basketRepository.UpdateBasketAsync(customerBasket);
+
+            var updatedBasket= Mapper.Map<CustomerBasket, CustomerBasketDto>(result);
 
             return Ok(updatedBasket);
         }
@@ -76,12 +80,22 @@ namespace API.Controllers.BasketControllers
         ///
         ///     basket1
         /// </remarks>
-        /// <response code="200">Deletes a basket with the provided id</response>
+        /// <response code="200">Returns if the basket is deleted</response>
+        /// <response code="400">Returns if the basket could not be deleted</response>
+        /// <response code="404">Returns if the basket could not be found</response>
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task DeleteBasketAsync(string id)
+        public async Task<ActionResult> DeleteBasketAsync(string id)
         {
-            await _basketRepository.DeleteBasketAsync(id);
+            var basket = await _basketRepository.GetBasketAsync(id);
+
+            if (basket == null) return NotFound;
+
+            var result = await _basketRepository.DeleteBasketAsync(id);
+
+            if (!result) return BadRequest;
+
+            return Ok();
         }
     }
 }

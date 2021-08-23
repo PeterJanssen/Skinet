@@ -25,8 +25,7 @@ namespace Application.Core
             CreateMap<RegisterRequest, AppUser>();
 
             CreateMap<CustomerBasketDto, CustomerBasket>().ReverseMap();
-
-            CreateMap<BasketItemDto, BasketItem>();
+            CreateMap<BasketItemDto, BasketItem>().ReverseMap();
 
             CreateMap<AddressDto, OrderAddress>();
 
