@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Errors;
+using API.Extensions;
 using Application.Core.Services.Interfaces.Identity;
 using Application.Core.Services.Interfaces.Identity.JWT;
 using Application.Dtos.AccountDtos;
@@ -96,7 +97,7 @@ namespace API.Controllers.AccountControllers
         [Authorize]
         public ActionResult Logout()
         {
-            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+            var userName = HttpContext.User.GetUsername();
 
             if (userName == null) return Unauthorized;
 
@@ -192,7 +193,7 @@ namespace API.Controllers.AccountControllers
         {
             try
             {
-                var userName = User.Identity.Name;
+                var userName = HttpContext.User.GetUsername();
 
                 if (string.IsNullOrWhiteSpace(request.RefreshToken)) return Unauthorized;
 

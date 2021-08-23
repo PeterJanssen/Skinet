@@ -28,6 +28,7 @@ namespace Application.Core
             CreateMap<BasketItemDto, BasketItem>().ReverseMap();
 
             CreateMap<AddressDto, OrderAddress>();
+            CreateMap<OrderAddressDto, OrderAddress>().ReverseMap();
 
             CreateMap<Order, OrderToReturnDto>()
                 .ForMember(d => d.DeliverMethod, o => o.MapFrom(s => s.DeliverMethod.ShortName))

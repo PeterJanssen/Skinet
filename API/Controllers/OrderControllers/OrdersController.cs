@@ -57,9 +57,11 @@ namespace API.Controllers.OrdersControllers
         /// <response code="200">Returns a newly created order</response>
         /// <response code="400">Returns if the order could not be created</response>
         [HttpPost]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<OrderToReturnDto>> CreateOrder(OrderDto orderDto)
         {
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
 
@@ -75,7 +77,9 @@ namespace API.Controllers.OrdersControllers
 
             if (order == null) return BadRequest;
 
-            return Ok(order);
+            var orderToReturnDto = Mapper.Map<Order, OrderToReturnDto>(order);
+
+            return Ok(orderToReturnDto);
         }
 
         /// <summary>
@@ -84,9 +88,10 @@ namespace API.Controllers.OrdersControllers
         /// <response code="200">Returns all orders for the current user</response>
         /// <response code="401">Returns if user is not logged in</response>
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Pagination<OrderDto>>> GetOrdersForUser([FromQuery] OrderSpecParams specParams)
+        public async Task<ActionResult<Pagination<OrderToReturnDto>>> GetOrdersForUser([FromQuery] OrderSpecParams specParams)
         {
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
 
@@ -110,6 +115,7 @@ namespace API.Controllers.OrdersControllers
         /// <response code="200">Returns the order with the provided id for the current user</response>
         /// <response code="401">Returns if user is not logged in</response>
         [HttpGet("{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<OrderToReturnDto>> GetOrderByIdForUser(int id)

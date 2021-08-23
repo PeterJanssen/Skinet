@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using API.Extensions;
 using Application.Core.Services.Implementations.Identity;
 using Application.Core.Services.Interfaces.Identity;
 using Application.Core.Services.Interfaces.Identity.JWT;
@@ -89,7 +90,7 @@ namespace API.Controllers.AccountControllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult> Impersonate([FromBody] ImpersonationRequest request)
         {
-            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+            var userName = HttpContext.User.GetUsername();
 
             var user = await _userService.GetUser(User.Identity?.Name);
 
