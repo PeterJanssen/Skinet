@@ -1,6 +1,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Application.Core.Services.Interfaces.OrderServices;
+using Application.Dtos.BasketDtos;
 using Domain.Models.BasketModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -19,6 +20,7 @@ namespace API.Controllers.OrdersControllers
         //Key generated with Stripe CLI
         //Needs to be generated locally and placed in appsettings
         private readonly string _whSecret;
+        private readonly string _publishableKey;
         private readonly ILogger<PaymentsController> _logger;
         public PaymentsController(
             IPaymentService paymentService,
@@ -29,6 +31,7 @@ namespace API.Controllers.OrdersControllers
             _logger = logger;
             _paymentService = paymentService;
             _whSecret = config.GetSection("StripeSettings:WhSecret").Value;
+            _publishableKey = config.GetSection("StripeSettings:PublishableKey").Value;
         }
 
         /// <summary>
@@ -48,13 +51,36 @@ namespace API.Controllers.OrdersControllers
         [HttpPost("{basketId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<CustomerBasket>> CreateOrUpdatePaymentIntent(string basketId)
+        public async Task<ActionResult<CustomerBasketDto>> CreateOrUpdatePaymentIntent(string basketId)
         {
             var basket = await _paymentService.CreateOrUpdatePaymentIntent(basketId);
 
             if (basket == null) return BadRequest;
 
-            return basket;
+            return Ok(Mapper.Map<CustomerBasket, CustomerBasketDto>(basket));
+        }
+
+        /// <summary>
+        /// Gets the publishable key fro Stripe
+        /// </summary>
+        /// <response code="200">Returns the publishable key</response>
+        /// <response code="400">Returns if user is not logged in</response>
+        /// <response code="404">Returns if publishable key is not found</response>
+        [Authorize]
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public ActionResult GetPublishableKey()
+        {
+            if (_publishableKey != null)
+            {
+                return Ok(_publishableKey);
+            }
+            else
+            {
+                return NotFound;
+            }
         }
 
         /// <summary>

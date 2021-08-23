@@ -189,15 +189,25 @@ In the root folder run the following command
 
 ### Listening to the Stripe CLI webhook
 
-In any terminal run the following command, Stripe CLI is needed
+In any terminal run the following commands, Stripe CLI is needed
+
+`stripe login`
+
+Login into your existing Stripe account. The key will expire after 90 days.
+
+`stripe listen`
+
+Copy webhook secret into appsettings.json file(s)
 
 `stripe listen -f https://localhost:5001/api/payments/webhook -e payment_intent.succeeded,payment_intent.payment_failed`
+
+Keep the console open and you will see payment intent actions after paying for an order in the client.
 
 ## Roadmap
 
 ### Frontend
 
-- Making the frontend responsive
+- Making the frontend fully responsive
 
 ### Backend
 
@@ -205,7 +215,7 @@ In any terminal run the following command, Stripe CLI is needed
 
 - Refactor product controller
 
-- Improve HealthCheck implementation
+- Add more integration tests and refactor existing tests
 
 ### Front/Backend
 
@@ -237,6 +247,8 @@ In any terminal run the following command, Stripe CLI is needed
 
 - Moving inline style to stylesheets
 
+- HealthCheck UI
+
 ### Backend
 
 - SwaggerUI Documentation
@@ -250,6 +262,10 @@ In any terminal run the following command, Stripe CLI is needed
 - HealthCheck implementation
 
 - API Versioning
+
+- Refresh tokens
+
+- Integration tests
 
 ### Front/Backend
 
