@@ -68,7 +68,7 @@
               <ng-template #tt let-i="index" let-v="value">
                 <button
                   class="btn btn-{{ i < v ? 'warning' : 'info' }}"
-                  style="cursor: default"
+                  style="cursor: default; pointer-events: none"
                 >
                   {{ i < v ? "&#9733;" : "&#9734;" }}
                 </button>
