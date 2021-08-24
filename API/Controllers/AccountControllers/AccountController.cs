@@ -42,7 +42,7 @@ namespace API.Controllers.AccountControllers
         {
             var user = await _userService.GetUser(User.Identity.Name);
 
-            if (user == null) return BadRequest;
+            if (user == null) return BadRequest("Current user not found.");
 
             var roles = await _userService.GetUserRoles(user);
 
@@ -82,24 +82,26 @@ namespace API.Controllers.AccountControllers
         /// </remarks>
         /// <response code="200">Returns the impersonated user</response>
         /// <response code="400">If the user or impersonated user is not found</response>  
-        /// <response code="401">If the user is not an admin or not logged in</response> 
+        /// <response code="401">If the user is not logged in</response> 
+        /// <response code="403">If the user is not an admin</response> 
         [HttpPost("impersonation")]
         [Authorize(Roles = UserRoles.Admin)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> Impersonate([FromBody] ImpersonationRequest request)
         {
             var userName = HttpContext.User.GetUsername();
 
             var user = await _userService.GetUser(User.Identity?.Name);
 
-            if (user == null) return BadRequest;
+            if (user == null) return BadRequest("Current user not found.");
 
             var impersonatedUser = await _userService.GetUser(request.UserName);
             var impersonatedRoles = await _userService.GetUserRoles(impersonatedUser);
 
-            if (impersonatedRoles.Contains(UserRoles.Admin)) return BadRequest;
+            if (impersonatedRoles.Contains(UserRoles.Admin)) return BadRequest("Can't impersonate an admin.");
 
             List<Claim> claims = new()
             {
@@ -137,7 +139,7 @@ namespace API.Controllers.AccountControllers
 
             var originalUser = await _userService.GetUser(User.FindFirst("OriginalUserName")?.Value);
 
-            if (originalUser == null) return BadRequest;
+            if (originalUser == null) return BadRequest("Original user is not found.");
 
             var roles = await _userService.GetUserRoles(originalUser);
 

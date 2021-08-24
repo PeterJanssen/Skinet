@@ -25,7 +25,7 @@ namespace API.Controllers.ErrorHandlingControllers
         {
             var thing = _storeContext.Products.Find(-1);
 
-            if (thing == null) return NotFound;
+            if (thing == null) return NotFound();
 
             return Ok();
         }
@@ -43,7 +43,7 @@ namespace API.Controllers.ErrorHandlingControllers
         [HttpGet("badrequest")]
         public ActionResult GetBadRequest()
         {
-            return BadRequest;
+            return BadRequest();
         }
 
         [HttpGet("badrequest/{id}")]

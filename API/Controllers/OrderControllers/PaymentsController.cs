@@ -46,16 +46,18 @@ namespace API.Controllers.OrdersControllers
         ///     basket1
         ///</remarks>
         /// <response code="200">Returns the basket with the added payment intent</response>
-        /// <response code="400">Returns if user is not logged in</response>
+        /// <response code="400">Returns if the payment intent could not be added to basket</response>
+        /// <response code="401">Returns if user is not logged in</response>
         [Authorize]
         [HttpPost("{basketId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<CustomerBasketDto>> CreateOrUpdatePaymentIntent(string basketId)
         {
             var basket = await _paymentService.CreateOrUpdatePaymentIntent(basketId);
 
-            if (basket == null) return BadRequest;
+            if (basket == null) return BadRequest("Basket could not be updated.");
 
             return Ok(Mapper.Map<CustomerBasket, CustomerBasketDto>(basket));
         }
@@ -64,13 +66,13 @@ namespace API.Controllers.OrdersControllers
         /// Gets the publishable key fro Stripe
         /// </summary>
         /// <response code="200">Returns the publishable key</response>
-        /// <response code="400">Returns if user is not logged in</response>
+        /// <response code="401">Returns if user is not logged in</response>
         /// <response code="404">Returns if publishable key is not found</response>
         [Authorize]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult GetPublishableKey()
         {
             if (_publishableKey != null)
@@ -79,7 +81,7 @@ namespace API.Controllers.OrdersControllers
             }
             else
             {
-                return NotFound;
+                return NotFound("Publishable key for Stripe not found.");
             }
         }
 

@@ -56,6 +56,7 @@ namespace API.Controllers.OrdersControllers
         /// </remarks>
         /// <response code="200">Returns a newly created order</response>
         /// <response code="400">Returns if the order could not be created</response>
+        /// <response code="401">Returns if user is not logged in</response>
         [HttpPost]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -71,11 +72,12 @@ namespace API.Controllers.OrdersControllers
 
             var basket = await _basketRepository.GetBasketAsync(orderDto.BasketId);
 
-            if (email == null || address == null || deliveryMethod == null || basket == null) return BadRequest;
+            if (email == null || address == null || deliveryMethod == null || basket == null)
+                return NotFound("Not all necessary info could be retrieved for this order.");
 
             var order = await _orderService.CreateOrderAsync(email, deliveryMethod, basket, address);
 
-            if (order == null) return BadRequest;
+            if (order == null) return BadRequest("Order could not be created.");
 
             var orderToReturnDto = Mapper.Map<Order, OrderToReturnDto>(order);
 
@@ -114,17 +116,19 @@ namespace API.Controllers.OrdersControllers
         ///</remarks>
         /// <response code="200">Returns the order with the provided id for the current user</response>
         /// <response code="401">Returns if user is not logged in</response>
+        /// <response code="404">Returns if the order could not be found</response>
         [HttpGet("{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<OrderToReturnDto>> GetOrderByIdForUser(int id)
         {
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
 
             var order = await _orderService.GetOrderByIdAsync(id, email);
 
-            if (order == null) return NotFound;
+            if (order == null) return NotFound("Order could not be found.");
 
             return Ok(Mapper.Map<Order, OrderToReturnDto>(order));
         }

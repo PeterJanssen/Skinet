@@ -49,19 +49,17 @@ namespace API.Controllers.AccountControllers
         ///
         /// </remarks>
         /// <response code="200">Returns the current logged in user</response>
-        /// <response code="401">Returns if the User does not exist or has provided wrong credentials</response>
+        /// <response code="401">Returns if the user does not exist or has provided wrong credentials</response>
         [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<LoginResult>> Login(LoginRequest request)
         {
             var user = await _userService.GetUser(request.Email);
 
-            if (user == null) return Unauthorized;
+            if (user == null) return Unauthorized();
 
             var result = await _userService.SignUserIn(user, request.Password);
 
-            if (!result.Succeeded) return Unauthorized;
+            if (!result.Succeeded) return Unauthorized();
 
             var userRoles = await _userService.GetUserRoles(user);
 
@@ -89,17 +87,15 @@ namespace API.Controllers.AccountControllers
         /// <summary>
         /// Posts and logs the user out by removing their tokens
         /// </summary>
-        /// <response code="200">Returns Status200OK</response>
+        /// <response code="200">Returns if the user could be logged out</response>
         /// <response code="401">Returns if no user is logged in</response>
         [HttpPost("logout")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Authorize]
         public ActionResult Logout()
         {
             var userName = HttpContext.User.GetUsername();
 
-            if (userName == null) return Unauthorized;
+            if (userName == null) return Unauthorized();
 
             _jwtAuthManager.RemoveRefreshTokenByUserName(userName);
 
@@ -161,11 +157,11 @@ namespace API.Controllers.AccountControllers
 
             var result = await _userService.CreateAsync(user, registerRequest.Password);
 
-            if (!result.Succeeded) return BadRequest;
+            if (!result.Succeeded) return BadRequest("User could not be created.");
 
             var roleAddResult = await _userService.AddToRoleAsync(user);
 
-            if (!roleAddResult.Succeeded) return BadRequest;
+            if (!roleAddResult.Succeeded) return BadRequest("User could not be added to role.");
 
             return Login(new LoginRequest()
             {
@@ -186,16 +182,20 @@ namespace API.Controllers.AccountControllers
         ///
         /// </remarks>
         /// <response code="200">Returns the new refreshtoken in a LoginResult</response>
-        /// <response code="401">Returns if the user is not logged in or a SecurityTokenException occurs</response>
+        /// <response code="400">Returns if the refreshtoken could not be created</response>
+        /// <response code="401">Returns if the refreshtoken could not be found or made</response>
         [HttpPost("refresh-token")]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<LoginResult>> RefreshToken([FromBody] RefreshTokenRequest request)
         {
             try
             {
                 var userName = HttpContext.User.GetUsername();
 
-                if (string.IsNullOrWhiteSpace(request.RefreshToken)) return Unauthorized;
+                if (string.IsNullOrWhiteSpace(request.RefreshToken)) return Unauthorized();
 
                 var accessToken = await HttpContext.GetTokenAsync("Bearer", "access_token");
                 var jwtResult = _jwtAuthManager.Refresh(request.RefreshToken, accessToken, DateTime.Now);
@@ -214,7 +214,7 @@ namespace API.Controllers.AccountControllers
             }
             catch (SecurityTokenException)
             {
-                return Unauthorized;
+                return Unauthorized();
             }
         }
 

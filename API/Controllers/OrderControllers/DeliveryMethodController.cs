@@ -25,7 +25,7 @@ namespace API.Controllers.OrdersControllers
         /// </summary>
         /// <response code="200">Returns all delivery methods</response>
         /// <response code="401">Returns if user is not logged in</response>
-        [HttpGet()]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<IReadOnlyList<DeliveryMethodDto>>> GetDeliveryMethods()

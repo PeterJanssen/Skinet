@@ -23,10 +23,9 @@ namespace API.Controllers.AccountControllers
         /// Gets the current logged in user's address
         /// </summary>
         /// <response code="200">Returns the current logged in user's address</response>
-        /// <response code="204">Returns if the current logged in user does not have an address</response>
         /// <response code="401">Returns if the User is not logged in</response>
         [Authorize]
-        [HttpGet()]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<AddressDto>> GetUserAddress()
@@ -57,7 +56,7 @@ namespace API.Controllers.AccountControllers
         /// <response code="400">Returns if the User could not be updated</response>
         /// <response code="401">Returns if the User is not logged in</response>
         [Authorize]
-        [HttpPut()]
+        [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -73,7 +72,7 @@ namespace API.Controllers.AccountControllers
                 return Ok(Mapper.Map<Address, AddressDto>(user.Address));
             }
 
-            return BadRequest;
+            return BadRequest("User could not be updated.");
         }
 
     }

@@ -85,15 +85,17 @@ namespace API.Controllers.BasketControllers
         /// <response code="404">Returns if the basket could not be found</response>
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteBasketAsync(string id)
         {
             var basket = await _basketRepository.GetBasketAsync(id);
 
-            if (basket == null) return NotFound;
+            if (basket == null) return NotFound("No basket found.");
 
             var result = await _basketRepository.DeleteBasketAsync(id);
 
-            if (!result) return BadRequest;
+            if (!result) return BadRequest("Basket could not be removed.");
 
             return Ok();
         }

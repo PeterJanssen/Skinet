@@ -13,10 +13,10 @@ namespace API.Controllers
 
         protected IMapper Mapper => _mapper ??= HttpContext.RequestServices.GetService<IMapper>();
 
-        protected new NotFoundObjectResult NotFound => NotFound(new ApiResponse(404));
+        protected NotFoundObjectResult NotFound(string message = null) => NotFound(new ApiResponse(404, message));
 
-        protected new BadRequestObjectResult BadRequest => BadRequest(new ApiResponse(400));
+        protected BadRequestObjectResult BadRequest(string message = null) => BadRequest(new ApiResponse(400, message));
 
-        protected new UnauthorizedObjectResult Unauthorized => Unauthorized(new ApiResponse(401));
+        protected UnauthorizedObjectResult Unauthorized(string message = null) => Unauthorized(new ApiResponse(401, message));
     }
 }
