@@ -24,10 +24,11 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 - .Net Core 5
 - Entity Framework
 - Identity
-- JWT
+- JWT with refresh tokens
+- Integration tests
 - Swagger
 - C# Generics
-- Repository and Unit of Work Pattern
+- Generic Repository and Unit of Work Pattern
 - Sorting, Filtering, Searching and Pagination
 - Validation
 - Specification Pattern
@@ -40,7 +41,7 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 
 #### Frontend
 
-- Angular 11
+- Angular 12
 - JWT
 - SCSS
 - Caching with Redis
@@ -109,13 +110,13 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 
 - .NET 5.0.103
 
-- Angular 11.2.4
+- Angular 12.2.3
 
-- Node >= 10.13.0
+- Node = ^12.14.1 || >=14.0.0
 
-- npm ^6.11.0 || ^7.5.6
+- npm ^6.13.4 || >=6.14.4
 
-- Angular CLI 11.2.4
+- Angular CLI 12.2.2
 
 - Docker Desktop
 
@@ -209,6 +210,10 @@ Keep the console open and you will see payment intent actions after paying for a
 
 - Making the frontend fully responsive
 
+- Filter/search/ordering of products on product admin dashboard
+
+- Testing
+
 ### Backend
 
 - Refactor code for orders
@@ -227,13 +232,19 @@ Keep the console open and you will see payment intent actions after paying for a
 
 - Email confirmation
 
+- User dashboard for admin
+
 - Password forget feature
 
 - Password reset feature
 
-- Product review system
+- Unit Testing
 
-- Testing
+- Stock dashboard
+
+- Review dashboard
+
+- Seller role with access to Product/Stock/Review/Order dashboard
 
 ## Roadmap_Done
 
@@ -248,6 +259,8 @@ Keep the console open and you will see payment intent actions after paying for a
 - Moving inline style to stylesheets
 
 - HealthCheck UI
+
+- Updated from Angular version 11 to 12
 
 ### Backend
 
@@ -284,6 +297,8 @@ Keep the console open and you will see payment intent actions after paying for a
 - Product add review feature
 
 ## Current_Bugs
+
+- Will throw a 401 Unauthorized every hour, even though the user is logged in, because refresh tokens have not been implemented yet.
 
 ## Fixed_Bugs
 
