@@ -160,9 +160,15 @@ Creates and/or seeds the databases if they are non-existent
 
 ### Adding migration
 
-In any folder run the following command, replace the text between #
+In the package manager or console run the following command, replace the text between #
 
-`dotnet ef migrations add "#Name of migration#" -p .\Infrastructure\ -s .\API\ -c StoreContext -o Data/Migrations`
+`dotnet ef migrations add "#Name of migration#" -p .\Persistence\ -s .\API\ -c StoreContext -o Migrations`
+
+### Removing migration
+
+In the package manager or console run the following command
+
+`dotnet ef migrations remove -p .\Persistence\ -s .\API\ -c StoreContext`
 
 ### Running the backend
 
