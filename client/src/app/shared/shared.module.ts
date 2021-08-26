@@ -22,6 +22,7 @@ import { ImageCropperModule } from 'ngx-image-cropper';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { RatingModule } from 'ngx-bootstrap/rating';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { ConfirmDialogComponent } from './modals/confirm-dialog/confirm-dialog.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     StepperComponent,
     BasketSummaryComponent,
     PhotoWidgetComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     CommonModule,

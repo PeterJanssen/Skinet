@@ -3,6 +3,7 @@ import { ShopService } from '../shop/shop.service';
 import { AdminService } from './admin.service';
 import { IProduct } from '../shared/models/product';
 import { ShopParams } from '../shared/models/shopParams';
+import { ConfirmService } from '../shared/services/confirm.service';
 
 @Component({
   selector: 'app-admin',
@@ -16,7 +17,8 @@ export class AdminComponent implements OnInit {
 
   constructor(
     private shopService: ShopService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private confirmService: ConfirmService
   ) {}
 
   ngOnInit(): void {
@@ -47,12 +49,18 @@ export class AdminComponent implements OnInit {
   }
 
   deleteProduct(id: number) {
-    this.adminService.deleteProduct(id).subscribe((response: any) => {
-      this.products.splice(
-        this.products.findIndex((p) => p.id === id),
-        1
-      );
-      this.totalCount--;
-    });
+    this.confirmService
+      .confirm('Confirm delete product', 'This cannot be undone')
+      .subscribe((result) => {
+        if (result) {
+          this.adminService.deleteProduct(id).subscribe(() => {
+            this.products.splice(
+              this.products.findIndex((p) => p.id === id),
+              1
+            );
+            this.totalCount--;
+          });
+        }
+      });
   }
 }

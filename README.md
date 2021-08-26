@@ -268,6 +268,8 @@ Keep the console open and you will see payment intent actions after paying for a
 
 - Updated from Angular version 11 to 12
 
+- Confirm dialog for unrecoverable actions like deleting a product
+
 ### Backend
 
 - SwaggerUI Documentation
