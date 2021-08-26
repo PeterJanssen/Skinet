@@ -17,11 +17,11 @@ export class AdminComponent implements OnInit {
   constructor(
     private shopService: ShopService,
     private adminService: AdminService
-  ) {
-    this.shopParams = this.shopService.getShopParams();
-  }
+  ) {}
 
   ngOnInit(): void {
+    this.shopParams = new ShopParams();
+    this.shopService.setShopParams(this.shopParams);
     this.getProducts();
   }
 
