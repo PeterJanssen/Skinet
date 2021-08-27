@@ -177,7 +177,7 @@ namespace API.Controllers.ProductsControllers
 
             if (product == null) return NotFound("Product not found.");
 
-            product.AddReview(ProductReview.Rating, ProductReview.ReviewText);
+            product.AddReview(ProductReview.Rating, ProductReview.ReviewText, ProductReview.ReviewerName);
 
             var result = await _productService.UpdateProductAsync(product);
 

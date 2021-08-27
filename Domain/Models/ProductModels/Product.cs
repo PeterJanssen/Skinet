@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,12 +50,14 @@ namespace Domain.Models.ProductModels
             }
         }
 
-        public void AddReview(int rating, string review)
+        public void AddReview(int rating, string review, string reviewerName = "Anonymous")
         {
             var productReview = new Review
             {
                 Rating = rating,
-                ReviewText = review
+                ReviewText = review,
+                Created = DateTime.Now,
+                ReviewerName = reviewerName
             };
 
             _reviews.Add(productReview);

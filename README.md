@@ -65,6 +65,10 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 
 ![Shop](ReadMeImages/Shop.PNG 'Shop')
 
+### Product_Detail
+
+![Product_Detail](ReadMeImages/ProductDetail.PNG 'Product Detail')
+
 ### Basket
 
 ![Basket](ReadMeImages/Basket.PNG 'Basket')
@@ -84,6 +88,10 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 ### Register
 
 ![Register](ReadMeImages/Register.PNG 'Register')
+
+### Account
+
+![Account](ReadMeImages/MyAccount.PNG 'Account')
 
 ### Admin
 
@@ -251,6 +259,7 @@ Keep the console open and you will see payment intent actions after paying for a
 - Updated from Angular version 11 to 12
 - Confirm dialog for unrecoverable actions like deleting a product
 - (Edit) My Account page
+- Reusable filter and sorting components
 
 ### Backend
 

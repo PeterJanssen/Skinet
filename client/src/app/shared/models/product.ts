@@ -21,6 +21,8 @@ export interface IPhoto {
 export interface IReview {
   productId: number;
   reviewText: string;
+  reviewerName: string;
+  created: Date;
   rating: number;
 }
 
