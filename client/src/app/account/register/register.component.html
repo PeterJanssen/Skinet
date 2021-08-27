@@ -18,6 +18,11 @@
         [label]="'Password'"
         [type]="'password'"
       ></app-text-input>
+      <app-text-input
+        formControlName="confirmPassword"
+        [label]="'Confirm Password'"
+        [type]="'password'"
+      ></app-text-input>
 
       <ul class="text-danger list-unstyled" *ngIf="errors">
         <li *ngFor="let error of errors">
@@ -25,7 +30,11 @@
         </li>
       </ul>
 
-      <button class="btn btn-lg btn-primary btn-block" type="submit">
+      <button
+        [disabled]="!registerForm.valid"
+        class="btn btn-lg btn-primary btn-block"
+        type="submit"
+      >
         Register
       </button>
     </form>

@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {
+  AbstractControl,
   AsyncValidatorFn,
   FormBuilder,
   FormGroup,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -17,7 +19,7 @@ import { AccountService } from '../account.service';
 })
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
-  errors: string[];
+  errors: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -41,7 +43,21 @@ export class RegisterComponent implements OnInit {
         [this.validateEmailNotTaken()],
       ],
       password: [null, Validators.required],
+      confirmPassword: [
+        '',
+        [Validators.required, this.matchValues('password')],
+      ],
     });
+    this.registerForm.controls.password.valueChanges.subscribe(() => {
+      this.registerForm.controls.confirmPassword.updateValueAndValidity();
+    });
+  }
+
+  matchValues(matchTo: string): ValidatorFn {
+    return (control: AbstractControl) =>
+      control?.value === control?.parent?.controls[matchTo].value
+        ? null
+        : { isMatching: true };
   }
 
   onSubmit(): void {

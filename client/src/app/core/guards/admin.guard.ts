@@ -8,12 +8,17 @@ import {
 import { AccountService } from '../../account/account.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AdminGuard implements CanActivate {
-  constructor(private accountService: AccountService, private router: Router) {}
+  constructor(
+    private accountService: AccountService,
+    private router: Router,
+    private toastr: ToastrService
+  ) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
@@ -24,6 +29,7 @@ export class AdminGuard implements CanActivate {
         if (admin) {
           return true;
         }
+        this.toastr.error('You are not authorized for this action.');
         this.router.navigateByUrl('/');
       })
     );
