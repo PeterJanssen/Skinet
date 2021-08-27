@@ -123,11 +123,16 @@
       </select>
     </div>
   </div>
-  <button
-    [disabled]="!productForm.valid"
-    type="submit"
-    class="btn btn-primary my-3 float-right"
-  >
-    Submit
-  </button>
+  <div class="float-right">
+    <button type="button" class="btn btn-warning m-3" (click)="cancel()">
+      Cancel
+    </button>
+    <button
+      [disabled]="!productForm.valid"
+      type="submit"
+      class="btn btn-primary my-3"
+    >
+      Submit
+    </button>
+  </div>
 </form>

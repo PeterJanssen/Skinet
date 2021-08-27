@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { RouterModule } from '@angular/router';
@@ -8,6 +8,8 @@ import { ServerErrorComponent } from './server-error/server-error.component';
 import { ToastrModule } from 'ngx-toastr';
 import { SectionHeaderComponent } from './section-header/section-header.component';
 import { BreadcrumbModule } from 'xng-breadcrumb';
+import { AuthService } from '../account/auth.service';
+import { appInitializer } from '.';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
@@ -27,6 +29,14 @@ import { SharedModule } from '../shared/shared.module';
       positionClass: 'toast-bottom-right',
       preventDuplicates: true,
     }),
+  ],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitializer,
+      multi: true,
+      deps: [AuthService],
+    },
   ],
   exports: [NavBarComponent, SectionHeaderComponent],
 })

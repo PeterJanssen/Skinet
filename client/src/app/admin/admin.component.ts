@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ShopService } from '../shop/shop.service';
 import { AdminService } from './admin.service';
-import { IProduct } from '../shared/models/product';
-import { ShopParams } from '../shared/models/shopParams';
-import { ConfirmService } from '../shared/services/confirm.service';
+import { ConfirmService, IProduct, ShopParams } from '../shared';
 
 @Component({
   selector: 'app-admin',

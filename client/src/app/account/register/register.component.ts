@@ -7,10 +7,10 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of, timer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { AccountService } from '../account.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-register',
@@ -20,15 +20,19 @@ import { AccountService } from '../account.service';
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
   errors: string[] = [];
+  returnUrl: string;
 
   constructor(
     private fb: FormBuilder,
-    private accountService: AccountService,
-    private router: Router
+    private authService: AuthService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.createRegisterForm();
+    this.returnUrl =
+      this.activatedRoute.snapshot.queryParams.returnUrl || '/shop';
   }
 
   createRegisterForm(): void {
@@ -61,8 +65,8 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.accountService.register(this.registerForm.value).subscribe(
-      () => this.router.navigateByUrl('/shop'),
+    this.authService.register(this.registerForm.value).subscribe(
+      () => this.router.navigateByUrl(this.returnUrl),
       (error) => {
         console.log(error);
         this.errors = error.errors;
@@ -77,10 +81,14 @@ export class RegisterComponent implements OnInit {
           if (!control.value) {
             return of(null);
           }
-          return this.accountService
+          return this.authService
             .checkEmailExists(control.value)
             .pipe(map((res) => (res ? { emailExists: true } : null)));
         })
       );
+  }
+
+  goToLoginForm(): void {
+    this.router.navigateByUrl(`/account/login?returnUrl=${this.returnUrl}`);
   }
 }

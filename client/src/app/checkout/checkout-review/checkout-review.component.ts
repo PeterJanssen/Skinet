@@ -3,7 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, Subscription } from 'rxjs';
 import { BasketService } from 'src/app/basket/basket.service';
-import { IBasket } from 'src/app/shared/models/basket';
+import { IBasket } from 'src/app/shared';
 
 @Component({
   selector: 'app-checkout-review',

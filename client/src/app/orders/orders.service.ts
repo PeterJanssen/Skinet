@@ -3,9 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { IOrder } from '../shared/models/order';
-import { OrderParams } from '../shared/models/orderParams';
-import { OrderPagination } from '../shared/models/pagination';
+import { IOrder, OrderPagination, OrderParams } from '../shared';
 
 @Injectable({
   providedIn: 'root',

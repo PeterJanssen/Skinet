@@ -16,7 +16,7 @@ namespace Application.Dtos.AccountDtos
         [JsonPropertyName("originalUserName")]
         public string OriginalUserName { get; set; }
 
-        [JsonPropertyName("token")]
+        [JsonPropertyName("accessToken")]
         public string AccessToken { get; set; }
 
         [JsonPropertyName("refreshToken")]

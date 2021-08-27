@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { IOrder } from '../shared/models/order';
-import { OrderParams } from '../shared/models/orderParams';
+import { IOrder, OrderParams } from '../shared';
 import { OrdersService } from './orders.service';
 
 @Component({

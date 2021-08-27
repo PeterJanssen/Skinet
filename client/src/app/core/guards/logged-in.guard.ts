@@ -7,30 +7,26 @@ import {
 } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/account/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AdminGuard implements CanActivate {
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private toastr: ToastrService
-  ) {}
+export class LoggedInGuard implements CanActivate {
+  constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(
-    next: ActivatedRouteSnapshot,
+    route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> {
-    return this.authService.isAdmin$.pipe(
-      map((admin) => {
-        if (admin) {
+    return this.authService.user$.pipe(
+      map((user) => {
+        if (!user) {
           return true;
+        } else {
+          this.router.navigate(['/']);
+          return false;
         }
-        this.toastr.error('You are not authorized for this action.');
-        this.router.navigateByUrl('/');
       })
     );
   }

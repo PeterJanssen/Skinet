@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BasketService } from 'src/app/basket/basket.service';
-import { IProduct, IReview } from 'src/app/shared/models/product';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ShopService } from '../shop.service';
 import {
@@ -12,6 +11,7 @@ import {
 } from '@kolkov/ngx-gallery';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ProductReviewModalComponent } from './product-review-modal/product-review-modal.component';
+import { IProduct, IReview } from 'src/app/shared';
 
 @Component({
   selector: 'app-product-details',

@@ -2,8 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ProductFormValues } from '../../shared/models/product';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../admin.service';
-import { IBrand } from '../../shared/models/brand';
-import { IType } from '../../shared/models/productType';
+import { IBrand, IType } from 'src/app/shared';
 
 @Component({
   selector: 'app-edit-product-form',
@@ -41,9 +40,13 @@ export class EditProductFormComponent implements OnInit {
         });
     } else {
       const newProduct = { ...product, price: +product.price };
-      this.adminService.createProduct(newProduct).subscribe((response: any) => {
+      this.adminService.createProduct(newProduct).subscribe(() => {
         this.router.navigate(['/admin']);
       });
     }
+  }
+
+  cancel() {
+    this.router.navigate(['/admin']);
   }
 }

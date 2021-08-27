@@ -42,7 +42,7 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 #### Frontend
 
 - Angular 12
-- JWT
+- JWT with refresh tokens
 - SCSS
 - Caching with Redis
 - Sorting, Filtering, Searching and Pagination
@@ -215,41 +215,28 @@ Keep the console open and you will see payment intent actions after paying for a
 ### Frontend
 
 - Making the frontend fully responsive
-
 - Filter/search/ordering of products on product admin dashboard
-
 - Testing
+- (Edit) My Account page
 
 ### Backend
 
 - Refactor code for orders
-
 - Refactor product controller
-
 - Add more integration tests and refactor existing tests
 
 ### Front/Backend
 
 - Order filtering by ordered items or date
-
 - Order caching
-
 - Order email
-
 - Email confirmation
-
 - User dashboard for admin
-
 - Password forget feature
-
 - Password reset feature
-
 - Unit Testing
-
 - Stock dashboard
-
 - Review dashboard
-
 - Seller role with access to Product/Stock/Review/Order dashboard
 
 ## Roadmap_Done
@@ -257,62 +244,42 @@ Keep the console open and you will see payment intent actions after paying for a
 ### Frontend
 
 - Migrated to ESLint and fixed Lint Errors
-
 - Improve Home page
-
 - Improve Nav Bar
-
 - Moving inline style to stylesheets
-
 - HealthCheck UI
-
 - Updated from Angular version 11 to 12
-
 - Confirm dialog for unrecoverable actions like deleting a product
 
 ### Backend
 
 - SwaggerUI Documentation
-
 - Moved ProductRepo calls to ProductService
-
 - Added Profiler (MiniProfiler)
-
 - Logging events and HTTP requests in console, separate files in Logs folder and to PostGreSQL database table with Serilog
-
 - HealthCheck implementation
-
 - API Versioning
-
-- Refresh tokens
-
 - Integration tests
 
 ### Front/Backend
 
 - Order filtering by status
-
 - Order sorting by date or price
-
 - Reset order filters
-
 - Order pagination
-
 - Inventory system
-
 - Product picture feature
-
 - Product add review feature
+- Refresh tokens
 
 ## Current_Bugs
-
-- Will throw a 401 Unauthorized every hour, even though the user is logged in, because refresh tokens have not been implemented yet.
 
 ## Fixed_Bugs
 
 ### Shop
 
 - When going to the next page of products in the shop, the caching is gone of the detailed productpage of the previous paginated products
+- Will throw a 401 Unauthorized every hour, even though the user is logged in, because refresh tokens have not been implemented yet.
 
 ### Orders
 

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { fromEvent, Observable } from 'rxjs';
 import { debounceTime, map, startWith } from 'rxjs/operators';
-import { AccountService } from 'src/app/account/account.service';
+import { AuthService } from 'src/app/account/auth.service';
 import { BasketService } from 'src/app/basket/basket.service';
 import { IBasket } from 'src/app/shared/models/basket';
-import { IUser } from 'src/app/shared/models/user';
+import { IApplicationUser } from 'src/app/shared/models/user';
 
 @Component({
   selector: 'app-nav-bar',
@@ -13,20 +13,20 @@ import { IUser } from 'src/app/shared/models/user';
 })
 export class NavBarComponent implements OnInit {
   basket$: Observable<IBasket>;
-  currentUser$: Observable<IUser>;
+  currentUser$: Observable<IApplicationUser>;
   isAdmin$: Observable<boolean>;
   isScreenSmall$: Observable<boolean>;
   isNavBarOpen: boolean;
 
   constructor(
     private basketService: BasketService,
-    private accountService: AccountService
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.basket$ = this.basketService.basket$;
-    this.currentUser$ = this.accountService.currentUser$;
-    this.isAdmin$ = this.accountService.isAdmin$;
+    this.currentUser$ = this.authService.user$;
+    this.isAdmin$ = this.authService.isAdmin$;
 
     const checkScreenSize = () => document.body.offsetWidth < 620;
 
@@ -45,6 +45,6 @@ export class NavBarComponent implements OnInit {
   }
 
   logout(): void {
-    this.accountService.logout();
+    this.authService.logout();
   }
 }

@@ -51,6 +51,7 @@ namespace API.Controllers.AccountControllers
         /// <response code="200">Returns the current logged in user</response>
         /// <response code="401">Returns if the user does not exist or has provided wrong credentials</response>
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<ActionResult<LoginResult>> Login(LoginRequest request)
         {
             var user = await _userService.GetUser(request.Email);
@@ -88,14 +89,13 @@ namespace API.Controllers.AccountControllers
         /// Posts and logs the user out by removing their tokens
         /// </summary>
         /// <response code="200">Returns if the user could be logged out</response>
-        /// <response code="401">Returns if no user is logged in</response>
         [HttpPost("logout")]
-        [Authorize]
+        [AllowAnonymous]
         public ActionResult Logout()
         {
             var userName = HttpContext.User.GetUsername();
 
-            if (userName == null) return Unauthorized();
+            if (userName == null) return Ok();
 
             _jwtAuthManager.RemoveRefreshTokenByUserName(userName);
 

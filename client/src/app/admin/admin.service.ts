@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { ProductFormValues } from '../shared/models/product';
 import { HttpClient } from '@angular/common/http';
+import { ProductFormValues } from '../shared';
 
 @Injectable({
   providedIn: 'root',

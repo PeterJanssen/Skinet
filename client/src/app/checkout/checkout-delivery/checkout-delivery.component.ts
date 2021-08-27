@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BasketService } from 'src/app/basket/basket.service';
-import { IDeliveryMethod } from 'src/app/shared/models/deliveryMethod';
+import { IDeliveryMethod } from 'src/app/shared';
 import { CheckoutService } from '../checkout.service';
 
 @Component({

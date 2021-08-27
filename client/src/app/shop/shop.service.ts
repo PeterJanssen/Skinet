@@ -1,13 +1,16 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IBrand } from '../shared/models/brand';
-import { ProductPagination } from '../shared/models/pagination';
-import { IType } from '../shared/models/ProductType';
 import { map } from 'rxjs/operators';
-import { ShopParams } from '../shared/models/shopParams';
-import { IProduct, IReview } from '../shared/models/product';
 import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import {
+  IBrand,
+  IProduct,
+  IReview,
+  IType,
+  ProductPagination,
+  ShopParams,
+} from '../shared';
 
 @Injectable({
   providedIn: 'root',

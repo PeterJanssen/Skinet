@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { AccountService } from 'src/app/account/account.service';
-import { IAddress } from 'src/app/shared/models/address';
+import { AddressService } from 'src/app/account/address.service';
+import { IAddress } from 'src/app/shared';
 
 @Component({
   selector: 'app-checkout-address',
@@ -13,7 +13,7 @@ export class CheckoutAddressComponent implements OnInit {
   @Input() checkoutForm: FormGroup;
 
   constructor(
-    private accountService: AccountService,
+    private accountService: AddressService,
     private toastr: ToastrService
   ) {}
 

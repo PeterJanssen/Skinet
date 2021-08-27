@@ -11,8 +11,7 @@ import { FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { BasketService } from 'src/app/basket/basket.service';
-import { IBasket } from 'src/app/shared/models/basket';
-import { IOrderToCreate } from 'src/app/shared/models/order';
+import { IBasket, IOrderToCreate } from 'src/app/shared';
 import { CheckoutService } from '../checkout.service';
 
 // eslint-disable-next-line no-var

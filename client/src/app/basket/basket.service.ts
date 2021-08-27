@@ -8,9 +8,9 @@ import {
   IBasket,
   IBasketItem,
   IBasketTotals,
-} from '../shared/models/basket';
-import { IDeliveryMethod } from '../shared/models/deliveryMethod';
-import { IProduct } from '../shared/models/product';
+  IDeliveryMethod,
+  IProduct,
+} from '../shared';
 
 @Injectable({
   providedIn: 'root',

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IOrder } from 'src/app/shared/models/order';
+import { IOrder } from 'src/app/shared';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { OrdersService } from '../orders.service';
 
