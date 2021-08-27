@@ -24,6 +24,8 @@ import {
   BasketSummaryComponent,
   PhotoWidgetComponent,
   ConfirmDialogComponent,
+  SortSelectorComponent,
+  CollapsibleFilterListComponent,
 } from '.';
 
 @NgModule({
@@ -36,6 +38,8 @@ import {
     BasketSummaryComponent,
     PhotoWidgetComponent,
     ConfirmDialogComponent,
+    SortSelectorComponent,
+    CollapsibleFilterListComponent,
   ],
   imports: [
     CommonModule,
@@ -78,6 +82,8 @@ import {
     PhotoWidgetComponent,
     RatingModule,
     ModalModule,
+    CollapsibleFilterListComponent,
+    SortSelectorComponent,
   ],
 })
 export class SharedModule {}

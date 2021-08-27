@@ -1,18 +1,3 @@
-.list-group-item {
-  cursor: pointer;
-  padding: 10px 20px;
-  font-size: 1.1em;
-
-  &:focus {
-    outline: none;
-  }
-
-  &:not(.active):hover {
-    color: #fff;
-    background-color: rgba(120, 194, 173, 0.705);
-  }
-}
-
 .search {
   width: 300px;
 }

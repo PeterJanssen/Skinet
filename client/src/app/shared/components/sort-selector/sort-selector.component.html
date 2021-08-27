@@ -1,0 +1,13 @@
+<h5 class="text-warning ml-3 mt-4 mb-3">{{ title }}</h5>
+<select
+  class="custom-select mb-4"
+  (change)="onSortSelected($event.target.value)"
+>
+  <option
+    *ngFor="let sort of sortOptions"
+    [selected]="params.sort === sort.value"
+    [value]="sort.value"
+  >
+    {{ sort.name }}
+  </option>
+</select>

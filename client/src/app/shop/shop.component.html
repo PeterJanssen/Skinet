@@ -2,91 +2,26 @@
   <div class="row">
     <section class="col-3">
       <ng-container *ngIf="types && brands">
-        <h5 class="text-warning ml-3 mt-4 mb-3">Sort</h5>
-        <select
-          class="custom-select mb-4"
-          (change)="onSortSelected($event.target.value)"
-        >
-          <option
-            *ngFor="let sort of sortOptions"
-            [selected]="shopParams.sort === sort.value"
-            [value]="sort.value"
-          >
-            {{ sort.name }}
-          </option>
-        </select>
+        <app-sort-selector
+          title="Sort Products"
+          [sortOptions]="sortOptions"
+          [params]="shopParams"
+          (change)="onSortSelected()"
+        ></app-sort-selector>
 
-        <div
-          class="row ml-3 my-3"
-          role="button"
-          (click)="isBrandsCollapsed = !isBrandsCollapsed"
-          [attr.aria-expanded]="!isBrandsCollapsed"
-          aria-controls="collapseBrands"
-        >
-          <h5 class="text-warning">Brands</h5>
-          <span class="ml-auto mr-4"
-            ><i
-              class="fa fa-chevron-down"
-              [class.fa-chevron-down]="isBrandsCollapsed"
-              [class.fa-chevron-up]="!isBrandsCollapsed"
-              aria-hidden="true"
-            ></i
-          ></span>
-        </div>
+        <app-collapsible-filter-list
+          title="Brands"
+          [filters]="brands"
+          [id]="this.shopParams.brandId"
+          (newFilterIdSelected)="onBrandSelected($event)"
+        ></app-collapsible-filter-list>
 
-        <div
-          id="collapseBrands"
-          [collapse]="isBrandsCollapsed"
-          [isAnimated]="true"
-        >
-          <ul class="list-group">
-            <li
-              class="list-group-item"
-              *ngFor="let brand of brands"
-              [class.active]="brand.id === this.shopParams.brandId"
-              [value]="brand.id"
-              (click)="onBrandSelected(brand.id)"
-            >
-              {{ brand.name }}
-            </li>
-          </ul>
-        </div>
-
-        <div
-          class="row ml-3 my-3"
-          role="button"
-          (click)="isTypesCollapsed = !isTypesCollapsed"
-          [attr.aria-expanded]="!isTypesCollapsed"
-          aria-controls="collapseTypes"
-        >
-          <h5 class="text-warning">Types</h5>
-          <span class="ml-auto mr-4"
-            ><i
-              class="fa"
-              aria-hidden="true"
-              [class.fa-chevron-down]="isTypesCollapsed"
-              [class.fa-chevron-up]="!isTypesCollapsed"
-            ></i
-          ></span>
-        </div>
-
-        <div
-          id="collapseTypes"
-          [collapse]="isTypesCollapsed"
-          [isAnimated]="true"
-        >
-          <ul class="list-group">
-            <li
-              class="list-group-item"
-              *ngFor="let type of types"
-              [class.active]="type.id === this.shopParams.typeId"
-              [value]="type.id"
-              (click)="onTypeSelected(type.id)"
-            >
-              {{ type.name }}
-            </li>
-          </ul>
-        </div>
+        <app-collapsible-filter-list
+          title="Types"
+          [filters]="types"
+          [id]="this.shopParams.typeId"
+          (newFilterIdSelected)="onTypeSelected($event)"
+        ></app-collapsible-filter-list>
       </ng-container>
     </section>
 

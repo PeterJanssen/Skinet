@@ -19,8 +19,6 @@ export class ShopComponent implements OnInit {
     { name: 'Price: Low to High', value: 'priceAsc' },
     { name: 'Price: High to Low', value: 'priceDesc' },
   ];
-  isBrandsCollapsed = false;
-  isTypesCollapsed = false;
 
   constructor(private shopService: ShopService) {
     this.shopParams = shopService.getShopParams();
@@ -82,11 +80,13 @@ export class ShopComponent implements OnInit {
     this.getProducts();
   }
 
-  onSortSelected(sort: string): void {
-    const params = this.shopService.getShopParams();
-    params.sort = sort;
-    this.shopService.setShopParams(params);
+  onSortSelected(): void {
+    this.shopService.setShopParams(this.shopParams);
     this.getProducts();
+  }
+
+  newOnSortSelected(test: string): void {
+    console.log(test);
   }
 
   onPageChanged(event: any): void {

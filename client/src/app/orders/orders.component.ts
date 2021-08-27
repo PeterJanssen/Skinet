@@ -20,11 +20,10 @@ export class OrdersComponent implements OnInit {
   ];
 
   statusFilterOptions = [
-    { name: 'Pending', value: 0 },
-    { name: 'Payment Received', value: 1 },
-    { name: 'Payment Failed', value: 2 },
+    { name: 'Pending', id: 0 },
+    { name: 'Payment Received', id: 1 },
+    { name: 'Payment Failed', id: 2 },
   ];
-  isStatusCollapsed = false;
 
   constructor(private orderService: OrdersService) {
     this.orderParams = orderService.getOrderParams();
@@ -44,16 +43,14 @@ export class OrdersComponent implements OnInit {
     );
   }
 
-  onSortSelected(sort: string): void {
-    const params = this.orderService.getOrderParams();
-    params.sort = sort;
-    this.orderService.setOrderParams(params);
+  onSortSelected(): void {
+    this.orderService.setOrderParams(this.orderParams);
     this.getOrders();
   }
 
-  onStatusSelected(status: number): void {
+  onStatusSelected(id: number): void {
     const params = this.orderService.getOrderParams();
-    params.status = status;
+    params.status = id;
     params.pageNumber = 1;
     this.orderService.setOrderParams(params);
     this.getOrders();
