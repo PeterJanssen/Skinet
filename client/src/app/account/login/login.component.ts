@@ -35,10 +35,12 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.authService.login(this.loginForm.value).subscribe(
-      () => this.router.navigateByUrl(this.returnUrl),
-      (error) => console.log(error)
-    );
+    if (this.loginForm.valid) {
+      this.authService.login(this.loginForm.value).subscribe(
+        () => this.router.navigateByUrl(this.returnUrl),
+        (error) => console.log(error)
+      );
+    }
   }
 
   goToRegisterForm(): void {

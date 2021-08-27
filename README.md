@@ -217,7 +217,7 @@ Keep the console open and you will see payment intent actions after paying for a
 - Making the frontend fully responsive
 - Filter/search/ordering of products on product admin dashboard
 - Testing
-- (Edit) My Account page
+- Making Address Form a reusable component
 
 ### Backend
 
@@ -250,6 +250,7 @@ Keep the console open and you will see payment intent actions after paying for a
 - HealthCheck UI
 - Updated from Angular version 11 to 12
 - Confirm dialog for unrecoverable actions like deleting a product
+- (Edit) My Account page
 
 ### Backend
 

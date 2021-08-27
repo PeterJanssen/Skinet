@@ -13,14 +13,14 @@ export class CheckoutAddressComponent implements OnInit {
   @Input() checkoutForm: FormGroup;
 
   constructor(
-    private accountService: AddressService,
+    private addressService: AddressService,
     private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {}
 
   saveUserAddress(): void {
-    this.accountService
+    this.addressService
       .updateUserAddress(this.checkoutForm.get('addressForm').value)
       .subscribe(
         (address: IAddress) => {

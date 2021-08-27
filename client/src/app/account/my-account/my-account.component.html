@@ -1,1 +1,77 @@
-<p>my-account works!</p>
+<div class="container mt-5">
+  <div class="d-flex justify-content-center">
+    <div class="row m-3">
+      <div class="col-sm-6 card">
+        <div class="text-center my-4">
+          <h1 class="h3 mb-3 font-weight-normal">My Account</h1>
+        </div>
+        <ng-container *ngIf="currentUser$ | async as user">
+          <div class="row">
+            <div class="form-group col-sm-12 col-lg-6">
+              <h4 class="h3 mb-3 font-weight-normal">DisplayName:</h4>
+              <p>{{ user.displayName }}</p>
+            </div>
+            <div class="form-group col-sm-12 col-lg-6">
+              <h4 class="h3 mb-3 font-weight-normal">Email:</h4>
+              <p>{{ user.email }}</p>
+            </div>
+            <div class="form-group col-sm-12 col-lg-6">
+              <h4 class="h3 mb-3 font-weight-normal">Role:</h4>
+              <p>{{ user.role }}</p>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="col-sm-6 card">
+        <div class="text-center my-4">
+          <h1 class="h3 mb-3 font-weight-normal">Address</h1>
+        </div>
+        <form class="row" [formGroup]="addressForm" (ngSubmit)="onSubmit()">
+          <div class="form-group col-6">
+            <app-text-input
+              formControlName="firstName"
+              [label]="'First Name'"
+            ></app-text-input>
+          </div>
+          <div class="form-group col-6">
+            <app-text-input
+              formControlName="lastName"
+              [label]="'Last Name'"
+            ></app-text-input>
+          </div>
+          <div class="form-group col-6">
+            <app-text-input
+              formControlName="city"
+              [label]="'City'"
+            ></app-text-input>
+          </div>
+          <div class="form-group col-6">
+            <app-text-input
+              formControlName="state"
+              [label]="'State'"
+            ></app-text-input>
+          </div>
+          <div class="form-group col-6">
+            <app-text-input
+              formControlName="street"
+              [label]="'Street'"
+            ></app-text-input>
+          </div>
+          <div class="form-group col-6">
+            <app-text-input
+              formControlName="zipCode"
+              [label]="'Zip Code'"
+            ></app-text-input>
+          </div>
+          <button
+            [disabled]="addressForm.invalid"
+            class="btn my-3 mx-3 btn-lg btn-primary btn-block"
+            type="submit"
+          >
+            Update Address
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

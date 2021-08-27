@@ -65,13 +65,15 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.authService.register(this.registerForm.value).subscribe(
-      () => this.router.navigateByUrl(this.returnUrl),
-      (error) => {
-        console.log(error);
-        this.errors = error.errors;
-      }
-    );
+    if (this.registerForm.valid) {
+      this.authService.register(this.registerForm.value).subscribe(
+        () => this.router.navigateByUrl(this.returnUrl),
+        (error) => {
+          console.log(error);
+          this.errors = error.errors;
+        }
+      );
+    }
   }
 
   validateEmailNotTaken(): AsyncValidatorFn {
