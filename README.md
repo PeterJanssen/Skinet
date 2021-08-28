@@ -48,6 +48,8 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 - Sorting, Filtering, Searching and Pagination
 - Angular Lazy loading
 - Angular Routing
+- Angular Guards
+- Angular Interceptors
 - Angular Reactive Forms
 - Angular Creating a MultiStep form wizard
 - Ngx-Gallery, Spinner, Toastr, Dropzone, Image-Cropper, Hamburgers, Navbar
@@ -168,13 +170,13 @@ Creates and/or seeds the databases if they are non-existent
 
 ### Adding migration
 
-In the package manager or console run the following command, replace the text between #
+In the package manager or console in the root folder run the following command, replace the text between #
 
 `dotnet ef migrations add "#Name of migration#" -p .\Persistence\ -s .\API\ -c StoreContext -o Migrations`
 
 ### Removing migration
 
-In the package manager or console run the following command
+In the package manager or console in the root folder run the following command
 
 `dotnet ef migrations remove -p .\Persistence\ -s .\API\ -c StoreContext`
 
@@ -183,6 +185,12 @@ In the package manager or console run the following command
 In the API folder run the following command
 
 `dotnet watch run`
+
+### Testing the backend
+
+In the root folder run the following command
+
+`dotnet test`
 
 ### Running the frontend
 

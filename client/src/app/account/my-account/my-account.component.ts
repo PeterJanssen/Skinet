@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
-import { IApplicationUser } from 'src/app/shared';
+import { IAddress, IApplicationUser } from 'src/app/shared';
 import { AddressService } from '../address.service';
 import { AuthService } from '../auth.service';
 
@@ -18,7 +18,7 @@ export class MyAccountComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private addressService: AddressService,
-    private router: Router
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -52,7 +52,10 @@ export class MyAccountComponent implements OnInit {
   onSubmit(): void {
     if (this.addressForm.valid) {
       this.addressService.updateUserAddress(this.addressForm.value).subscribe(
-        () => this.router.navigateByUrl('/shop'),
+        (address: IAddress) => {
+          this.toastr.success('Address saved');
+          this.addressForm.reset(address);
+        },
         (error) => console.log(error)
       );
     }

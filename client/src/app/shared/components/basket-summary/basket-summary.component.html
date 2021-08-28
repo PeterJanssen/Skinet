@@ -4,7 +4,10 @@
       <thead [class.thead-light]="isBasket || isOrder" class="border-0 py-2">
         <tr>
           <th scope="col">
-            <div class="p-2 px-3 text-uppercase">Product</div>
+            <div class="p-2 px-3 text-uppercase">Image</div>
+          </th>
+          <th scope="col">
+            <div class="p-2 px-3 text-uppercase">Product Name</div>
           </th>
           <th scope="col">
             <div class="py-2 text-uppercase">Price</div>
@@ -22,14 +25,16 @@
       </thead>
       <tbody>
         <tr *ngFor="let item of items">
-          <th scope="row">
+          <td>
+            <img
+              src="{{ item.pictureUrl }}"
+              alt="{{ item.productName }}"
+              class="img-fluid img-size"
+            />
+          </td>
+          <td scope="row">
             <div class="p-2">
-              <img
-                src="{{ item.pictureUrl }}"
-                alt="{{ item.productName }}"
-                class="img-fluid img-size"
-              />
-              <div class="ml-3 d-inline-block align-middle">
+              <div class="d-inline-block align-middle">
                 <h5 class="mb-0">
                   <a routerLink="/shop/{{ item.id }}" class="text-dark">{{
                     item.productName
@@ -38,25 +43,31 @@
                 <span
                   *ngIf="item.type"
                   class="text-muted font-weight-normal font-italic d-block"
-                  >Type: {{ item.type }}</span
-                >
+                  >Type: {{ item.type }}
+                </span>
+                <span
+                  *ngIf="item.brand"
+                  class="text-muted font-weight-normal font-italic d-block"
+                  >Brand: {{ item.brand }}
+                </span>
               </div>
             </div>
-          </th>
+          </td>
           <td class="align-middle">
             <strong>{{ item.price | currency }}</strong>
           </td>
           <td class="align-middle">
-            <div
-              class="d-flex align-items-center"
-              [class.justify-content-center]="!isBasket"
-            >
+            <div class="align-items-center" [class.d-flex]="isBasket">
               <i
                 *ngIf="isBasket"
                 (click)="decrementItemQuantity(item)"
                 class="fa fa-minus-circle text-warning mr-2 quantity-editor"
               ></i>
-              <span class="font-weight-bold quantity">
+              <span
+                class="font-weight-bold"
+                [class.quantity]="isBasket"
+                [class.ml-5]="!isBasket"
+              >
                 {{ item.quantity }}
               </span>
               <i
@@ -69,10 +80,9 @@
           <td class="align-middle">
             <strong>{{ item.price * item.quantity | currency }}</strong>
           </td>
-          <td class="align-middle text-center">
+          <td *ngIf="isBasket" class="align-middle text-center">
             <a class="text-danger">
               <i
-                *ngIf="isBasket"
                 (click)="removeBasketItem(item)"
                 class="fa fa-trash quantity-editor"
               ></i>
