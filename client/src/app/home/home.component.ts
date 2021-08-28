@@ -9,7 +9,7 @@ import { ShopService } from '../shop/shop.service';
 })
 export class HomeComponent implements OnInit {
   products: IProduct[] = [];
-  featuredProduct = [12, 9, 4, 8];
+  featuredProduct = [18, 16, 11, 8];
   myInterval = 3000;
 
   constructor(private shopService: ShopService) {}

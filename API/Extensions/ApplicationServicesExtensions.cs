@@ -1,5 +1,7 @@
 using System.Linq;
 using API.Errors;
+using Application.Core.Services.Implementations.LogServices;
+using Application.Core.Services.Interfaces.LoggerServices;
 using Application.Core.Services.Interfaces.OrderServices;
 using Application.Core.Services.Interfaces.ProductServices;
 using Application.Core.Services.Interfaces.Shared;
@@ -19,24 +21,29 @@ namespace API.Extensions
         public static IServiceCollection AddApplicationServicesExtension(this IServiceCollection services)
         {
             services.AddSingleton<IResponseCacheService, ResponseCacheService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+            services.AddScoped<IBasketRepository, BasketRepository>();
             services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IDeliveryMethodService, DeliveryMethodService>();
+
+            services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IProductBrandsService, ProductBrandsService>();
             services.AddScoped<IProductTypesService, ProductTypesService>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<EmailSender>();
-            services.AddScoped<IBasketRepository, BasketRepository>();
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IPhotoService, PhotoService>();
+
+            services.AddScoped<EmailSender>();
+            services.AddScoped<ILogService, LogService>();
+
             services.Configure<ApiBehaviorOptions>(options =>
         {
             options.InvalidModelStateResponseFactory = actionContext =>
             {
                 var errors = actionContext.ModelState
                 .Where(ModelStateEntryErrors => ModelStateEntryErrors.Value.Errors.Count > 0)
-                .SelectMany(ModelStateEntryErors => ModelStateEntryErors.Value.Errors)
+                .SelectMany(ModelStateEntryErrors => ModelStateEntryErrors.Value.Errors)
                 .Select(ModelError => ModelError.ErrorMessage)
                 .ToArray();
 

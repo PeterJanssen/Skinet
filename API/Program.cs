@@ -36,25 +36,7 @@ namespace API
                     .Build();
 
                 Log.Logger = new LoggerConfiguration()
-                            .WriteTo.PostgreSQL(
-                                connectionString:
-                                    configuration.GetConnectionString("DefaultConnection"),
-                                restrictedToMinimumLevel: LogEventLevel.Error,
-                                tableName: "LogErrorEvents",
-                                needAutoCreateTable: true)
-                            .WriteTo.File(
-                                    path: "Logs/Error/logErrors.txt",
-                                    rollingInterval: RollingInterval.Day,
-                                    restrictedToMinimumLevel: LogEventLevel.Error,
-                                    outputTemplate: "{RequestHost} - {Timestamp} [{Level}] - Message: {Message}{NewLine}{Exception}"
-                            )
-                            .WriteTo.File(
-                                    path: "Logs/Info/logInfo.txt",
-                                    rollingInterval: RollingInterval.Day,
-                                    restrictedToMinimumLevel: LogEventLevel.Information,
-                                    outputTemplate: "{RequestHost} - {Timestamp} [{Level}] - Message: {Message}{NewLine}{Exception}"
-                            )
-                            .WriteTo.Console()
+                            .ReadFrom.Configuration(configuration)
                             .CreateLogger();
 
                 var host = CreateHostBuilder(args).UseSerilog().Build();

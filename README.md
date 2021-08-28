@@ -274,7 +274,8 @@ Keep the console open and you will see payment intent actions after paying for a
 - SwaggerUI Documentation
 - Moved ProductRepo calls to ProductService
 - Added Profiler (MiniProfiler)
-- Logging events and HTTP requests in console, separate files in Logs folder and to PostGreSQL database table with Serilog
+- Logging events, database interactions and HTTP requests in console, separate files in Logs folder and errors to PostGreSQL database table with Serilog
+- Logging Controller to GET paginated error logs from database
 - HealthCheck implementation
 - API Versioning
 - Integration tests

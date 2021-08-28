@@ -56,11 +56,11 @@ namespace API.Controllers.AccountControllers
         {
             var user = await _userService.GetUser(request.Email);
 
-            if (user == null) return Unauthorized();
+            if (user == null) return Unauthorized("No user found for the provided email.");
 
             var result = await _userService.SignUserIn(user, request.Password);
 
-            if (!result.Succeeded) return Unauthorized();
+            if (!result.Succeeded) return Unauthorized("Invalid login credentials");
 
             var userRoles = await _userService.GetUserRoles(user);
 

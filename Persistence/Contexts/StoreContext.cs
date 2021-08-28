@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Domain.Models.AccountModels.AppUserModels;
+using Domain.Models.LogModels;
 using Domain.Models.OrderModels;
 using Domain.Models.ProductModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -52,5 +53,6 @@ namespace Persistence.Contexts
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+        public DbSet<Log> Logs { get; set; }
     }
 }
