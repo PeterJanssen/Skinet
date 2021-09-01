@@ -240,12 +240,12 @@ Keep the console open and you will see payment intent actions after paying for a
 
 - Refactor code for orders
 - Refactor product controller
+- Order caching
 - Add more integration tests and refactor existing tests
 
 ### Front/Backend
 
 - Order filtering by ordered items or date
-- Order caching
 - Order email
 - Email confirmation
 - User dashboard for admin
@@ -269,6 +269,7 @@ Keep the console open and you will see payment intent actions after paying for a
 - Confirm dialog for unrecoverable actions like deleting a product
 - (Edit) My Account page
 - Reusable filter and sorting components
+- Order caching
 
 ### Backend
 

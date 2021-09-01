@@ -9,6 +9,7 @@ export class PagingHeaderComponent implements OnInit {
   @Input() pageNumber: number;
   @Input() pageSize: number;
   @Input() totalCount: number;
+  @Input() isFiltered: boolean;
 
   constructor() {}
 

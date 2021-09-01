@@ -22,13 +22,14 @@
           [pageNumber]="this.orderParams.pageNumber"
           [pageSize]="this.orderParams.pageSize"
           [totalCount]="this.totalCount"
+          [isFiltered]="this.isFiltered"
         >
         </app-paging-header>
         <div *ngIf="orders" class="form-inline mt-2">
           <input
             (keyup.enter)="onSearch()"
             #search
-            class="form-control mr-2 searchInput"
+            class="form-control mr-2 search"
             type="text"
             placeholder="Search"
           />

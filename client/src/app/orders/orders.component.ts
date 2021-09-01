@@ -9,6 +9,7 @@ import { IOrder, OrderParams } from '../shared';
 })
 export class OrdersComponent implements OnInit {
   @ViewChild('search', { static: false }) searchTerm: ElementRef;
+  isFiltered = false;
   orders: IOrder[] = [];
   orderParams: OrderParams;
   totalCount: number;
@@ -31,6 +32,15 @@ export class OrdersComponent implements OnInit {
 
   ngOnInit(): void {
     this.getOrders(true);
+    this.checkIsFiltered();
+  }
+
+  checkIsFiltered() {
+    if (this.orderParams.search) {
+      this.isFiltered = true;
+    } else {
+      this.isFiltered = false;
+    }
   }
 
   getOrders(useCache = false): void {
@@ -71,6 +81,7 @@ export class OrdersComponent implements OnInit {
     params.pageNumber = 1;
     this.orderDataService.setOrderParams(params);
     this.getOrders();
+    this.isFiltered = true;
   }
 
   onReset(): void {
@@ -78,5 +89,6 @@ export class OrdersComponent implements OnInit {
     this.orderParams = new OrderParams();
     this.orderDataService.setOrderParams(this.orderParams);
     this.getOrders();
+    this.isFiltered = false;
   }
 }

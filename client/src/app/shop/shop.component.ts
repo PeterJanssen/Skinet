@@ -15,6 +15,7 @@ import {
 })
 export class ShopComponent implements OnInit {
   @ViewChild('search', { static: false }) searchTerm: ElementRef;
+  isFiltered: boolean;
   products: IProduct[];
   brands: IBrand[];
   types: IType[];
@@ -38,6 +39,19 @@ export class ShopComponent implements OnInit {
     this.getProducts(true);
     this.getBrands();
     this.getTypes();
+    this.checkIsFiltered();
+  }
+
+  checkIsFiltered() {
+    if (
+      this.productParams.brandId !== 0 ||
+      this.productParams.typeId !== 0 ||
+      this.productParams.search
+    ) {
+      this.isFiltered = true;
+    } else {
+      this.isFiltered = false;
+    }
   }
 
   getProducts(useCache = false): void {
@@ -80,6 +94,11 @@ export class ShopComponent implements OnInit {
     params.pageNumber = 1;
     this.productDataService.setProductParams(params);
     this.getProducts();
+    if (brandId !== 0) {
+      this.isFiltered = true;
+    } else if (!params.search) {
+      this.isFiltered = false;
+    }
   }
 
   onTypeSelected(typeId: number): void {
@@ -88,6 +107,11 @@ export class ShopComponent implements OnInit {
     params.pageNumber = 1;
     this.productDataService.setProductParams(params);
     this.getProducts();
+    if (typeId !== 0) {
+      this.isFiltered = true;
+    } else if (!params.search) {
+      this.isFiltered = false;
+    }
   }
 
   onSortSelected(): void {
@@ -110,6 +134,7 @@ export class ShopComponent implements OnInit {
     params.pageNumber = 1;
     this.productDataService.setProductParams(params);
     this.getProducts();
+    this.isFiltered = true;
   }
 
   onReset(): void {
@@ -117,5 +142,6 @@ export class ShopComponent implements OnInit {
     this.productParams = new ProductParams();
     this.productDataService.setProductParams(this.productParams);
     this.getProducts();
+    this.isFiltered = false;
   }
 }

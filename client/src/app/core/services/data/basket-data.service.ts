@@ -54,6 +54,10 @@ export class BasketDataService {
     localStorage.removeItem('basket_id');
   }
 
+  resetShippingPrice(): void {
+    this.shipping = 0;
+  }
+
   addItemToBasket(item: IProduct, quantity = 1): void {
     const itemToAdd: IBasketItem = this.mapProductItemToBasketItem(
       item,

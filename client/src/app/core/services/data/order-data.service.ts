@@ -101,6 +101,10 @@ export class OrderDataService {
       params = params.append('status', this.orderParams.status.toString());
     }
 
+    if (this.orderParams.search) {
+      params = params.append('search', this.orderParams.search);
+    }
+
     params = params.append('sort', this.orderParams.sort);
     params = params.append('pageIndex', this.orderParams.pageNumber.toString());
     params = params.append('pageSize', this.orderParams.pageSize.toString());
