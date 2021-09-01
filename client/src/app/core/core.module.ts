@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
 import { BreadcrumbModule } from 'xng-breadcrumb';
-import { AuthService } from '../account/auth.service';
 import {
   appInitializer,
+  AuthDataService,
   NavBarComponent,
   NotFoundComponent,
   SectionHeaderComponent,
@@ -37,7 +37,7 @@ import { SharedModule } from '../shared/shared.module';
       provide: APP_INITIALIZER,
       useFactory: appInitializer,
       multi: true,
-      deps: [AuthService],
+      deps: [AuthDataService],
     },
   ],
   exports: [NavBarComponent, SectionHeaderComponent],

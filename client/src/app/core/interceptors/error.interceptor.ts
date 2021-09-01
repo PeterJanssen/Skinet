@@ -7,16 +7,16 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { NavigationExtras, Router } from '@angular/router';
-import { catchError, delay } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from 'src/app/account/auth.service';
+import { AuthDataService } from '..';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
   constructor(
     private router: Router,
     private toastr: ToastrService,
-    private authService: AuthService
+    private authDataService: AuthDataService
   ) {}
 
   intercept(
@@ -35,7 +35,7 @@ export class ErrorInterceptor implements HttpInterceptor {
           }
           if (error.status === 401) {
             this.toastr.error(error.error.message, error.error.status);
-            this.authService.logout();
+            this.authDataService.logout();
             this.router.navigate(['account/login'], {
               queryParams: { returnUrl: this.router.routerState.snapshot.url },
             });

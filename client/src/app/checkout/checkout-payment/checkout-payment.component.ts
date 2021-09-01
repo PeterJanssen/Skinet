@@ -10,9 +10,12 @@ import {
 import { FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { BasketService } from 'src/app/basket/basket.service';
+import {
+  BasketDataService,
+  DeliveryMethodDataService,
+  OrderDataService,
+} from 'src/app/core';
 import { IBasket, IOrderToCreate } from 'src/app/shared';
-import { CheckoutService } from '../checkout.service';
 
 // eslint-disable-next-line no-var
 declare var Stripe: (arg0: string) => any;
@@ -40,8 +43,8 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
   cardCvcValid = false;
 
   constructor(
-    private basketService: BasketService,
-    private checkoutService: CheckoutService,
+    private basketDataService: BasketDataService,
+    private orderDataService: OrderDataService,
     private toastr: ToastrService,
     private router: Router
   ) {}
@@ -94,14 +97,16 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
 
   async submitOrder(): Promise<void> {
     this.loading = true;
-    const basket = this.basketService.getCurrentBasketValue();
+    const basket = this.basketDataService.getCurrentBasketValue();
 
     try {
       const createdOrder = await this.createOrder(basket);
       const paymentResult = await this.confirmPaymentWithStripe(basket);
 
       if (paymentResult.paymentIntent) {
-        this.basketService.deleteBasket(basket);
+        this.basketDataService
+          .deleteBasket(basket.id)
+          .subscribe(() => this.basketDataService.deleteLocalBasket());
 
         const navigationExtras: NavigationExtras = { state: createdOrder };
         this.router.navigate(['checkout/success'], navigationExtras);
@@ -128,7 +133,7 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
 
   private async createOrder(basket: IBasket): Promise<IOrderToCreate> {
     const orderToCreate = this.getOrderToCreate(basket);
-    return this.checkoutService.createOrder(orderToCreate).toPromise();
+    return this.orderDataService.createOrder(orderToCreate).toPromise();
   }
 
   private getOrderToCreate(basket: IBasket): IOrderToCreate {

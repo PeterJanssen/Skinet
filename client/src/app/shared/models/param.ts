@@ -5,7 +5,7 @@ export interface IParam {
   search: string;
 }
 
-export class ShopParams implements IParam {
+export class ProductParams implements IParam {
   brandId = 0;
   typeId = 0;
   sort = 'name';
@@ -17,7 +17,7 @@ export class ShopParams implements IParam {
 export class OrderParams implements IParam {
   sort = 'OrderDateDesc';
   pageNumber = 1;
-  pageSize = 10;
+  pageSize = 6;
   search: string;
   status = 0;
 }

@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ProductFormValues } from '../../shared/models/product';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AdminService } from '../admin.service';
 import { IBrand, IType } from 'src/app/shared';
+import { ProductDataService } from 'src/app/core';
 
 @Component({
   selector: 'app-edit-product-form',
@@ -16,7 +16,7 @@ export class EditProductFormComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private adminService: AdminService,
+    private productDataService: ProductDataService,
     private router: Router
   ) {}
 
@@ -33,14 +33,14 @@ export class EditProductFormComponent implements OnInit {
         ...product,
         price: +product.price,
       };
-      this.adminService
+      this.productDataService
         .updateProduct(updatedProduct, +this.route.snapshot.paramMap.get('id'))
         .subscribe(() => {
           this.router.navigate(['/admin']);
         });
     } else {
       const newProduct = { ...product, price: +product.price };
-      this.adminService.createProduct(newProduct).subscribe(() => {
+      this.productDataService.createProduct(newProduct).subscribe(() => {
         this.router.navigate(['/admin']);
       });
     }

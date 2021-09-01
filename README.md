@@ -56,6 +56,7 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 - Accepting payments using Stripe
 - Angular Re-usable form components
 - Angular validation and async validation
+- Testing HTTP requests and responses with Testbed and HttpTestingController
 
 ## Visuals
 
@@ -308,6 +309,10 @@ Keep the console open and you will see payment intent actions after paying for a
 ### Basket-summary
 
 - When not logged in the user is not redirected to the login page when clicking on the checkout button
+
+### Checkout
+
+- Basket is null when refreshing checkout page during any of the steps
 
 ### SwaggerUI
 

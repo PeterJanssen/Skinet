@@ -5,21 +5,21 @@
         <app-sort-selector
           title="Sort Products"
           [sortOptions]="sortOptions"
-          [params]="shopParams"
+          [params]="productParams"
           (change)="onSortSelected()"
         ></app-sort-selector>
 
         <app-collapsible-filter-list
           title="Brands"
           [filters]="brands"
-          [id]="this.shopParams.brandId"
+          [id]="this.productParams.brandId"
           (newFilterIdSelected)="onBrandSelected($event)"
         ></app-collapsible-filter-list>
 
         <app-collapsible-filter-list
           title="Types"
           [filters]="types"
-          [id]="this.shopParams.typeId"
+          [id]="this.productParams.typeId"
           (newFilterIdSelected)="onTypeSelected($event)"
         ></app-collapsible-filter-list>
       </ng-container>
@@ -28,8 +28,8 @@
     <section class="col-9">
       <div class="d-flex justify-content-between align-items-center pb-2">
         <app-paging-header
-          [pageNumber]="this.shopParams.pageNumber"
-          [pageSize]="this.shopParams.pageSize"
+          [pageNumber]="this.productParams.pageNumber"
+          [pageSize]="this.productParams.pageSize"
           [totalCount]="this.totalCount"
         >
         </app-paging-header>
@@ -57,9 +57,9 @@
       </div>
       <div class="d-flex justify-content-center">
         <app-pager
-          [pageSize]="shopParams.pageSize"
+          [pageSize]="productParams.pageSize"
           [totalCount]="totalCount"
-          [pageNumber]="shopParams.pageNumber"
+          [pageNumber]="productParams.pageNumber"
           (pageChanged)="onPageChanged($event)"
         ></app-pager>
       </div>

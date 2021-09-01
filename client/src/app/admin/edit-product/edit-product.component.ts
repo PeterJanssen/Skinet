@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import {
+  BrandDataService,
+  ProductDataService,
+  TypeDataService,
+} from 'src/app/core';
 import { IBrand, IProduct, IType, ProductFormValues } from 'src/app/shared';
-import { ShopService } from 'src/app/shop/shop.service';
-import { AdminService } from '../admin.service';
 
 @Component({
   selector: 'app-edit-product',
@@ -17,8 +20,9 @@ export class EditProductComponent implements OnInit {
   types: IType[];
 
   constructor(
-    private adminService: AdminService,
-    private shopService: ShopService,
+    private productDataService: ProductDataService,
+    private brandDataService: BrandDataService,
+    private typeDataService: TypeDataService,
     private route: ActivatedRoute,
     private router: Router
   ) {
@@ -50,7 +54,7 @@ export class EditProductComponent implements OnInit {
   }
 
   loadProduct() {
-    this.shopService
+    this.productDataService
       .getProduct(+this.route.snapshot.paramMap.get('id'))
       .subscribe((response: any) => {
         const productBrandId =
@@ -65,11 +69,11 @@ export class EditProductComponent implements OnInit {
   }
 
   getBrands() {
-    return this.shopService.getBrands();
+    return this.brandDataService.getBrands();
   }
 
   getTypes() {
-    return this.shopService.getTypes();
+    return this.typeDataService.getTypes();
   }
 
   onSubmit(product: ProductFormValues) {
@@ -79,14 +83,14 @@ export class EditProductComponent implements OnInit {
         ...product,
         price: +product.price,
       };
-      this.adminService
+      this.productDataService
         .updateProduct(updatedProduct, +this.route.snapshot.paramMap.get('id'))
         .subscribe(() => {
           this.router.navigate(['/admin']);
         });
     } else {
       const newProduct = { ...product, price: +product.price };
-      this.adminService.createProduct(newProduct).subscribe(() => {
+      this.productDataService.createProduct(newProduct).subscribe(() => {
         this.router.navigate(['/admin']);
       });
     }

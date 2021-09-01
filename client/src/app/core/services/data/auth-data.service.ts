@@ -1,23 +1,24 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { map, tap, delay, finalize } from 'rxjs/operators';
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, of, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
+import { delay, finalize, map, tap } from 'rxjs/operators';
+import { IApplicationUser, ILoginResult } from 'src/app/shared';
 import { environment } from 'src/environments/environment';
-import { IApplicationUser, ILoginResult } from '../shared';
+import { ApiUrls } from './api-urls';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService implements OnDestroy {
+export class AuthDataService implements OnDestroy {
   user$: Observable<IApplicationUser>;
   isAdmin$: Observable<boolean>;
   private isAdminSource = new BehaviorSubject<boolean>(null);
   private user = new BehaviorSubject<IApplicationUser>(null);
-  private readonly baseURl = environment.apiUrl;
+  private readonly baseURl = environment.apiUrl + ApiUrls.auth;
   private timer: Subscription;
 
-  constructor(private router: Router, private http: HttpClient) {
+  constructor(private http: HttpClient) {
     window.addEventListener('storage', this.storageEventListener.bind(this));
     this.user$ = this.user.asObservable();
     this.isAdmin$ = this.isAdminSource.asObservable();
@@ -28,60 +29,52 @@ export class AuthService implements OnDestroy {
   }
 
   login(values: any) {
-    return this.http
-      .post<ILoginResult>(`${this.baseURl}Auth/login`, values)
-      .pipe(
-        map((loginResult: ILoginResult) => {
-          this.user.next({
-            email: loginResult.email,
-            username: loginResult.username,
-            displayName: loginResult.displayName,
-            role: loginResult.role,
-            originalUserName: loginResult.originalUserName,
-          });
-          this.isAdminSource.next(this.isAdmin(loginResult.accessToken));
-          this.setLocalStorage(loginResult);
-          this.startTokenTimer();
-          return loginResult;
-        })
-      );
+    return this.http.post<ILoginResult>(`${this.baseURl}login`, values).pipe(
+      map((loginResult: ILoginResult) => {
+        this.user.next({
+          email: loginResult.email,
+          username: loginResult.username,
+          displayName: loginResult.displayName,
+          role: loginResult.role,
+          originalUserName: loginResult.originalUserName,
+        });
+        this.isAdminSource.next(this.isAdmin(loginResult.accessToken));
+        this.setLocalStorage(loginResult);
+        this.startTokenTimer();
+        return loginResult;
+      })
+    );
   }
 
   register(values: any) {
-    return this.http
-      .post<ILoginResult>(`${this.baseURl}Auth/register`, values)
-      .pipe(
-        map((loginResult: ILoginResult) => {
-          this.user.next({
-            email: loginResult.email,
-            username: loginResult.username,
-            displayName: loginResult.displayName,
-            role: loginResult.role,
-            originalUserName: loginResult.originalUserName,
-          });
-          this.setLocalStorage(loginResult);
-          this.startTokenTimer();
-          return loginResult;
-        })
-      );
+    return this.http.post<ILoginResult>(`${this.baseURl}register`, values).pipe(
+      map((loginResult: ILoginResult) => {
+        this.user.next({
+          email: loginResult.email,
+          username: loginResult.username,
+          displayName: loginResult.displayName,
+          role: loginResult.role,
+          originalUserName: loginResult.originalUserName,
+        });
+        this.setLocalStorage(loginResult);
+        this.startTokenTimer();
+        return loginResult;
+      })
+    );
   }
 
-  logout() {
-    this.http
-      .post<unknown>(`${this.baseURl}Auth/logout`, {})
-      .pipe(
-        finalize(() => {
-          this.clearLocalStorage();
-          this.clearUserBehaviorSubjects();
-          this.stopTokenTimer();
-          this.router.navigate(['account/login']);
-        })
-      )
-      .subscribe();
+  logout(): Observable<any> {
+    return this.http.post<void>(`${this.baseURl}logout`, {}).pipe(
+      finalize(() => {
+        this.clearLocalStorage();
+        this.clearUserBehaviorSubjects();
+        this.stopTokenTimer();
+      })
+    );
   }
 
-  checkEmailExists(email: string): Observable<any> {
-    return this.http.get(`${this.baseURl}auth/emailexists?email=${email}`);
+  checkEmailExists(email: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.baseURl}emailexists?email=${email}`);
   }
 
   refreshToken() {
@@ -93,7 +86,7 @@ export class AuthService implements OnDestroy {
     }
 
     return this.http
-      .post<ILoginResult>(`${this.baseURl}Auth/refresh-token`, { refreshToken })
+      .post<ILoginResult>(`${this.baseURl}refresh-token`, { refreshToken })
       .pipe(
         map((loginResult: ILoginResult) => {
           this.user.next({

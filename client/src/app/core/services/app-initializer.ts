@@ -1,9 +1,9 @@
-import { AuthService } from 'src/app/account/auth.service';
+import { AuthDataService } from '.';
 
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
-export function appInitializer(authService: AuthService) {
+export function appInitializer(authDataService: AuthDataService) {
   return () =>
     new Promise((resolve) => {
-      authService.refreshToken().subscribe().add(resolve);
+      authDataService.refreshToken().subscribe().add(resolve);
     });
 }

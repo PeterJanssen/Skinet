@@ -96,7 +96,8 @@
             "karmaConfig": "karma.conf.js",
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.scss"],
-            "scripts": ["node_modules/hammerjs/hammer.min.js"]
+            "scripts": ["node_modules/hammerjs/hammer.min.js"],
+            "codeCoverage": true
           }
         },
         "lint": {

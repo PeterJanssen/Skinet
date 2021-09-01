@@ -10,7 +10,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, timer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { AuthService } from '../auth.service';
+import { AuthDataService } from 'src/app/core';
 
 @Component({
   selector: 'app-register',
@@ -24,7 +24,7 @@ export class RegisterComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
+    private authDataService: AuthDataService,
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {}
@@ -66,7 +66,7 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(): void {
     if (this.registerForm.valid) {
-      this.authService.register(this.registerForm.value).subscribe(
+      this.authDataService.register(this.registerForm.value).subscribe(
         () => this.router.navigateByUrl(this.returnUrl),
         (error) => {
           console.log(error);
@@ -83,7 +83,7 @@ export class RegisterComponent implements OnInit {
           if (!control.value) {
             return of(null);
           }
-          return this.authService
+          return this.authDataService
             .checkEmailExists(control.value)
             .pipe(map((res) => (res ? { emailExists: true } : null)));
         })

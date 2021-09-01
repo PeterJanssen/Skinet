@@ -16,8 +16,8 @@ namespace API_tests.Controllers.OrderControllers
     {
         private readonly TestHostFixture _testHostFixture = new();
         private HttpClient _httpClient;
-        private const string baseUrl = "api/orders";
-        private const string basketUrl = "api/basket";
+        private const string baseUrl = "api/orders/";
+        private const string basketUrl = "api/basket/";
 
         [SetUp()]
         public void SetUp()
@@ -42,7 +42,7 @@ namespace API_tests.Controllers.OrderControllers
         [Test, Order(3)]
         public async Task HTTPGET_Return401UnAuthorized_GetOrderByIdForUser_Test()
         {
-            var response = await _httpClient.GetAsync(baseUrl + "/1");
+            var response = await _httpClient.GetAsync(baseUrl + "1");
 
             Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
@@ -78,8 +78,8 @@ namespace API_tests.Controllers.OrderControllers
                 }
             };
 
-            await _httpClient.PostAsync(
-            basketUrl,
+            await _httpClient.PutAsync(
+            basketUrl + basket.Id,
             new StringContent(JsonSerializer.Serialize(basket),
             Encoding.UTF8, MediaTypeNames.Application.Json)
             );
@@ -121,7 +121,7 @@ namespace API_tests.Controllers.OrderControllers
             _httpClient.DefaultRequestHeaders.Authorization =
                 await _testHostFixture.SetAuthenticationHeaderValue(TestHostFixture.AdminLogin());
 
-            var response = await _httpClient.GetAsync(baseUrl + "/1");
+            var response = await _httpClient.GetAsync(baseUrl + "1");
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
@@ -131,7 +131,7 @@ namespace API_tests.Controllers.OrderControllers
             _httpClient.DefaultRequestHeaders.Authorization =
                 await _testHostFixture.SetAuthenticationHeaderValue(TestHostFixture.AdminLogin());
 
-            var response = await _httpClient.GetAsync(baseUrl + "/0");
+            var response = await _httpClient.GetAsync(baseUrl + "0");
 
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         }

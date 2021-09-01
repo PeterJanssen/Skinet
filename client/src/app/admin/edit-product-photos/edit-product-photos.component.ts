@@ -1,8 +1,8 @@
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { ProductDataService } from 'src/app/core';
 import { IProduct } from 'src/app/shared';
-import { AdminService } from '../admin.service';
 
 @Component({
   selector: 'app-edit-product-photos',
@@ -15,14 +15,14 @@ export class EditProductPhotosComponent implements OnInit {
   addPhotoMode = false;
 
   constructor(
-    private adminService: AdminService,
+    private productDataService: ProductDataService,
     private toast: ToastrService
   ) {}
 
   ngOnInit(): void {}
 
   uploadFile(file: File) {
-    this.adminService.uploadImage(file, this.product.id).subscribe(
+    this.productDataService.uploadImage(file, this.product.id).subscribe(
       (event: HttpEvent<any>) => {
         switch (event.type) {
           case HttpEventType.UploadProgress:
@@ -48,22 +48,24 @@ export class EditProductPhotosComponent implements OnInit {
   }
 
   deletePhoto(photoId: number) {
-    this.adminService.deleteProductPhoto(photoId, this.product.id).subscribe(
-      () => {
-        const photoIndex = this.product.photos.findIndex(
-          (x) => x.id === photoId
-        );
-        this.product.photos.splice(photoIndex, 1);
-      },
-      (error) => {
-        this.toast.error('Problem deleting photo');
-        console.log(error);
-      }
-    );
+    this.productDataService
+      .deleteProductPhoto(photoId, this.product.id)
+      .subscribe(
+        () => {
+          const photoIndex = this.product.photos.findIndex(
+            (x) => x.id === photoId
+          );
+          this.product.photos.splice(photoIndex, 1);
+        },
+        (error) => {
+          this.toast.error('Problem deleting photo');
+          console.log(error);
+        }
+      );
   }
 
   setMainPhoto(photoId: number) {
-    this.adminService
+    this.productDataService
       .setMainPhoto(photoId, this.product.id)
       .subscribe((product: IProduct) => {
         this.product = product;

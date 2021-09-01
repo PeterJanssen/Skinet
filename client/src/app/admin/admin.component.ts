@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ShopService } from '../shop/shop.service';
-import { AdminService } from './admin.service';
-import { ConfirmService, IProduct, ShopParams } from '../shared';
+import { ConfirmService, IProduct, ProductParams } from '../shared';
+import { ProductDataService } from '../core';
 
 @Component({
   selector: 'app-admin',
@@ -11,22 +10,21 @@ import { ConfirmService, IProduct, ShopParams } from '../shared';
 export class AdminComponent implements OnInit {
   products: IProduct[];
   totalCount: number;
-  shopParams: ShopParams;
+  productParams: ProductParams;
 
   constructor(
-    private shopService: ShopService,
-    private adminService: AdminService,
+    private productDataService: ProductDataService,
     private confirmService: ConfirmService
   ) {}
 
   ngOnInit(): void {
-    this.shopParams = new ShopParams();
-    this.shopService.setShopParams(this.shopParams);
+    this.productParams = new ProductParams();
+    this.productDataService.setProductParams(this.productParams);
     this.getProducts();
   }
 
   getProducts(useCache = false) {
-    this.shopService.getProducts(useCache).subscribe(
+    this.productDataService.getProducts(useCache).subscribe(
       (response) => {
         this.products = response.data;
         this.totalCount = response.count;
@@ -38,10 +36,10 @@ export class AdminComponent implements OnInit {
   }
 
   onPageChanged(event: any) {
-    const params = this.shopService.getShopParams();
+    const params = this.productDataService.getProductParams();
     if (params.pageNumber !== event) {
       params.pageNumber = event;
-      this.shopService.setShopParams(params);
+      this.productDataService.setProductParams(params);
       this.getProducts(true);
     }
   }
@@ -51,7 +49,7 @@ export class AdminComponent implements OnInit {
       .confirm('Confirm delete product', 'This cannot be undone')
       .subscribe((result) => {
         if (result) {
-          this.adminService.deleteProduct(id).subscribe(() => {
+          this.productDataService.deleteProduct(id).subscribe(() => {
             this.products.splice(
               this.products.findIndex((p) => p.id === id),
               1

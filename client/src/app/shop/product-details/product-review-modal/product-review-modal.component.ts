@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { AuthService } from 'src/app/account/auth.service';
-import { IProduct, IReview } from 'src/app/shared/models/product';
+import { AuthDataService } from 'src/app/core';
+import { IReview } from 'src/app/shared/models/product';
 
 @Component({
   selector: 'app-product-review-modal',
@@ -18,11 +18,11 @@ export class ProductReviewModalComponent implements OnInit {
 
   constructor(
     public bsModalRef: BsModalRef,
-    private authService: AuthService
+    private authDataService: AuthDataService
   ) {}
 
   ngOnInit(): void {
-    this.authService.user$.subscribe(
+    this.authDataService.user$.subscribe(
       (user) => (this.reviewerName = user?.displayName ?? 'Anonymous')
     );
   }

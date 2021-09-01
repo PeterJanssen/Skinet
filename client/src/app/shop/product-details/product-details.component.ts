@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BasketService } from 'src/app/basket/basket.service';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import { ShopService } from '../shop.service';
 import {
   NgxGalleryAnimation,
   NgxGalleryImage,
@@ -12,6 +10,7 @@ import {
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ProductReviewModalComponent } from './product-review-modal/product-review-modal.component';
 import { IProduct, IReview } from 'src/app/shared';
+import { BasketDataService, ProductDataService } from 'src/app/core';
 
 @Component({
   selector: 'app-product-details',
@@ -27,10 +26,10 @@ export class ProductDetailsComponent implements OnInit {
   isReadonly = true;
 
   constructor(
-    private shopService: ShopService,
+    private productDataService: ProductDataService,
+    private basketDataService: BasketDataService,
     private activatedRoute: ActivatedRoute,
     private bcService: BreadcrumbService,
-    private basketService: BasketService,
     private modalService: BsModalService
   ) {
     this.bcService.set('@productDetails', ' ');
@@ -41,7 +40,7 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   addItemToBasket(): void {
-    this.basketService.addItemToBasket(this.product, this.quantity);
+    this.basketDataService.addItemToBasket(this.product, this.quantity);
   }
 
   incrementQuantity(): void {
@@ -55,7 +54,7 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   loadProduct(): void {
-    this.shopService
+    this.productDataService
       .getProduct(+this.activatedRoute.snapshot.paramMap.get('id'))
       .subscribe(
         (product) => {
@@ -111,7 +110,7 @@ export class ProductDetailsComponent implements OnInit {
         ...values,
       };
       review.productId = this.product.id;
-      this.shopService
+      this.productDataService
         .addReviewToProduct(review)
         .subscribe((product: IProduct) => {
           this.product = product;

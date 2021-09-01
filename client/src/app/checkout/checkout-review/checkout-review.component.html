@@ -1,7 +1,7 @@
-<div class="mt-4">
+<div class="mt-4" *ngIf="basket$ | async as basket">
   <app-basket-summary
     [isBasket]="false"
-    [items]="(basket$ | async).items"
+    [items]="basket.items"
   ></app-basket-summary>
 </div>
 

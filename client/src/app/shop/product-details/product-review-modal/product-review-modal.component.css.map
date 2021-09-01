@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "product-review-modal.component.scss"
+    ],
+    "names": [],
+    "file": "product-review-modal.component.css"
+}

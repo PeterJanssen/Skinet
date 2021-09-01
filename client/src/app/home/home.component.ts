@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ProductDataService } from '../core';
 import { IProduct } from '../shared/models/product';
-import { ShopService } from '../shop/shop.service';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +12,7 @@ export class HomeComponent implements OnInit {
   featuredProduct = [18, 16, 11, 8];
   myInterval = 3000;
 
-  constructor(private shopService: ShopService) {}
+  constructor(private productDataService: ProductDataService) {}
 
   ngOnInit(): void {
     this.getProducts();
@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit {
 
   getProducts(): void {
     this.featuredProduct.forEach((id) => {
-      this.shopService.getProduct(id).subscribe(
+      this.productDataService.getProduct(id).subscribe(
         (response) => {
           this.products.push(response);
         },

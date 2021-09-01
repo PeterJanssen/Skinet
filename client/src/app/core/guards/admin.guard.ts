@@ -8,14 +8,14 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from 'src/app/account/auth.service';
+import { AuthDataService } from '..';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AdminGuard implements CanActivate {
   constructor(
-    private authService: AuthService,
+    private authDataService: AuthDataService,
     private router: Router,
     private toastr: ToastrService
   ) {}
@@ -24,7 +24,7 @@ export class AdminGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> {
-    return this.authService.isAdmin$.pipe(
+    return this.authDataService.isAdmin$.pipe(
       map((admin) => {
         if (admin) {
           return true;

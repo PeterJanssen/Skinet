@@ -35,7 +35,7 @@ namespace API.Controllers.OrdersControllers
         }
 
         /// <summary>
-        /// Posts a new paymentIntent to Stripe
+        /// Creates a new paymentIntent or updates an existing one
         /// </summary>
         /// <remarks>
         /// Listen locally in cmd with the following command:
@@ -49,7 +49,7 @@ namespace API.Controllers.OrdersControllers
         /// <response code="400">Returns if the payment intent could not be added to basket</response>
         /// <response code="401">Returns if user is not logged in</response>
         [Authorize]
-        [HttpPost("{basketId}")]
+        [HttpPut("{basketId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -63,7 +63,7 @@ namespace API.Controllers.OrdersControllers
         }
 
         /// <summary>
-        /// Gets the publishable key fro Stripe
+        /// Gets the publishable key from Stripe
         /// </summary>
         /// <response code="200">Returns the publishable key</response>
         /// <response code="401">Returns if user is not logged in</response>

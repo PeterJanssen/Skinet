@@ -379,7 +379,7 @@ namespace API.Controllers.ProductsControllers
         /// <response code="401">Returns if the user is not logged in</response>
         /// <response code="403">Returns if the current user is not an admin</response>
         /// <response code="404">Returns if the product or photo could not be found</response>
-        [HttpPost("{id}/photo/{photoId}")]
+        [HttpPut("{id}/photo/{photoId}")]
         [Authorize(Roles = UserRoles.Admin)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

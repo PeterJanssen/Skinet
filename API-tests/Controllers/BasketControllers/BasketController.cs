@@ -14,7 +14,7 @@ namespace API_tests.Controllers.BasketControllers
     {
         private readonly TestHostFixture _testHostFixture = new();
         private HttpClient _httpClient;
-        private const string baseUrl = "api/basket";
+        private const string baseUrl = "api/basket/";
 
         [SetUp()]
         public void SetUp()
@@ -23,7 +23,7 @@ namespace API_tests.Controllers.BasketControllers
         }
 
         [Test, Order(1)]
-        public async Task HTTPPOST_Return200OK_UpdateBasket()
+        public async Task HTTPPUT_Return200OK_UpdateBasket()
         {
             CustomerBasketDto basket = new()
             {
@@ -43,8 +43,8 @@ namespace API_tests.Controllers.BasketControllers
                 }
             };
 
-            var response = await _httpClient.PostAsync(
-            baseUrl,
+            var response = await _httpClient.PutAsync(
+            baseUrl + basket.Id,
             new StringContent(JsonSerializer.Serialize(basket),
             Encoding.UTF8, MediaTypeNames.Application.Json)
             );
@@ -59,21 +59,21 @@ namespace API_tests.Controllers.BasketControllers
         [Test, Order(2)]
         public async Task HTTPGET_Return200OK_GetBasketById_Test()
         {
-            var response = await _httpClient.GetAsync(baseUrl + "?id=basket1");
+            var response = await _httpClient.GetAsync(baseUrl + "basket1");
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
         [Test, Order(3)]
         public async Task HTTPDelete_Return200OK_DeleteBasketAsync_Test()
         {
-            var response = await _httpClient.DeleteAsync(baseUrl + "?id=basket1");
+            var response = await _httpClient.DeleteAsync(baseUrl + "basket1");
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
         [Test, Order(4)]
         public async Task HTTPDelete_Return404NotFound_DeleteBasketAsync_Test()
         {
-            var response = await _httpClient.DeleteAsync(baseUrl + "?id=basket1");
+            var response = await _httpClient.DeleteAsync(baseUrl + "basket1");
 
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         }

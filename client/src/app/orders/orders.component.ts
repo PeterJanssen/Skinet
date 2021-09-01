@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { OrderDataService } from '../core';
 import { IOrder, OrderParams } from '../shared';
-import { OrdersService } from './orders.service';
 
 @Component({
   selector: 'app-orders',
@@ -25,16 +25,16 @@ export class OrdersComponent implements OnInit {
     { name: 'Payment Failed', id: 2 },
   ];
 
-  constructor(private orderService: OrdersService) {
-    this.orderParams = orderService.getOrderParams();
+  constructor(private orderDataService: OrderDataService) {
+    this.orderParams = orderDataService.getOrderParams();
   }
 
   ngOnInit(): void {
-    this.getOrders();
+    this.getOrders(true);
   }
 
-  getOrders(): void {
-    this.orderService.getOrdersForUser().subscribe(
+  getOrders(useCache = false): void {
+    this.orderDataService.getOrdersForUser(useCache).subscribe(
       (response) => {
         this.orders = response.data;
         this.totalCount = response.count;
@@ -44,39 +44,39 @@ export class OrdersComponent implements OnInit {
   }
 
   onSortSelected(): void {
-    this.orderService.setOrderParams(this.orderParams);
-    this.getOrders();
+    this.orderDataService.setOrderParams(this.orderParams);
+    this.getOrders(true);
   }
 
   onStatusSelected(id: number): void {
-    const params = this.orderService.getOrderParams();
+    const params = this.orderDataService.getOrderParams();
     params.status = id;
     params.pageNumber = 1;
-    this.orderService.setOrderParams(params);
+    this.orderDataService.setOrderParams(params);
     this.getOrders();
   }
 
   onPageChanged(event: any): void {
-    const params = this.orderService.getOrderParams();
+    const params = this.orderDataService.getOrderParams();
     if (params.pageNumber !== event) {
       params.pageNumber = event;
-      this.orderService.setOrderParams(params);
-      this.getOrders();
+      this.orderDataService.setOrderParams(params);
+      this.getOrders(true);
     }
   }
 
   onSearch(): void {
-    const params = this.orderService.getOrderParams();
+    const params = this.orderDataService.getOrderParams();
     params.search = this.searchTerm.nativeElement.value;
     params.pageNumber = 1;
-    this.orderService.setOrderParams(params);
+    this.orderDataService.setOrderParams(params);
     this.getOrders();
   }
 
   onReset(): void {
     this.searchTerm.nativeElement.value = '';
     this.orderParams = new OrderParams();
-    this.orderService.setOrderParams(this.orderParams);
+    this.orderDataService.setOrderParams(this.orderParams);
     this.getOrders();
   }
 }

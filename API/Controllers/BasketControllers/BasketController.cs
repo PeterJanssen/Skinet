@@ -25,7 +25,7 @@ namespace API.Controllers.BasketControllers
         ///     basket1
         /// </remarks>
         /// <response code="200">Returns a basket with the provided id if the basket id does not exist returns a new basket</response>
-        [HttpGet]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<CustomerBasketDto>> GetBasketById(string id)
         {
@@ -37,7 +37,7 @@ namespace API.Controllers.BasketControllers
         }
 
         /// <summary>
-        /// Updates the basket of the current user 
+        /// Creates a basket for the current user or updates the existing one
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -58,7 +58,7 @@ namespace API.Controllers.BasketControllers
         ///     }
         /// </remarks>
         /// <response code="200">Updates a basket with the provided id if the basket id does not exist returns a new basket</response>
-        [HttpPost]
+        [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<CustomerBasketDto>> UpdateBasket(CustomerBasketDto basketDto)
         {
@@ -66,7 +66,7 @@ namespace API.Controllers.BasketControllers
 
             var result = await _basketRepository.UpdateBasketAsync(customerBasket);
 
-            var updatedBasket= Mapper.Map<CustomerBasket, CustomerBasketDto>(result);
+            var updatedBasket = Mapper.Map<CustomerBasket, CustomerBasketDto>(result);
 
             return Ok(updatedBasket);
         }
@@ -83,7 +83,7 @@ namespace API.Controllers.BasketControllers
         /// <response code="200">Returns if the basket is deleted</response>
         /// <response code="400">Returns if the basket could not be deleted</response>
         /// <response code="404">Returns if the basket could not be found</response>
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

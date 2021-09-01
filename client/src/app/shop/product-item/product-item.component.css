@@ -1,0 +1,43 @@
+.btn {
+  width: 30%;
+  height: 40px;
+}
+
+.image :hover {
+  opacity: 1;
+}
+
+.image :hover button {
+  -webkit-transform: none;
+          transform: none;
+  opacity: 1;
+}
+
+.hover-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+}
+
+.hover-overlay button {
+  z-index: 1000;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+}
+
+.hover-overlay button:first-of-type {
+  -webkit-transform: translateX(-50px);
+          transform: translateX(-50px);
+}
+
+.hover-overlay button:last-of-type {
+  -webkit-transform: translateX(50px);
+          transform: translateX(50px);
+}
+/*# sourceMappingURL=product-item.component.css.map */
