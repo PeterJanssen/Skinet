@@ -7,3 +7,4 @@ export * from './stepper/stepper.component';
 export * from './text-input/text-input.component';
 export * from './sort-selector/sort-selector.component';
 export * from './collapsible-filter-list/collapsible-filter-list.component';
+export * from './separator/separator.component';

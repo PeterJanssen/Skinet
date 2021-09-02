@@ -1,5 +1,8 @@
 ﻿using Application.Core.Services.Interfaces.Identity.JWT;
+using Application.Dtos.AccountDtos;
+using Domain.Models.AccountModels.Google;
 using Domain.Models.AccountModels.JWT;
+using Google.Apis.Auth;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Concurrent;
@@ -10,6 +13,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Application.Core.Services.Implementations.Identity.JWT
 {
@@ -18,11 +22,13 @@ namespace Application.Core.Services.Implementations.Identity.JWT
         public IImmutableDictionary<string, RefreshToken> UsersRefreshTokensReadOnlyDictionary => _usersRefreshTokens.ToImmutableDictionary();
         private readonly ConcurrentDictionary<string, RefreshToken> _usersRefreshTokens;
         private readonly JwtTokenConfig _jwtTokenConfig;
+        private readonly GoogleAuthSettings _googleSettings;
         private readonly byte[] _secret;
 
-        public JwtAuthManager(JwtTokenConfig jwtTokenConfig)
+        public JwtAuthManager(JwtTokenConfig jwtTokenConfig, GoogleAuthSettings googleAuthSettings)
         {
             _jwtTokenConfig = jwtTokenConfig;
+            _googleSettings = googleAuthSettings;
             _usersRefreshTokens = new ConcurrentDictionary<string, RefreshToken>();
             _secret = Encoding.ASCII.GetBytes(jwtTokenConfig.Secret);
         }
@@ -94,6 +100,16 @@ namespace Application.Core.Services.Implementations.Identity.JWT
             }
 
             return GenerateTokens(userName, principal.Claims.ToList(), now);
+        }
+        public async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(GoogleLoginRequest googleLoginRequest)
+        {
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                Audience = new List<string>() { _googleSettings.ClientId }
+            };
+
+            var payload = await GoogleJsonWebSignature.ValidateAsync(googleLoginRequest.IdToken, settings);
+            return payload;
         }
 
         public (ClaimsPrincipal, JwtSecurityToken) DecodeJwtToken(string token)

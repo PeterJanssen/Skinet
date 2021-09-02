@@ -16,7 +16,7 @@ namespace API.Controllers.AccountControllers
 {
     [Authorize]
     [Produces("application/json")]
-    public class AccountController : BaseApiController
+    public class AccountController : BaseAccountController
     {
         private readonly IUserService _userService;
         private readonly IJwtAuthManager _jwtAuthManager;
@@ -48,12 +48,7 @@ namespace API.Controllers.AccountControllers
 
             var userRoles = await _userService.GetUserRoles(user);
 
-            List<Claim> claims = new()
-            {
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.GivenName, user.DisplayName)
-            };
+            List<Claim> claims = GetClaimsForUser(user, userRoles);
 
             claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
@@ -103,13 +98,7 @@ namespace API.Controllers.AccountControllers
 
             if (impersonatedRoles.Contains(UserRoles.Admin)) return BadRequest("Can't impersonate an admin.");
 
-            List<Claim> claims = new()
-            {
-                new Claim(ClaimTypes.Email, impersonatedUser.Email),
-                new Claim(ClaimTypes.Name, impersonatedUser.UserName),
-                new Claim(ClaimTypes.GivenName, impersonatedUser.DisplayName),
-                new Claim("OriginalUserName", userName ?? string.Empty)
-            };
+            List<Claim> claims = GetClaimsForUser(impersonatedUser, impersonatedRoles);
 
             claims.AddRange(impersonatedRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
@@ -143,14 +132,7 @@ namespace API.Controllers.AccountControllers
 
             var roles = await _userService.GetUserRoles(originalUser);
 
-            List<Claim> claims = new()
-            {
-                new Claim(ClaimTypes.Email, originalUser.Email),
-                new Claim(ClaimTypes.Name, originalUser.UserName),
-                new Claim(ClaimTypes.GivenName, originalUser.DisplayName),
-            };
-
-            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+            List<Claim> claims = GetClaimsForUser(originalUser, roles);
 
             var jwtResult = _jwtAuthManager.GenerateTokens(originalUser.UserName, claims, DateTime.Now);
 
@@ -162,26 +144,6 @@ namespace API.Controllers.AccountControllers
                     jwtResult.AccessToken,
                     jwtResult.RefreshToken.TokenString
                     ));
-        }
-
-        private static LoginResult CreateLoginResult(
-            string email,
-            string displayName,
-            List<string> roles,
-            string originalUsername,
-            string accessToken,
-            string refreshToken
-            )
-        {
-            return new LoginResult
-            {
-                Email = email,
-                Roles = roles,
-                DisplayName = displayName,
-                OriginalUserName = originalUsername,
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
-            };
         }
     }
 }

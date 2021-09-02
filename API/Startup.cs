@@ -31,6 +31,8 @@ namespace API
         {
             services.AddCorsPolicy(_myAllowSpecificOrigins);
 
+            services.AddCookiesPolicyExtension();
+
             services.AddControllers();
 
             services.AddDatabaseConnectionsExtension(_config);
@@ -52,12 +54,21 @@ namespace API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
+            app.UseCookiePolicy();
             app.UseMiddleware<ExceptionMiddleware>();
 
             if (_env.IsDevelopment())
             {
                 app.UseSwaggerDocumentation();
                 app.UseMiniProfiler();
+            }
+            else
+            {
+                app.Use(async (context, next) =>
+                {
+                    context.Response.Headers.Add("Strict-Transport-Security", "max-age=31536000");
+                    await next.Invoke();
+                });
             }
 
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
@@ -86,6 +97,7 @@ namespace API
 
             app.UseRouting();
 
+            app.AddSecurityExtension();
             app.UseCors(_myAllowSpecificOrigins);
 
             app.UseAuthentication();

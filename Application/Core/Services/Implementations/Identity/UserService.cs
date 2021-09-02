@@ -33,27 +33,34 @@ namespace Application.Core.Services.Implementations.Identity
                 user.Email == identifier
                 );
         }
-
+        public async Task<AppUser> GetUserByUserLoginInfo(UserLoginInfo userLoginInfo)
+        {
+            return await _userManager.FindByLoginAsync(userLoginInfo.LoginProvider, userLoginInfo.ProviderKey);
+        }
         public async Task<SignInResult> SignUserIn(AppUser user, string password)
         {
             return await _signingManager.CheckPasswordSignInAsync(user, password, false);
         }
-
+        public async Task<IdentityResult> AddExternalLogin(AppUser user, UserLoginInfo userLoginInfo)
+        {
+            return await _userManager.AddLoginAsync(user, userLoginInfo);
+        }
         public async Task<IList<string>> GetUserRoles(AppUser user)
         {
             return await _userManager.GetRolesAsync(user);
         }
-
         public async Task<IdentityResult> CreateAsync(AppUser user, string password)
         {
             return await _userManager.CreateAsync(user, password);
         }
-
+        public async Task<IdentityResult> CreateAsync(AppUser user)
+        {
+            return await _userManager.CreateAsync(user);
+        }
         public async Task<IdentityResult> AddToRoleAsync(AppUser user)
         {
             return await _userManager.AddToRoleAsync(user, UserRoles.Member);
         }
-
         public async Task<AppUser> FindUserByClaimsPrincipleWithAddressAsync(ClaimsPrincipal user)
         {
             var email = user.FindFirstValue(ClaimTypes.Email);
@@ -62,7 +69,6 @@ namespace Application.Core.Services.Implementations.Identity
             .Include(x => x.Address)
             .SingleOrDefaultAsync(x => x.Email == email);
         }
-
         public async Task<IdentityResult> UpdateAsync(AppUser user)
         {
             return await _userManager.UpdateAsync(user);

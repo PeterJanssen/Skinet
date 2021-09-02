@@ -19,15 +19,12 @@ namespace API.Extensions
                 .AddNpgSql(config.GetConnectionString("DefaultConnection"),
                 healthQuery: "select 1",
                 failureStatus: HealthStatus.Unhealthy,
-                name: "PostGreSQL Server")
-                .AddUrlGroup(new Uri("https://localhost:4200/"),
-                name: "Client URL",
-                failureStatus: HealthStatus.Unhealthy);
+                name: "PostGreSQL Server");
 
             services.AddHealthChecksUI(opt =>
             {
-                opt.SetEvaluationTimeInSeconds(30); //time in seconds between check    
-                opt.MaximumHistoryEntriesPerEndpoint(60); //maximum history of checks    
+                opt.SetEvaluationTimeInSeconds(500); //time in seconds between check    
+                opt.MaximumHistoryEntriesPerEndpoint(50); //maximum history of checks    
                 opt.SetApiMaxActiveRequests(5); //api requests concurrency    
                 opt.AddHealthCheckEndpoint("Health Checks", "https://localhost:5001/health"); //map health check api    
             }).AddInMemoryStorage();

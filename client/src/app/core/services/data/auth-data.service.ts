@@ -3,9 +3,15 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { Observable } from 'rxjs';
 import { delay, finalize, map, tap } from 'rxjs/operators';
-import { IApplicationUser, ILoginResult } from 'src/app/shared';
+import {
+  ExternalAuthDto,
+  IApplicationUser,
+  ILoginResult,
+} from 'src/app/shared';
 import { environment } from 'src/environments/environment';
 import { ApiUrls } from './api-urls';
+import { SocialAuthService } from 'angularx-social-login';
+import { GoogleLoginProvider } from 'angularx-social-login';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +24,10 @@ export class AuthDataService implements OnDestroy {
   private readonly baseURl = environment.apiUrl + ApiUrls.auth;
   private timer: Subscription;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private externalAuthService: SocialAuthService
+  ) {
     window.addEventListener('storage', this.storageEventListener.bind(this));
     this.user$ = this.user.asObservable();
     this.isAdmin$ = this.isAdminSource.asObservable();
@@ -44,6 +53,33 @@ export class AuthDataService implements OnDestroy {
         return loginResult;
       })
     );
+  }
+
+  public signInWithGoogle() {
+    return this.externalAuthService.signIn(GoogleLoginProvider.PROVIDER_ID);
+  }
+  public signOutExternal() {
+    this.externalAuthService.signOut(true);
+  }
+
+  externalLogin(values: ExternalAuthDto) {
+    return this.http
+      .post<ILoginResult>(`${this.baseURl}login/google`, values)
+      .pipe(
+        map((loginResult: ILoginResult) => {
+          this.user.next({
+            email: loginResult.email,
+            username: loginResult.username,
+            displayName: loginResult.displayName,
+            role: loginResult.role,
+            originalUserName: loginResult.originalUserName,
+          });
+          this.isAdminSource.next(this.isAdmin(loginResult.accessToken));
+          this.setLocalStorage(loginResult);
+          this.startTokenTimer();
+          return loginResult;
+        })
+      );
   }
 
   register(values: any) {

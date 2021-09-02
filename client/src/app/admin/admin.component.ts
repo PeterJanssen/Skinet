@@ -44,9 +44,13 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  deleteProduct(id: number) {
+  deleteProduct(id: number, name: string) {
     this.confirmService
-      .confirm('Confirm delete product', 'This cannot be undone')
+      .confirm(
+        `Confirm delete product "${name}"`,
+        'This action cannot be undone',
+        'Confirm'
+      )
       .subscribe((result) => {
         if (result) {
           this.productDataService.deleteProduct(id).subscribe(() => {

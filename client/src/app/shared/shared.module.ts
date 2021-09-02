@@ -26,6 +26,7 @@ import {
   ConfirmDialogComponent,
   SortSelectorComponent,
   CollapsibleFilterListComponent,
+  SeparatorComponent,
 } from '.';
 
 @NgModule({
@@ -40,6 +41,7 @@ import {
     ConfirmDialogComponent,
     SortSelectorComponent,
     CollapsibleFilterListComponent,
+    SeparatorComponent,
   ],
   imports: [
     CommonModule,
@@ -84,6 +86,7 @@ import {
     ModalModule,
     CollapsibleFilterListComponent,
     SortSelectorComponent,
+    SeparatorComponent,
   ],
 })
 export class SharedModule {}

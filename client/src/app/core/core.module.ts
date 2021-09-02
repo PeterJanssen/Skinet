@@ -13,6 +13,13 @@ import {
   TestErrorComponent,
 } from '.';
 import { SharedModule } from '../shared/shared.module';
+import { environment } from 'src/environments/environment';
+
+import {
+  SocialLoginModule,
+  SocialAuthServiceConfig,
+} from 'angularx-social-login';
+import { GoogleLoginProvider } from 'angularx-social-login';
 
 @NgModule({
   declarations: [
@@ -24,6 +31,7 @@ import { SharedModule } from '../shared/shared.module';
   ],
   imports: [
     CommonModule,
+    SocialLoginModule,
     RouterModule,
     BreadcrumbModule,
     SharedModule,
@@ -33,6 +41,18 @@ import { SharedModule } from '../shared/shared.module';
     }),
   ],
   providers: [
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(environment.googleClientId),
+          },
+        ],
+      } as SocialAuthServiceConfig,
+    },
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializer,

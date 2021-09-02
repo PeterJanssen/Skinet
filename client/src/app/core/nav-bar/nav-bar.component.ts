@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { SocialAuthService } from 'angularx-social-login';
 import { fromEvent, Observable } from 'rxjs';
 import { debounceTime, map, startWith } from 'rxjs/operators';
 import { IBasket } from 'src/app/shared/models/basket';
@@ -14,6 +15,7 @@ import { AuthDataService, BasketDataService } from '..';
 export class NavBarComponent implements OnInit {
   basket$: Observable<IBasket>;
   currentUser$: Observable<IApplicationUser>;
+  isExternalAuth: boolean;
   isAdmin$: Observable<boolean>;
   isScreenSmall$: Observable<boolean>;
   isNavBarOpen: boolean;
@@ -21,6 +23,7 @@ export class NavBarComponent implements OnInit {
   constructor(
     private basketDataService: BasketDataService,
     private authDataService: AuthDataService,
+    private socialAuthService: SocialAuthService,
     private router: Router
   ) {}
 
@@ -28,6 +31,10 @@ export class NavBarComponent implements OnInit {
     this.basket$ = this.basketDataService.basket$;
     this.currentUser$ = this.authDataService.user$;
     this.isAdmin$ = this.authDataService.isAdmin$;
+
+    this.socialAuthService.authState.subscribe((user) => {
+      this.isExternalAuth = user != null;
+    });
 
     const checkScreenSize = () => document.body.offsetWidth < 620;
 
@@ -47,6 +54,10 @@ export class NavBarComponent implements OnInit {
 
   logout(): void {
     this.authDataService.logout().subscribe(() => {
+      if (this.isExternalAuth) {
+        this.authDataService.signOutExternal();
+      }
+
       this.router.navigate(['account/login']);
     });
   }

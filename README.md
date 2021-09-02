@@ -25,6 +25,9 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 - Entity Framework
 - Identity
 - JWT with refresh tokens
+- Security 
+- Cookie Policy
+- Authentication with Google Account
 - Integration tests
 - Swagger
 - C# Generics
@@ -43,6 +46,7 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 
 - Angular 12
 - JWT with refresh tokens
+- Authentication with Google Account
 - SCSS
 - Caching with Redis
 - Sorting, Filtering, Searching and Pagination
@@ -55,6 +59,8 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 - Ngx-Gallery, Spinner, Toastr, Dropzone, Image-Cropper, Hamburgers, Navbar
 - Accepting payments using Stripe
 - Angular Re-usable form components
+- Angular Re-usable modal component
+- Angular Re-usable collapsible filter list component
 - Angular validation and async validation
 - Testing HTTP requests and responses with Testbed and HttpTestingController
 
@@ -71,6 +77,7 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 ### Product_Detail
 
 ![Product_Detail](ReadMeImages/ProductDetail.PNG 'Product Detail')
+![Product_Detail_Review](ReadMeImages/ProductDetailReview.PNG 'Product Review Modal')
 
 ### Basket
 
@@ -99,6 +106,7 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 ### Admin
 
 ![Dashboard](ReadMeImages/AdminProductDash.PNG 'Admin Dash')
+![DeleteProduct](ReadMeImages/AdminProductDelete.PNG 'Delete a Product')
 ![CreateProduct](ReadMeImages/AdminProductCreate1.PNG 'Create New Product')
 ![AddImageToProduct](ReadMeImages/AdminProductCreate2.PNG 'Add Image to Product')
 ![EditProduct](ReadMeImages/AdminProductEdit1.PNG 'Edit Existing Product')
@@ -203,7 +211,7 @@ In the client folder run the following command
 
 In the client folder run the following command
 
-`ng build --prod`
+`ng build`
 
 ### Publishing the app
 
@@ -255,6 +263,8 @@ Keep the console open and you will see payment intent actions after paying for a
 - Stock dashboard
 - Review dashboard
 - Seller role with access to Product/Stock/Review/Order dashboard
+- Improve CSP by using a nonce for inline script and style
+- Fix Cookie same site issue in chrome
 
 ## Roadmap_Done
 
@@ -292,8 +302,11 @@ Keep the console open and you will see payment intent actions after paying for a
 - Product picture feature
 - Product add review feature
 - Refresh tokens
+- Authentication with Google
 
 ## Current_Bugs
+
+- Same site cookie issue in chrome
 
 ## Fixed_Bugs
 

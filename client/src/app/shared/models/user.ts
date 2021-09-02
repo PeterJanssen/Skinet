@@ -15,3 +15,8 @@ export interface ILoginResult {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface ExternalAuthDto {
+  provider: string;
+  idToken: string;
+}

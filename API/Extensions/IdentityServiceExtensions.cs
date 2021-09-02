@@ -5,6 +5,7 @@ using Application.Core.Services.Implementations.Identity.JWT;
 using Application.Core.Services.Interfaces.Identity;
 using Application.Core.Services.Interfaces.Identity.JWT;
 using Domain.Models.AccountModels.AppUserModels;
+using Domain.Models.AccountModels.Google;
 using Domain.Models.AccountModels.JWT;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -29,6 +30,8 @@ namespace API.Extensions
 
             var jwtTokenConfig = config.GetSection("jwtTokenConfig").Get<JwtTokenConfig>();
             services.AddSingleton(jwtTokenConfig);
+            var googleAuthConfig = config.GetSection("GoogleAuthSettings").Get<GoogleAuthSettings>();
+            services.AddSingleton(googleAuthConfig);
 
             services.AddAuthentication(authOptions =>
             {

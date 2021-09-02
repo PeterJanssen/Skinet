@@ -10,12 +10,9 @@ import {
 import { FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import {
-  BasketDataService,
-  DeliveryMethodDataService,
-  OrderDataService,
-} from 'src/app/core';
+import { BasketDataService, OrderDataService } from 'src/app/core';
 import { IBasket, IOrderToCreate } from 'src/app/shared';
+import { environment } from 'src/environments/environment';
 
 // eslint-disable-next-line no-var
 declare var Stripe: (arg0: string) => any;
@@ -56,9 +53,7 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.stripe = Stripe(
-      'pk_test_51ICPzsKPFEYKfGUF1127ZBEifwKLR03RsWNQJ0a6EoCeveEZgWTEdxBY4pPoIpTYwRR8HwpFPW3kBHCqV9mZuTwa006apxsrX2'
-    );
+    this.stripe = Stripe(environment.stripePublishableKey);
     const elements = this.stripe.elements();
 
     this.cardNumber = elements.create('cardNumber');

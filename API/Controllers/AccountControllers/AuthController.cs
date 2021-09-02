@@ -12,13 +12,14 @@ using Domain.Models.AccountModels.AppUserModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
 namespace API.Controllers.AccountControllers
 {
     [Produces("application/json")]
-    public class AuthController : BaseApiController
+    public class AuthController : BaseAccountController
     {
         private readonly IUserService _userService;
         private readonly IJwtAuthManager _jwtAuthManager;
@@ -64,14 +65,7 @@ namespace API.Controllers.AccountControllers
 
             var userRoles = await _userService.GetUserRoles(user);
 
-            List<Claim> claims = new()
-            {
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.GivenName, user.DisplayName)
-            };
-
-            claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+            List<Claim> claims = GetClaimsForUser(user, userRoles);
 
             var jwtResult = _jwtAuthManager.GenerateTokens(user.Email, claims, DateTime.Now);
 
@@ -83,6 +77,60 @@ namespace API.Controllers.AccountControllers
                     jwtResult.AccessToken,
                     jwtResult.RefreshToken.TokenString
                     ));
+        }
+
+        /// <summary>
+        /// Posts the users's external credentials and logs the user in
+        /// </summary>
+        /// <response code="200">Returns the current logged in user</response>
+        /// <response code="401">Returns if the user does not exist or has provided wrong credentials</response>
+        [HttpPost("login/google")]
+        [AllowAnonymous]
+        public async Task<ActionResult<LoginResult>> GoogleLogin(GoogleLoginRequest googleLoginRequest)
+        {
+            var payload = await _jwtAuthManager.VerifyGoogleToken(googleLoginRequest);
+
+            if (payload == null) return Unauthorized("Invalid External Authentication.");
+
+            var info = new UserLoginInfo(googleLoginRequest.Provider, payload.Subject, googleLoginRequest.Provider);
+
+            var user = await _userService.GetUserByUserLoginInfo(info);
+
+            if (user == null)
+            {
+                user = await _userService.GetUser(payload.Email);
+                if (user == null)
+                {
+                    user = new AppUser { Email = payload.Email, UserName = payload.Email, DisplayName = payload.Email.Split('@').First() };
+                    await _userService.CreateAsync(user);
+
+                    //TODO prepare and send an email for the email confirmation
+
+                    await _userService.AddToRoleAsync(user);
+                    await _userService.AddExternalLogin(user, info);
+                }
+                else
+                {
+                    await _userService.AddExternalLogin(user, info);
+                }
+            }
+
+            if (user == null) return Unauthorized("Invalid External Authentication.");
+
+            var userRoles = await _userService.GetUserRoles(user);
+
+            List<Claim> claims = GetClaimsForUser(user, userRoles);
+
+            var jwtResult = _jwtAuthManager.GenerateTokens(user.Email, claims, DateTime.Now);
+
+            return Ok(CreateLoginResult(
+            user.Email,
+            user.DisplayName,
+            userRoles.ToList(),
+            User.FindFirst("OriginalUserName")?.Value,
+            jwtResult.AccessToken,
+            jwtResult.RefreshToken.TokenString
+            ));
         }
 
         /// <summary>
@@ -235,26 +283,5 @@ namespace API.Controllers.AccountControllers
         {
             return await _userService.GetUser(email) != null;
         }
-
-        private static LoginResult CreateLoginResult(
-            string email,
-            string displayName,
-            List<string> roles,
-            string originalUsername,
-            string accessToken,
-            string refreshToken
-            )
-        {
-            return new LoginResult
-            {
-                Email = email,
-                Roles = roles,
-                DisplayName = displayName,
-                OriginalUserName = originalUsername,
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
-            };
-        }
-
     }
 }
