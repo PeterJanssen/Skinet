@@ -1,13 +1,12 @@
 ﻿using Application.Core.Services.Interfaces.Identity.JWT;
 using Application.Dtos.AccountDtos;
+using Domain.Models.AccountModels.AppUserModels;
 using Domain.Models.AccountModels.Google;
 using Domain.Models.AccountModels.JWT;
 using Google.Apis.Auth;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -19,8 +18,6 @@ namespace Application.Core.Services.Implementations.Identity.JWT
 {
     public class JwtAuthManager : IJwtAuthManager
     {
-        public IImmutableDictionary<string, RefreshToken> UsersRefreshTokensReadOnlyDictionary => _usersRefreshTokens.ToImmutableDictionary();
-        private readonly ConcurrentDictionary<string, RefreshToken> _usersRefreshTokens;
         private readonly JwtTokenConfig _jwtTokenConfig;
         private readonly GoogleAuthSettings _googleSettings;
         private readonly byte[] _secret;
@@ -29,27 +26,9 @@ namespace Application.Core.Services.Implementations.Identity.JWT
         {
             _jwtTokenConfig = jwtTokenConfig;
             _googleSettings = googleAuthSettings;
-            _usersRefreshTokens = new ConcurrentDictionary<string, RefreshToken>();
             _secret = Encoding.ASCII.GetBytes(jwtTokenConfig.Secret);
         }
-
-        public void RemoveExpiredRefreshTokens(DateTime now)
-        {
-            var expiredTokens = _usersRefreshTokens.Where(x => x.Value.ExpireAt < now).ToList();
-            foreach (var expiredToken in expiredTokens)
-            {
-                _usersRefreshTokens.TryRemove(expiredToken.Key, out _);
-            }
-        }
-        public void RemoveRefreshTokenByUserName(string userName)
-        {
-            var refreshTokens = _usersRefreshTokens.Where(x => x.Value.UserName == userName).ToList();
-            foreach (var refreshToken in refreshTokens)
-            {
-                _usersRefreshTokens.TryRemove(refreshToken.Key, out _);
-            }
-        }
-        public JwtAuthResult GenerateTokens(string username, List<Claim> claims, DateTime now)
+        public string GenerateToken(AppUser appUser, List<Claim> claims, DateTime now)
         {
             var shouldAddAudienceClaim = string.IsNullOrWhiteSpace(claims?.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Aud)?.Value);
             var jwtToken = new SecurityTokenDescriptor
@@ -64,45 +43,32 @@ namespace Application.Core.Services.Implementations.Identity.JWT
 
             var token = tokenHandler.CreateToken(jwtToken);
 
-            var accessToken = tokenHandler.WriteToken(token);
-
-            var refreshToken = new RefreshToken
-            {
-                UserName = username,
-                TokenString = GenerateRefreshTokenString(),
-                ExpireAt = now.AddMinutes(_jwtTokenConfig.RefreshTokenExpiration)
-            };
-            _usersRefreshTokens.AddOrUpdate(refreshToken.TokenString, refreshToken, (_, _) => refreshToken);
-
-            return new JwtAuthResult
-            {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
-            };
+            return tokenHandler.WriteToken(token);
         }
 
-        public JwtAuthResult Refresh(string refreshToken, string accessToken, DateTime now)
+        public RefreshToken Refresh(AppUser appuser, string accessToken, DateTime now)
         {
             var (principal, jwtToken) = DecodeJwtToken(accessToken);
+
             if (jwtToken == null || !jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256))
             {
                 throw new SecurityTokenException("Invalid token");
             }
 
-            var userName = principal.Identity?.Name;
-            if (!_usersRefreshTokens.TryGetValue(refreshToken, out var existingRefreshToken))
+            return new RefreshToken
             {
-                throw new SecurityTokenException("Invalid token");
-            }
-            if (existingRefreshToken.UserName != userName || existingRefreshToken.ExpireAt < now)
-            {
-                throw new SecurityTokenException("Invalid token");
-            }
-
-            return GenerateTokens(userName, principal.Claims.ToList(), now);
+                AppUser = appuser,
+                TokenString = GenerateRefreshTokenString(),
+                ExpireAt = now.AddMinutes(_jwtTokenConfig.RefreshTokenExpiration)
+            };
         }
         public async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(GoogleLoginRequest googleLoginRequest)
         {
+            if (string.IsNullOrEmpty(_googleSettings.ClientId))
+            {
+                return null;
+            }
+
             var settings = new GoogleJsonWebSignature.ValidationSettings()
             {
                 Audience = new List<string>() { _googleSettings.ClientId }

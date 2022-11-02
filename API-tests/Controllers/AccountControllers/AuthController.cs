@@ -1,6 +1,5 @@
 ﻿using Application.Core.Services.Implementations.Identity;
 using Application.Core.Services.Interfaces.Identity.JWT;
-using Application.Dtos.AccountDtos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -15,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Mime;
 using Domain.Models.AccountModels.JWT;
+using Application.Core.Services.Interfaces.Identity;
 
 namespace API_tests.Controllers.AccountControllers
 {
@@ -54,7 +54,6 @@ namespace API_tests.Controllers.AccountControllers
             Assert.IsNull(loginResult.OriginalUserName);
             Assert.IsTrue(loginResult.Roles.Contains(UserRoles.Admin));
             Assert.IsFalse(string.IsNullOrWhiteSpace(loginResult.AccessToken));
-            Assert.IsFalse(string.IsNullOrWhiteSpace(loginResult.RefreshToken));
 
             var jwtAuthManager = _serviceProvider.GetRequiredService<IJwtAuthManager>();
             var (principal, jwtSecurityToken) = jwtAuthManager.DecodeJwtToken(loginResult.AccessToken);
@@ -73,12 +72,10 @@ namespace API_tests.Controllers.AccountControllers
             var loginResult = TestHostFixture.GetLoginResult(loginResponseContent);
 
             var jwtAuthManager = _serviceProvider.GetRequiredService<IJwtAuthManager>();
-            Assert.IsTrue(jwtAuthManager.UsersRefreshTokensReadOnlyDictionary.ContainsKey(loginResult.RefreshToken));
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, loginResult.AccessToken);
             var logoutResponse = await _httpClient.PostAsync(baseUrl + "/logout", null);
             Assert.AreEqual(HttpStatusCode.OK, logoutResponse.StatusCode);
-            Assert.IsFalse(jwtAuthManager.UsersRefreshTokensReadOnlyDictionary.ContainsKey(loginResult.RefreshToken));
         }
 
         [Test]
@@ -91,28 +88,22 @@ namespace API_tests.Controllers.AccountControllers
                 new Claim(ClaimTypes.Role, UserRoles.Admin)
             };
             var jwtAuthManager = _serviceProvider.GetRequiredService<IJwtAuthManager>();
-            var jwtResult = jwtAuthManager.GenerateTokens(userName, claims, DateTime.Now.AddMinutes(-1));
+            var userManager = _serviceProvider.GetRequiredService<IUserService>();
+            var user = await userManager.GetUser(userName);
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, jwtResult.AccessToken);
-            var refreshRequest = new RefreshTokenRequest
-            {
-                RefreshToken = jwtResult.RefreshToken.TokenString
-            };
-            var response = await _httpClient.PostAsync(baseUrl + "/refresh-token",
-                new StringContent(JsonSerializer.Serialize(refreshRequest), Encoding.UTF8, MediaTypeNames.Application.Json));
+            var accessToken = jwtAuthManager.GenerateToken(user, claims, DateTime.Now.AddMinutes(-1));
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken);
+
+            var response = await _httpClient.PostAsync(baseUrl + "/refresh-token", null);
             var responseContent = await TestHostFixture.GetLoginResponseContent(response);
             var result = TestHostFixture.GetLoginResult(responseContent);
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-
-            var refreshToken2 = jwtAuthManager.UsersRefreshTokensReadOnlyDictionary.GetValueOrDefault(result.RefreshToken);
-            Assert.AreEqual(refreshToken2.TokenString, result.RefreshToken);
-            Assert.AreNotEqual(refreshToken2.TokenString, jwtResult.RefreshToken.TokenString);
-            Assert.AreNotEqual(jwtResult.AccessToken, result.AccessToken);
         }
 
 
         [Test]
-        public async Task HTTPPOST_Return401Unauthorized_ShouldNotAllowWhenRefreshTokenIsExpired_RefreshToken_Test()
+        public async Task HTTPPOST_Return401Unauthorized_ShouldNotAllowWhenAccessTokenIsExpired_RefreshToken_Test()
         {
             string userName = TestHostFixture.AdminLogin().Email;
             var claims = new List<Claim>
@@ -120,18 +111,16 @@ namespace API_tests.Controllers.AccountControllers
                 new Claim(ClaimTypes.Name,userName),
                 new Claim(ClaimTypes.Role, UserRoles.Admin)
             };
-            var jwtAuthManager = _serviceProvider.GetRequiredService<IJwtAuthManager>();
             var jwtTokenConfig = _serviceProvider.GetRequiredService<JwtTokenConfig>();
-            var jwtResult1 = jwtAuthManager.GenerateTokens(userName, claims, DateTime.Now.AddMinutes(-jwtTokenConfig.RefreshTokenExpiration - 1));
-            var jwtResult2 = jwtAuthManager.GenerateTokens(userName, claims, DateTime.Now.AddMinutes(-1));
+            var jwtAuthManager = _serviceProvider.GetRequiredService<IJwtAuthManager>();
+            var userManager = _serviceProvider.GetRequiredService<IUserService>();
+            var user = await userManager.GetUser(userName);
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, jwtResult2.AccessToken); // valid JWT token
-            var refreshRequest = new RefreshTokenRequest
-            {
-                RefreshToken = jwtResult1.RefreshToken.TokenString
-            };
-            var response = await _httpClient.PostAsync(baseUrl + "/refresh-token",
-                new StringContent(JsonSerializer.Serialize(refreshRequest), Encoding.UTF8, MediaTypeNames.Application.Json)); // expired Refresh token
+            var accessToken = jwtAuthManager.GenerateToken(user, claims, DateTime.Now.AddMinutes(-jwtTokenConfig.RefreshTokenExpiration - 1));
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken); // Expired JWT token
+
+            var response = await _httpClient.PostAsync(baseUrl + "/refresh-token", null);
             var responseContent = await TestHostFixture.GetLoginResponseContent(response);
             Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
             Assert.IsTrue(responseContent.Contains("Unauthorized action"));

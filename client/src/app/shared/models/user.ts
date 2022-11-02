@@ -13,7 +13,6 @@ export interface ILoginResult {
   role: string;
   originalUserName: string;
   accessToken: string;
-  refreshToken: string;
 }
 
 export interface ExternalAuthDto {

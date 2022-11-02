@@ -28,7 +28,7 @@ namespace Application.Core.Services.Implementations.Identity
 
         public async Task<AppUser> GetUser(string identifier)
         {
-            return await _userManager.Users.SingleOrDefaultAsync(
+            return await _userManager.Users.Include(appUser => appUser.RefreshTokens).FirstOrDefaultAsync(
                 user => user.UserName == identifier ||
                 user.Email == identifier
                 );

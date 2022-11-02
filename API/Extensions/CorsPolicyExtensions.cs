@@ -13,7 +13,9 @@ namespace API.Extensions
                     policy
                         .AllowAnyMethod()
                         .AllowAnyHeader()
-                        .WithOrigins("https://localhost:4200");
+                        .AllowCredentials()
+                        .WithExposedHeaders("WWWW-Authenticate")
+                        .WithOrigins("https://localhost:4200", "https://localhost:5001");
                 });
             });
 

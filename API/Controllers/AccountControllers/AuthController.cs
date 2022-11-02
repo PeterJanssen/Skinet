@@ -24,7 +24,7 @@ namespace API.Controllers.AccountControllers
         private readonly IUserService _userService;
         private readonly IJwtAuthManager _jwtAuthManager;
 
-        public AuthController(IUserService userService, IJwtAuthManager jwtAuthManager)
+        public AuthController(IUserService userService, IJwtAuthManager jwtAuthManager) : base(userService, jwtAuthManager)
         {
             _userService = userService;
             _jwtAuthManager = jwtAuthManager;
@@ -67,15 +67,16 @@ namespace API.Controllers.AccountControllers
 
             List<Claim> claims = GetClaimsForUser(user, userRoles);
 
-            var jwtResult = _jwtAuthManager.GenerateTokens(user.Email, claims, DateTime.Now);
+            var accessToken = _jwtAuthManager.GenerateToken(user, claims, DateTime.Now);
+
+            await SetRefreshToken(user, accessToken);
 
             return Ok(CreateLoginResult(
                     user.Email,
                     user.DisplayName,
                     userRoles.ToList(),
                     User.FindFirst("OriginalUserName")?.Value,
-                    jwtResult.AccessToken,
-                    jwtResult.RefreshToken.TokenString
+                    accessToken
                     ));
         }
 
@@ -121,15 +122,16 @@ namespace API.Controllers.AccountControllers
 
             List<Claim> claims = GetClaimsForUser(user, userRoles);
 
-            var jwtResult = _jwtAuthManager.GenerateTokens(user.Email, claims, DateTime.Now);
+            var accessToken = _jwtAuthManager.GenerateToken(user, claims, DateTime.Now);
+
+            await SetRefreshToken(user, accessToken);
 
             return Ok(CreateLoginResult(
             user.Email,
             user.DisplayName,
             userRoles.ToList(),
             User.FindFirst("OriginalUserName")?.Value,
-            jwtResult.AccessToken,
-            jwtResult.RefreshToken.TokenString
+            accessToken
             ));
         }
 
@@ -144,8 +146,6 @@ namespace API.Controllers.AccountControllers
             var userName = HttpContext.User.GetUsername();
 
             if (userName == null) return Ok();
-
-            _jwtAuthManager.RemoveRefreshTokenByUserName(userName);
 
             return Ok();
         }
@@ -237,27 +237,32 @@ namespace API.Controllers.AccountControllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<LoginResult>> RefreshToken([FromBody] RefreshTokenRequest request)
+        public async Task<ActionResult<LoginResult>> RefreshToken()
         {
             try
             {
+                var refreshToken = Request.Cookies["refreshToken"];
                 var userName = HttpContext.User.GetUsername();
-
-                if (string.IsNullOrWhiteSpace(request.RefreshToken)) return Unauthorized();
-
-                var accessToken = await HttpContext.GetTokenAsync("Bearer", "access_token");
-                var jwtResult = _jwtAuthManager.Refresh(request.RefreshToken, accessToken, DateTime.Now);
-
                 var user = await _userService.GetUser(userName);
+
+                if (user == null) return Unauthorized();
+
+                var oldToken = user.RefreshTokens.SingleOrDefault(ExistingRefreshToken => ExistingRefreshToken.TokenString == refreshToken);
+
+                if (oldToken != null && !oldToken.IsActive) return Unauthorized();
+
                 var roles = await _userService.GetUserRoles(user);
+
+                List<Claim> claims = GetClaimsForUser(user, roles);
+
+                var accessToken = _jwtAuthManager.GenerateToken(user, claims, DateTime.Now);
 
                 return Ok(CreateLoginResult(
                         user.Email,
                         user.DisplayName,
                         roles.ToList(),
                         User.FindFirst("OriginalUserName")?.Value,
-                        jwtResult.AccessToken,
-                        jwtResult.RefreshToken.TokenString
+                        accessToken
                         ));
             }
             catch (SecurityTokenException)

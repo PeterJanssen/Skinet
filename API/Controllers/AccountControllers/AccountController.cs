@@ -21,7 +21,7 @@ namespace API.Controllers.AccountControllers
         private readonly IUserService _userService;
         private readonly IJwtAuthManager _jwtAuthManager;
 
-        public AccountController(IUserService userService, IJwtAuthManager jwtAuthManager)
+        public AccountController(IUserService userService, IJwtAuthManager jwtAuthManager) : base(userService, jwtAuthManager)
         {
             _userService = userService;
             _jwtAuthManager = jwtAuthManager;
@@ -50,17 +50,16 @@ namespace API.Controllers.AccountControllers
 
             List<Claim> claims = GetClaimsForUser(user, userRoles);
 
-            claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+            var accessToken = _jwtAuthManager.GenerateToken(user, claims, DateTime.Now);
 
-            var jwtResult = _jwtAuthManager.GenerateTokens(user.Email, claims, DateTime.Now);
+            await SetRefreshToken(user, accessToken);
 
             return Ok(CreateLoginResult(
                     user.Email,
                     user.DisplayName,
                     userRoles.ToList(),
                     User.FindFirst("OriginalUserName")?.Value,
-                    jwtResult.AccessToken,
-                    jwtResult.RefreshToken.TokenString
+                    accessToken
                     ));
         }
 
@@ -100,17 +99,18 @@ namespace API.Controllers.AccountControllers
 
             List<Claim> claims = GetClaimsForUser(impersonatedUser, impersonatedRoles);
 
-            claims.AddRange(impersonatedRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+            claims.Add(new Claim("OriginalUserName", userName ?? string.Empty));
 
-            var jwtResult = _jwtAuthManager.GenerateTokens(request.UserName, claims, DateTime.Now);
+            var accessToken = _jwtAuthManager.GenerateToken(impersonatedUser, claims, DateTime.Now);
+
+            await SetRefreshToken(impersonatedUser, accessToken);
 
             return Ok(CreateLoginResult(
                     request.UserName,
                     impersonatedUser.DisplayName,
                     impersonatedRoles.ToList(),
                     userName,
-                    jwtResult.AccessToken,
-                    jwtResult.RefreshToken.TokenString
+                    accessToken
                     ));
         }
 
@@ -134,15 +134,16 @@ namespace API.Controllers.AccountControllers
 
             List<Claim> claims = GetClaimsForUser(originalUser, roles);
 
-            var jwtResult = _jwtAuthManager.GenerateTokens(originalUser.UserName, claims, DateTime.Now);
+            var accessToken = _jwtAuthManager.GenerateToken(originalUser, claims, DateTime.Now);
+
+            await SetRefreshToken(originalUser, accessToken);
 
             return Ok(CreateLoginResult(
                     originalUser.UserName,
                     originalUser.DisplayName,
                     roles.ToList(),
                     null,
-                    jwtResult.AccessToken,
-                    jwtResult.RefreshToken.TokenString
+                    accessToken
                     ));
         }
     }

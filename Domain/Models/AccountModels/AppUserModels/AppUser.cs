@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Domain.Models.AccountModels.JWT;
 using Microsoft.AspNetCore.Identity;
 
 namespace Domain.Models.AccountModels.AppUserModels
@@ -10,6 +12,6 @@ namespace Domain.Models.AccountModels.AppUserModels
         public DateTime DateOfBirth { get; set; }
         public DateTime Created { get; set; } = DateTime.Now;
         public DateTime LastActive { get; set; } = DateTime.Now;
-        public string Gender { get; set; }
+        public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }

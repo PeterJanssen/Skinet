@@ -143,6 +143,8 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 
 - A Stripe account with the WebhookSecret, key and secret placed in appsettings.json
 
+- A Google Cloud Platform account with the OAuth 2.0 Client ID placed in appsettings.json
+
 - A server certification and key (self signed or by a CA) and placed in client/ssl
 
 - Postman or any equivalent, API contains SwaggerUI at `https://localhost:5001/swagger/index.html`
@@ -150,16 +152,16 @@ A proof of concept e-commerce store using Angular, .Net Core and Stripe for paym
 ## First steps before running the app for the first time
 
 1. "npm install" in the client folder
-2. "dotnet restore" in root folder
-3. create appsettings.json in API folder and copy content of appsettings.Development.json into it, add or change keys for Stripe and SendGrid
-4. "docker-compose up --detach" in the root folder
+2. "dotnet restore" in solution folder
+3. create appsettings.json in API folder and copy content of appsettings.Development.json into it, add or change keys for Stripe, GoogleAuth and SendGrid
+4. "docker-compose up --detach" in the solution folder
 5. add server.crt and server.key (self signed or by a CA) and place them in client/ssl
 
 ## Commands
 
 ### Creating the docker containers
 
-In the root folder run the following command
+In the solution folder run the following command
 
 `docker-compose up --detach`
 
@@ -179,13 +181,13 @@ Creates and/or seeds the databases if they are non-existent
 
 ### Adding migration
 
-In the package manager or console in the root folder run the following command, replace the text between #
+In the package manager or console in the solution folder run the following command, replace the text between #
 
 `dotnet ef migrations add "#Name of migration#" -p .\Persistence\ -s .\API\ -c StoreContext -o Migrations`
 
 ### Removing migration
 
-In the package manager or console in the root folder run the following command
+In the package manager or console in the solution folder run the following command
 
 `dotnet ef migrations remove -p .\Persistence\ -s .\API\ -c StoreContext`
 
@@ -197,7 +199,7 @@ In the API folder run the following command
 
 ### Testing the backend
 
-In the root folder run the following command
+In the solution folder run the following command
 
 `dotnet test`
 
@@ -215,7 +217,7 @@ In the client folder run the following command
 
 ### Publishing the app
 
-In the root folder run the following command
+In the solution folder run the following command
 
 `dotnet publish -c Release -o publish skinet.sln`
 

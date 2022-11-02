@@ -20,7 +20,6 @@ namespace Persistence.Seeds
                         DisplayName = "Bob",
                         Email = "bob@test.com",
                         UserName = "bob@test.com",
-                        Gender = "male",
                         DateOfBirth= DateTime.Parse("1995-02-07"),
                         Address = new Address
                         {
@@ -37,7 +36,6 @@ namespace Persistence.Seeds
                         DisplayName = "Amber",
                         Email = "amber@test.com",
                         UserName = "amber@test.com",
-                        Gender = "female",
                         DateOfBirth= DateTime.Parse("1990-02-07"),
                         Address = new Address
                         {

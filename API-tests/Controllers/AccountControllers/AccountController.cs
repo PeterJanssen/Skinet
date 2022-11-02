@@ -14,6 +14,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Mime;
+using Application.Core.Services.Interfaces.Identity;
 
 namespace API_tests.Controllers.AccountControllers
 {
@@ -74,10 +75,13 @@ namespace API_tests.Controllers.AccountControllers
                 new Claim(ClaimTypes.Role, UserRoles.Admin)
             };
             var jwtAuthManager = _serviceProvider.GetRequiredService<IJwtAuthManager>();
-            var jwtResult = jwtAuthManager.GenerateTokens(userName, claims, DateTime.Now.AddMinutes(-1));
+            var userManager = _serviceProvider.GetRequiredService<IUserService>();
+            var user = await userManager.GetUser(userName);
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, jwtResult.AccessToken);
-            
+            var accessToken = jwtAuthManager.GenerateToken(user, claims, DateTime.Now.AddMinutes(-1));
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken);
+
             var request = new ImpersonationRequest { UserName = "amber@test.com" };
             var response = await _httpClient.PostAsync(baseUrl + "/impersonation",
                 new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, MediaTypeNames.Application.Json));
@@ -90,7 +94,6 @@ namespace API_tests.Controllers.AccountControllers
             Assert.AreEqual(userName, result.OriginalUserName);
             Assert.IsTrue(result.Roles.Contains(UserRoles.Member));
             Assert.IsFalse(string.IsNullOrWhiteSpace(result.AccessToken));
-            Assert.IsFalse(string.IsNullOrWhiteSpace(result.RefreshToken));
 
             var (principal, jwtSecurityToken) = jwtAuthManager.DecodeJwtToken(result.AccessToken);
             Assert.AreEqual(request.UserName, principal.Identity.Name);
@@ -111,9 +114,12 @@ namespace API_tests.Controllers.AccountControllers
                 new Claim("OriginalUserName", originalUserName)
             };
             var jwtAuthManager = _serviceProvider.GetRequiredService<IJwtAuthManager>();
-            var jwtResult = jwtAuthManager.GenerateTokens(userName, claims, DateTime.Now.AddMinutes(-1));
+            var userManager = _serviceProvider.GetRequiredService<IUserService>();
+            var user = await userManager.GetUser(userName);
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, jwtResult.AccessToken);
+            var accessToken = jwtAuthManager.GenerateToken(user, claims, DateTime.Now.AddMinutes(-1));
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken);
             var response = await _httpClient.PostAsync(baseUrl + "/stop-impersonation", null);
             var responseContent = await TestHostFixture.GetLoginResponseContent(response);
             var result = TestHostFixture.GetLoginResult(responseContent);
@@ -123,7 +129,6 @@ namespace API_tests.Controllers.AccountControllers
             Assert.IsTrue(string.IsNullOrWhiteSpace(result.OriginalUserName));
             Assert.IsTrue(result.Roles.Contains(UserRoles.Admin));
             Assert.IsFalse(string.IsNullOrWhiteSpace(result.AccessToken));
-            Assert.IsFalse(string.IsNullOrWhiteSpace(result.RefreshToken));
 
             var (principal, jwtSecurityToken) = jwtAuthManager.DecodeJwtToken(result.AccessToken);
             Assert.AreEqual(originalUserName, principal.Identity.Name);
@@ -142,9 +147,12 @@ namespace API_tests.Controllers.AccountControllers
                 new Claim(ClaimTypes.Role, UserRoles.Member)
             };
             var jwtAuthManager = _serviceProvider.GetRequiredService<IJwtAuthManager>();
-            var jwtResult = jwtAuthManager.GenerateTokens(userName, claims, DateTime.Now.AddMinutes(-1));
+            var userManager = _serviceProvider.GetRequiredService<IUserService>();
+            var user = await userManager.GetUser(userName);
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, jwtResult.AccessToken);
+            var accessToken = jwtAuthManager.GenerateToken(user, claims, DateTime.Now.AddMinutes(-1));
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken);
             var request = new ImpersonationRequest { UserName = "amber@test.com" };
             var response = await _httpClient.PostAsync(baseUrl + "/stop-impersonation",
                 new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, MediaTypeNames.Application.Json));
@@ -162,9 +170,12 @@ namespace API_tests.Controllers.AccountControllers
                 new Claim(ClaimTypes.Role, UserRoles.Member)
             };
             var jwtAuthManager = _serviceProvider.GetRequiredService<IJwtAuthManager>();
-            var jwtResult = jwtAuthManager.GenerateTokens(userName, claims, DateTime.Now.AddMinutes(-1));
+            var userManager = _serviceProvider.GetRequiredService<IUserService>();
+            var user = await userManager.GetUser(userName);
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, jwtResult.AccessToken);
+            var accessToken = jwtAuthManager.GenerateToken(user, claims, DateTime.Now.AddMinutes(-1));
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, accessToken);
             var request = new ImpersonationRequest { UserName = "amber@test.com" };
             var response = await _httpClient.PostAsync(baseUrl + "/impersonation",
                 new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, MediaTypeNames.Application.Json));

@@ -22,6 +22,7 @@ export class AuthDataService implements OnDestroy {
   private isAdminSource = new BehaviorSubject<boolean>(null);
   private user = new BehaviorSubject<IApplicationUser>(null);
   private readonly baseURl = environment.apiUrl + ApiUrls.auth;
+  private readonly accountUrl = environment.apiUrl + ApiUrls.account;
   private timer: Subscription;
 
   constructor(
@@ -114,15 +115,9 @@ export class AuthDataService implements OnDestroy {
   }
 
   refreshToken() {
-    const refreshToken = localStorage.getItem('refresh_token');
-    if (!refreshToken) {
-      this.clearLocalStorage();
-      this.clearUserBehaviorSubjects();
-      return of(null);
-    }
-
+    this.stopTokenTimer();
     return this.http
-      .post<ILoginResult>(`${this.baseURl}refresh-token`, { refreshToken })
+      .post<ILoginResult>(`${this.baseURl}refresh-token`, {})
       .pipe(
         map((loginResult: ILoginResult) => {
           this.user.next({
@@ -142,13 +137,11 @@ export class AuthDataService implements OnDestroy {
 
   setLocalStorage(loginResult: ILoginResult) {
     localStorage.setItem('access_token', loginResult.accessToken);
-    localStorage.setItem('refresh_token', loginResult.refreshToken);
     localStorage.setItem('login-event', 'login' + Math.random());
   }
 
   clearLocalStorage() {
     localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
     localStorage.setItem('logout-event', 'logout' + Math.random());
   }
 
@@ -173,7 +166,7 @@ export class AuthDataService implements OnDestroy {
     }
     const jwtToken = JSON.parse(atob(accessToken.split('.')[1]));
     const expires = new Date(jwtToken.exp * 1000);
-    return expires.getTime() - Date.now();
+    return expires.getTime() - Date.now() - 30 * 1000;
   }
 
   private startTokenTimer() {
@@ -200,7 +193,7 @@ export class AuthDataService implements OnDestroy {
       if (event.key === 'login-event') {
         this.stopTokenTimer();
         this.http
-          .get<ILoginResult>(`${this.baseURl}Account`)
+          .get<ILoginResult>(`${this.accountUrl}`)
           .subscribe((loginResult: ILoginResult) => {
             this.user.next({
               email: loginResult.email,

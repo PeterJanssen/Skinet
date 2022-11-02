@@ -17,15 +17,15 @@ export class JwtInterceptorInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     const accessToken = localStorage.getItem('access_token');
-    const refreshToken = localStorage.getItem('refresh_token');
     const isApiUrl = request.url.startsWith(environment.apiUrl);
 
-    if (accessToken && refreshToken && isApiUrl) {
+    if (accessToken && isApiUrl) {
       request = request.clone({
         setHeaders: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           Authorization: `Bearer ${accessToken}`,
         },
+        withCredentials: true,
       });
     }
 

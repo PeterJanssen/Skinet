@@ -50,12 +50,11 @@ namespace API.Extensions
                     ValidAudience = jwtTokenConfig.Audience,
                     ValidateAudience = true,
                     ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromMinutes(1)
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 
             services.AddSingleton<IJwtAuthManager, JwtAuthManager>();
-            services.AddHostedService<JwtRefreshTokenCache>();
             services.AddScoped<IUserService, UserService>();
 
             return services;
